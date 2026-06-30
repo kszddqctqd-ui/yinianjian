@@ -1,0 +1,13 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/divination/page.js")
+R.c("server/chunks/ssr/[root-of-the-server]__08g1q4i._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_1c91a6v.js")
+R.c("server/chunks/ssr/[root-of-the-server]__1gpqkty._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0100oqz._.js")
+R.c("server/chunks/ssr/src_app_layout_tsx_0r5yz5t._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_client_components_0wpq8j3._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_forbidden_0symwr9.js")
+R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthorized_0l_sp0x.js")
+R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0-o-goa.js")
+R.c("server/chunks/ssr/_next-internal_server_app_divination_page_actions_1yg4u2o.js")
+R.m(93710)
+module.exports=R.m(93710).exports

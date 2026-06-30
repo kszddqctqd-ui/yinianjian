@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+*.log
+.env
+.DS_Store
+scripts/
+public/*.png
+public/*.txt
+public/*.json
+public/*.svg

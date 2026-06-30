@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors - gold system */
+  --color-gold: #c9a05c;
+  --color-gold-light: #e0b97a;
+  --color-gold-deep: #d4a843;
+  --color-gold-dark: #8b6914;
+
+  /* Paper system */
+  --color-paper: #f5f0e8;
+  --color-paper-dark: #3a322a;
+  --color-paper-warm: #f0e6d3;
+
+  /* Ink system */
+  --color-ink: #5a5047;
+  --color-ink-light: #8a7e72;
+  --color-ink-muted: #6b6158;
+
+  /* Abyss black system */
+  --color-xuan: #0a0a0c;
+  --color-xuan-card: #1a1410;
+  --color-xuan-surface: #252018;
+
+  /* Vermillion */
+  --color-vermillion: #c0392b;
+  --color-vermillion-light: #e74c3c;
+  --color-vermillion-dark: #96281b;
+
+  /* Fonts */
+  --font-family-display: "ZhiMangXing", cursive;
+  --font-family-number: "KaiTi", "STKaiti", serif;
+  --font-family-body: "Noto Serif SC", "Source Han Serif CN", "Songti SC", serif;
+
+  /* Spacing */
+  --spacing-card: 1rem;
+  --spacing-section: 1.5rem;
+  --spacing-card-pad: 1.25rem;
+  --spacing-pb-section: 1.5rem;
+
+  /* Durations */
+  --duration-slow: 1000ms;
+  --duration-base: 300ms;
+  --duration-fast: 150ms;
+
+  /* Shadows */
+  --shadow-paper: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-gold: 0 4px 20px rgba(201,160,92,0.3);
+  --shadow-vermillion: 0 4px 16px rgba(192,57,43,0.3);
+
+  /* Animations */
+  --animate-glow-rise: glow-rise 5s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-slide-up: slide-up 0.5s ease-out forwards;
+  --animate-shimmer: shimmer 2s ease-in-out infinite;
+  --animate-bounce-slow: bounce 2s infinite;
+}
+
+@keyframes glow-rise {
+  0%, 100% { opacity: 0.2; transform: translateY(0); }
+  50% { opacity: 0.6; transform: translateY(-8px); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Mobile-First container */
+.app-container {
+  max-width: 28rem;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-body);
+  background-color: #0a0a0c;
+  color: #f5f0e8;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Gold gradient text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #e0b97a, #d4a843, #c9a05c, #e0b97a);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Card quality */
+.card-quality {
+  background: rgba(26, 20, 16, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 160, 92, 0.15);
+  border-radius: 0.75rem;
+}
+
+/* Gold silk border */
+.border-gold-silk {
+  border: 1px solid rgba(201, 160, 92, 0.2);
+}
+
+.border-gold-silk:hover {
+  border-color: rgba(201, 160, 92, 0.35);
+}
+
+/* Input quality */
+.input-quality {
+  background: rgba(26, 20, 16, 0.6);
+  border: 1px solid rgba(201, 160, 92, 0.15);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.input-quality:hover {
+  border-color: rgba(201, 160, 92, 0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* Safe area */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0c; }
+::-webkit-scrollbar-thumb { background: rgba(201, 160, 92, 0.27); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201, 160, 92, 0.45); }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+/* Gold divider */
+.gold-divider {
+  width: 1px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, var(--color-gold, #c9a05c), transparent);
+}
+
+/* Tabular nums */
+.font-number {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--color-gold, #c9a05c);
+  outline-offset: 2px;
+}
+
+/* Button press */
+button:active {
+  transform: scale(0.98);
+}
+
+/* Deep background */
+.bg-deep {
+  background: radial-gradient(ellipse at 50% 0%, rgba(201, 160, 92, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 100%, rgba(192, 57, 43, 0.05) 0%, transparent 50%),
+              #0a0a0c;
+}

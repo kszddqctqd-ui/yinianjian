@@ -1,24 +1,60 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 
 export default function QifuPage() {
-  const [familyMembers, setFamilyMembers] = useState([{ name: '', relation: '自己' }]);
-  const [amount, setAmount] = useState(0);
-  const [wish, setWish] = useState('');
+  const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set());
+  const [lights, setLights] = useState(0);
+  const [merit, setMerit] = useState(0);
+  const [formData, setFormData] = useState({
+    name: '',
+    relation: '',
+    wish: '',
+    amount: 6.6,
+    familyName: '',
+  });
+
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Intersection observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = Number(entry.target.getAttribute('data-section'));
+            setVisibleSections((prev) => new Set([...prev, idx]));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const addSectionRef = () => {
+    sectionRefs.current.push(null);
+  };
 
   const relations = ['自己', '父亲', '母亲', '丈夫', '妻子', '儿子', '女儿', '兄弟', '姐妹', '朋友', '同事', '恩师', '长辈', '祖先', '冤亲债主', '孤魂野鬼', '堕胎婴灵', '其他'];
 
-  const addMember = () => setFamilyMembers([...familyMembers, { name: '', relation: '自己' }]);
-  const removeMember = (i: number) => setFamilyMembers(familyMembers.filter((_, idx) => idx !== i));
-  const updateMember = (i: number, field: string, value: string) => {
-    const copy = [...familyMembers];
-    copy[i] = { ...copy[i], [field]: value };
-    setFamilyMembers(copy);
+  const handleLight = () => {
+    if (!formData.name.trim()) {
+      alert('请输入姓名');
+      return;
+    }
+    setLights(l => l + 1);
+    setMerit(m => m + formData.amount);
+    alert('供灯成功！愿灯光照亮前路，福泽绵长。');
   };
 
   return (
@@ -32,95 +68,161 @@ export default function QifuPage() {
       <MusicToggleFloat />
 
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
-        <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
+        <div className="mx-auto max-w-4xl space-y-section px-4 pb-24">
+          {/* Title */}
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg className="size-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2C8 2 4 6 4 10c0 6 8 12 8 12s8-6 8-12c0-4-4-8-8-8z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
+            <div
+              ref={(el) => { sectionRefs.current[0] = el; }}
+              data-section="0"
+              className="transition-all duration-base"
+              style={{ opacity: visibleSections.has(0) ? 1 : 0, transform: visibleSections.has(0) ? 'translateY(0)' : 'translateY(24px)', transitionDelay: '0ms' }}
+            >
+              <div className="mx-auto mb-3 flex size-20 items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-10 text-vermillion" aria-hidden="true">
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                </svg>
+              </div>
+              <h1 className="text-4xl tracking-wider text-gold">为家人祈福</h1>
+              <p className="mx-auto max-w-md text-base text-paper-dark/85">
+                心愿供灯 · 传统签谱 · 看八字
+              </p>
             </div>
-            <h1 className="text-4xl text-gold">为家人祈福</h1>
-            <p className="text-base text-paper-dark/85">
-              心愿供灯 · 传统签谱 · 看八字
-            </p>
+
+            {/* Stats */}
+            <div
+              ref={(el) => { sectionRefs.current[1] = el; }}
+              data-section="1"
+              className="transition-all duration-base"
+              style={{ opacity: visibleSections.has(1) ? 1 : 0, transform: visibleSections.has(1) ? 'translateY(0)' : 'translateY(24px)', transitionDelay: '100ms' }}
+            >
+              <div className="mx-auto inline-flex items-center gap-4 rounded-full border border-gold/30 bg-xuan-card/70 px-6 py-2 text-sm text-paper-dark/85">
+                <span className="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame size-4 text-gold" aria-hidden="true">
+                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                  </svg>
+                  <span className="font-display text-lg text-gold">{lights}</span>
+                </span>
+                <span className="h-4 w-px bg-gold/30" />
+                <span className="flex items-center gap-1">
+                  <span className="font-display text-lg text-vermillion">{merit}</span>
+                </span>
+              </div>
+            </div>
           </section>
 
-          {/* 心愿供灯 */}
-          <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm">
-            <div className="space-y-4">
-              <div className="text-center">
-                <span className="text-xs text-gold/80 tracking-wider">心愿供灯</span>
-              </div>
-              <p className="text-sm text-paper-dark/80 text-center">
-                点一盏灯，写下一份祝愿。适合生日纪念、平安祝福、学业心愿与日常仪式感表达。
-              </p>
+          {/* Form */}
+          <div
+            ref={(el) => { sectionRefs.current[2] = el; }}
+            data-section="2"
+            className="transition-all duration-base"
+            style={{ opacity: visibleSections.has(2) ? 1 : 0, transform: visibleSections.has(2) ? 'translateY(0)' : 'translateY(24px)', transitionDelay: '200ms' }}
+          >
+            <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-6">
+              <h2 className="font-display text-2xl text-gold">心愿供灯</h2>
 
-              {/* Family members */}
-              <div className="space-y-2">
-                <label className="text-sm text-paper-dark/75">为谁祈福</label>
-                {familyMembers.map((member, i) => (
-                  <div key={i} className="flex gap-2 items-start">
-                    <select
-                      value={member.relation}
-                      onChange={(e) => updateMember(i, 'relation', e.target.value)}
-                      className="flex-1 h-10 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none"
+              {/* Name & Relation */}
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2">
+                  <span className="text-base text-paper-dark/85">姓名</span>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    maxLength={16}
+                    className="h-10 w-full rounded-md border border-gold/20 bg-xuan-surface px-3 text-lg text-paper-dark placeholder:text-ink-muted transition-all duration-fast focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30"
+                    placeholder="请输入姓名"
+                  />
+                </label>
+                <label className="space-y-2">
+                  <span className="text-base text-paper-dark/85">关系</span>
+                  <select
+                    value={formData.relation}
+                    onChange={(e) => setFormData({ ...formData, relation: e.target.value })}
+                    className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface px-3 text-lg text-paper-dark focus:border-gold focus:outline-none"
+                  >
+                    <option value="">请选择</option>
+                    {relations.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </label>
+              </div>
+
+              {/* Quick relations */}
+              <div className="space-y-3">
+                <p className="text-base text-paper-dark/85">快速选择</p>
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                  {['自己', '父亲', '母亲', '丈夫', '妻子', '儿女'].map(r => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, name: '', relation: r })}
+                      className={`rounded-lg border p-3 text-center text-sm transition-all ${
+                        formData.relation === r
+                          ? 'border-gold/60 bg-gold/10 text-gold'
+                          : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
+                      }`}
                     >
-                      {relations.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
-                    <input
-                      type="text"
-                      placeholder="姓名（选填）"
-                      value={member.name}
-                      onChange={(e) => updateMember(i, 'name', e.target.value)}
-                      className="flex-1 h-10 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none"
-                    />
-                    {familyMembers.length > 1 && (
-                      <button type="button" onClick={() => removeMember(i)} className="text-paper-dark/50 hover:text-gold px-2">×</button>
-                    )}
-                  </div>
-                ))}
-                <button type="button" onClick={addMember} className="text-sm text-gold/70 hover:text-gold transition-colors">+ 添加</button>
+                      {r}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Wish */}
-              <div>
-                <label className="text-sm text-paper-dark/75">心愿描述（选填）</label>
+              <label className="block space-y-2">
+                <span className="text-base text-paper-dark/85">心愿描述 <span className="text-xs text-paper-dark/50">（最多80字）</span></span>
                 <textarea
-                  value={wish}
-                  onChange={(e) => setWish(e.target.value)}
+                  value={formData.wish}
+                  onChange={(e) => setFormData({ ...formData, wish: e.target.value })}
+                  maxLength={80}
                   rows={3}
-                  className="w-full mt-1 rounded-lg border border-gold/30 bg-xuan-surface px-3 py-2 text-sm text-paper-dark focus:border-gold focus:outline-none resize-none"
+                  className="w-full rounded-md border border-gold/20 bg-xuan-surface px-4 py-3 text-base text-paper-dark focus:border-gold focus:outline-none"
                   placeholder="写下你的心愿..."
                 />
-              </div>
+              </label>
 
-              {/* Light count */}
-              <div className="flex items-center justify-between rounded-lg bg-xuan-surface/50 p-3">
-                <div className="text-center">
-                  <div className="text-xs text-paper-dark/60">已点亮</div>
-                  <div className="text-2xl text-gold font-number">{amount}</div>
+              {/* Amount */}
+              <label className="block space-y-2">
+                <span className="text-base text-paper-dark/85">供灯金额</span>
+                <input
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
+                  className="h-10 w-full rounded-md border border-gold/20 bg-xuan-surface px-3 text-base text-paper-dark placeholder:text-ink-muted transition-all duration-fast focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30"
+                  placeholder="输入金额"
+                  min={6.6}
+                  step={0.1}
+                />
+              </label>
+
+              {/* Price summary */}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm text-paper-dark/65">每盏灯 ¥</p>
+                  <p className="font-display text-3xl text-gold">6.6</p>
                 </div>
-                <div className="text-center">
-                  <div className="text-xs text-paper-dark/60">功德</div>
-                  <div className="text-2xl text-gold font-number">¥{amount * 6.6}</div>
-                </div>
+                <button
+                  type="button"
+                  onClick={handleLight}
+                  className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/40 disabled:cursor-not-allowed disabled:opacity-50 min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg"
+                  tabIndex={0}
+                >
+                  <span className="contents">供灯祈福</span>
+                </button>
               </div>
+            </div>
+          </div>
 
-              {/* Donate buttons */}
-              <div className="grid grid-cols-3 gap-2">
-                {[66, 166, 366].map(val => (
-                  <button key={val} type="button" onClick={() => setAmount(val)} className={`rounded-lg border p-3 text-center transition-all ${amount === val ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                    <div className="text-lg font-display">{val}</div>
-                    <div className="text-[10px] text-paper-dark/50">元</div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Submit */}
-              <button type="button" className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all active:scale-[0.98]">
-                供灯祈福
-              </button>
+          {/* Merit board */}
+          <div
+            ref={(el) => { sectionRefs.current[3] = el; }}
+            data-section="3"
+            className="transition-all duration-base"
+            style={{ opacity: visibleSections.has(3) ? 1 : 0, transform: visibleSections.has(3) ? 'translateY(0)' : 'translateY(24px)', transitionDelay: '300ms' }}
+          >
+            <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-4">
+              <h2 className="font-display text-2xl text-gold">功德榜</h2>
+              <p className="text-sm text-paper-dark/65">向诸佛菩萨祈愿，愿一切众生离苦得乐，福慧增长。</p>
+              <p className="text-center text-paper-dark/65">功德榜开发中...</p>
             </div>
           </div>
         </div>

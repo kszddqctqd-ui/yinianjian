@@ -16,6 +16,7 @@
     "puppeteer": "^25.2.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "taibu-core": "^3.4.0",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {

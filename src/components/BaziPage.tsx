@@ -210,10 +210,10 @@ export function BaziPage() {
                 <div className="space-y-1.5">
                   <p className="text-paper-dark/85">
                     点击<span className="mx-1 text-gold">"开始真排盘"</span>即表示您已阅读并同意
-                    <a className="mx-1 text-gold transition-colors hover:text-gold-light" href="/terms/">《用户协议》</a>
-                    <a className="mr-1 text-gold transition-colors hover:text-gold-light" href="/privacy/">《隐私说明》</a>
+                    <a className="mx-1 text-gold transition-colors hover:text-gold-light" href="#terms">《用户协议》</a>
+                    <a className="mr-1 text-gold transition-colors hover:text-gold-light" href="#privacy">《隐私说明》</a>
                     与
-                    <a className="ml-1 text-gold transition-colors hover:text-gold-light" href="/ai-notice/">《AI 生成说明》</a>
+                    <a className="ml-1 text-gold transition-colors hover:text-gold-light" href="#ai-notice">《AI 生成说明》</a>
                     ，并同意我们按说明处理您主动提交的生辰信息。
                   </p>
                   <p className="text-paper-dark/65">

@@ -117,8 +117,8 @@ export function BaziPage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           {/* Title */}
-          <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+          <section className="space-y-3 pt-8 text-center section-enter">
+            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5 hover-scale hover-lift">
               <svg className="size-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <path d="M 8 12 C 8 8 12 4 12 4 C 12 4 16 8 16 12" />
@@ -134,12 +134,14 @@ export function BaziPage() {
           </section>
 
           {/* Master Selector */}
-          <MasterSelector selected={selectedMaster} onSelect={setSelectedMaster} />
+          <div className="section-enter">
+            <MasterSelector selected={selectedMaster} onSelect={setSelectedMaster} />
+          </div>
 
           {/* Input Card */}
-          <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-5">
+          <div className="transition-smooth rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-5 section-enter">
             {/* Year/Month/Day */}
-            <div className="space-y-4">
+            <div className="space-y-4 animate-stagger">
               <div className="grid gap-3 md:grid-cols-3">
                 <DatePicker
                   label="出生年"
@@ -175,7 +177,7 @@ export function BaziPage() {
                   <select
                     value={shichen}
                     onChange={(e) => setShichen(e.target.value)}
-                    className="h-16 w-full rounded-xl border border-gold/30 bg-xuan-surface px-4 text-lg text-paper-dark focus:border-gold focus:outline-none"
+                    className="h-16 w-full rounded-xl border border-gold/30 bg-xuan-surface px-4 text-lg text-paper-dark focus:border-gold focus:outline-none transition-smooth"
                   >
                     {SHICHEN_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -184,18 +186,18 @@ export function BaziPage() {
                 </label>
                 <div className="space-y-2">
                   <p className="text-sm text-paper-dark/75">性别</p>
-                  <div className="flex h-16 items-stretch overflow-hidden rounded-xl border border-gold/30 bg-xuan-surface">
+                  <div className="flex h-16 items-stretch overflow-hidden rounded-xl border border-gold/30 bg-xuan-surface transition-smooth">
                     <button
                       type="button"
                       onClick={() => setGender('男')}
-                      className="flex flex-1 items-center justify-center text-lg transition-colors bg-gold/15 text-gold"
+                      className="flex flex-1 items-center justify-center text-lg transition-smooth bg-gold/15 text-gold"
                     >
                       男
                     </button>
                     <button
                       type="button"
                       onClick={() => setGender('女')}
-                      className="flex flex-1 items-center justify-center text-lg transition-colors text-paper-dark hover:bg-gold/5"
+                      className="flex flex-1 items-center justify-center text-lg transition-smooth text-paper-dark hover:bg-gold/5"
                     >
                       女
                     </button>
@@ -205,7 +207,7 @@ export function BaziPage() {
             </div>
 
             {/* Disclaimer */}
-            <div className="rounded-xl border border-gold/12 bg-xuan-surface/30 px-4 py-3 text-xs leading-6 text-paper-dark/78">
+            <div className="rounded-xl border border-gold/12 bg-xuan-surface/30 px-4 py-3 text-xs leading-6 text-paper-dark/78 transition-smooth hover:bg-xuan-surface/50">
               <div className="flex items-start gap-2.5">
                 <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border border-gold/20 bg-gold/10">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check size-3.5 text-gold" aria-hidden="true">
@@ -216,10 +218,10 @@ export function BaziPage() {
                 <div className="space-y-1.5">
                   <p className="text-paper-dark/85">
                     点击<span className="mx-1 text-gold">"开始真排盘"</span>即表示您已阅读并同意
-                    <a className="mx-1 text-gold transition-colors hover:text-gold-light" href="/terms/">《用户协议》</a>
-                    <a className="mr-1 text-gold transition-colors hover:text-gold-light" href="/privacy/">《隐私说明》</a>
+                    <a className="mx-1 text-gold transition-smooth-fast hover:text-gold-light" href="/terms/">《用户协议》</a>
+                    <a className="mr-1 text-gold transition-smooth-fast hover:text-gold-light" href="/privacy/">《隐私说明》</a>
                     与
-                    <a className="ml-1 text-gold transition-colors hover:text-gold-light" href="/ai-notice/">《AI 生成说明》</a>
+                    <a className="ml-1 text-gold transition-smooth-fast hover:text-gold-light" href="/ai-notice/">《AI 生成说明》</a>
                     ，并同意我们按说明处理您主动提交的生辰信息。
                   </p>
                   <p className="text-paper-dark/65">
@@ -230,12 +232,12 @@ export function BaziPage() {
             </div>
 
             {/* Calculate button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center section-enter">
               <button
                 type="button"
                 onClick={handleCalculate}
                 disabled={loading}
-                className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/40 disabled:cursor-not-allowed disabled:opacity-50 min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg"
+                className="inline-flex items-center justify-center gap-2 font-body font-medium transition-smooth focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/40 disabled:cursor-not-allowed disabled:opacity-50 min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg hover-lift"
                 tabIndex={0}
               >
                 <span className="contents">{loading ? '排盘中...' : '开始真排盘'}</span>
@@ -246,11 +248,11 @@ export function BaziPage() {
 
           {/* Result */}
           {showResult && result && (
-            <div ref={resultRef} className="animate-slide-up space-y-5">
-              <ZhuPan result={result} gender={gender} />
-              <WuXingChart wuXingCount={result.wuXingCount} />
-              <MingLiAnalysis result={result} gender={gender} />
-              <ShareButton />
+            <div ref={resultRef} className="space-y-5">
+              <div className="section-enter"><ZhuPan result={result} gender={gender} /></div>
+              <div className="section-enter" style={{ animationDelay: '100ms' }}><WuXingChart wuXingCount={result.wuXingCount} /></div>
+              <div className="section-enter" style={{ animationDelay: '200ms' }}><MingLiAnalysis result={result} gender={gender} /></div>
+              <div className="section-enter" style={{ animationDelay: '300ms' }}><ShareButton /></div>
             </div>
           )}
         </div>
@@ -275,7 +277,7 @@ function DatePicker({
           type="button"
           aria-label={ariaLabel}
           onClick={() => onChange(Math.max(min, value - 1))}
-          className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30"
+          className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30 transition-smooth-fast"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down size-5" aria-hidden="true">
             <path d="m6 9 6 6 6-6" />
@@ -284,7 +286,7 @@ function DatePicker({
         <button
           type="button"
           aria-label="点击选择"
-          className="flex flex-1 flex-col items-center justify-center transition-colors hover:bg-gold/5 active:bg-gold/10"
+          className="flex flex-1 flex-col items-center justify-center transition-smooth hover:bg-gold/5 active:bg-gold/10"
         >
           <span className="font-number text-2xl text-gold">{value}{displaySuffix}</span>
           <span className="text-[10px] text-paper-dark/45">点击选择</span>
@@ -293,7 +295,7 @@ function DatePicker({
           type="button"
           aria-label={ariaLabelInc}
           onClick={() => onChange(Math.min(max, value + 1))}
-          className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30"
+          className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30 transition-smooth-fast"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-up size-5" aria-hidden="true">
             <path d="m18 15-6-6-6 6" />

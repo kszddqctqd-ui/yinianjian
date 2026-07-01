@@ -55,6 +55,8 @@
   --animate-slide-up: slide-up 0.5s ease-out forwards;
   --animate-shimmer: shimmer 2s ease-in-out infinite;
   --animate-bounce-slow: bounce 2s infinite;
+  --animate-scale-in: scale-in 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  --animate-float-up: float-up 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 @keyframes glow-rise {
@@ -86,6 +88,26 @@
   }
 }
 
+@keyframes scale-in {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float-up {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-down {
+  0% { opacity: 0; transform: translateY(-12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modal-enter {
+  0% { opacity: 0; transform: scale(0.92) translateY(16px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 /* Mobile-First container */
 .app-container {
   max-width: 28rem;
@@ -106,7 +128,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Gold gradient text */
+/* ============================================
+   GOLD GRADIENT TEXT
+   ============================================ */
 .text-gold-gradient {
   background: linear-gradient(135deg, #e0b97a, #d4a843, #c9a05c, #e0b97a);
   background-size: 200% auto;
@@ -116,7 +140,9 @@ body {
   animation: shimmer 3s ease-in-out infinite;
 }
 
-/* Card quality */
+/* ============================================
+   CARD QUALITY — 卡片质感
+   ============================================ */
 .card-quality {
   background: rgba(26, 20, 16, 0.6);
   backdrop-filter: blur(12px);
@@ -124,7 +150,9 @@ body {
   border-radius: 0.75rem;
 }
 
-/* Gold silk border */
+/* ============================================
+   GOLD SILK BORDER — 金边丝绒
+   ============================================ */
 .border-gold-silk {
   border: 1px solid rgba(201, 160, 92, 0.2);
 }
@@ -133,12 +161,14 @@ body {
   border-color: rgba(201, 160, 92, 0.35);
 }
 
-/* Input quality */
+/* ============================================
+   INPUT QUALITY — 输入框质感
+   ============================================ */
 .input-quality {
   background: rgba(26, 20, 16, 0.6);
   border: 1px solid rgba(201, 160, 92, 0.15);
   border-radius: 0.75rem;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .input-quality:hover {
@@ -146,12 +176,16 @@ body {
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
 
-/* Safe area */
+/* ============================================
+   SAFE AREA
+   ============================================ */
 .safe-top {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
-/* Scrollbar */
+/* ============================================
+   SCROLLBAR
+   ============================================ */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #0a0a0c; }
 ::-webkit-scrollbar-thumb { background: rgba(201, 160, 92, 0.27); border-radius: 2px; }
@@ -161,32 +195,169 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; }
 
-/* Gold divider */
+/* ============================================
+   GOLD DIVIDER
+   ============================================ */
 .gold-divider {
   width: 1px;
   height: 20px;
   background: linear-gradient(to bottom, transparent, var(--color-gold, #c9a05c), transparent);
 }
 
-/* Tabular nums */
+/* ============================================
+   TABULAR NUMS
+   ============================================ */
 .font-number {
   font-variant-numeric: tabular-nums;
 }
 
-/* Focus styles */
+/* ============================================
+   FOCUS STYLES
+   ============================================ */
 *:focus-visible {
   outline: 2px solid var(--color-gold, #c9a05c);
   outline-offset: 2px;
 }
 
-/* Button press */
+/* ============================================
+   BUTTON PRESS FEEDBACK
+   ============================================ */
 button:active {
   transform: scale(0.98);
 }
 
-/* Deep background */
+/* ============================================
+   DEEP BACKGROUND
+   ============================================ */
 .bg-deep {
   background: radial-gradient(ellipse at 50% 0%, rgba(201, 160, 92, 0.08) 0%, transparent 60%),
               radial-gradient(ellipse at 50% 100%, rgba(192, 57, 43, 0.05) 0%, transparent 50%),
               #0a0a0c;
+}
+
+/* ============================================
+   ANIMATION UTILITY CLASSES
+   ============================================ */
+
+/* Staggered children — 交错动画 */
+.animate-stagger > * {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: stagger-fade-in 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.animate-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.animate-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.animate-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.animate-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.animate-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.animate-stagger > *:nth-child(7) { animation-delay: 360ms; }
+.animate-stagger > *:nth-child(8) { animation-delay: 420ms; }
+
+@keyframes stagger-fade-in {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Smooth hover lift — 悬停上浮 */
+.hover-lift {
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+              border-color 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(201, 160, 92, 0.15);
+}
+
+/* Smooth scale on hover */
+.hover-scale {
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Page transition — 页面切换淡入 */
+.page-transition {
+  animation: fade-in 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Modal entrance — 弹窗进入 */
+.modal-enter {
+  animation: modal-enter 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Section entrance — 区块进入 */
+.section-enter {
+  animation: float-up 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Gold shimmer button — 金色闪烁按钮 */
+.btn-gold-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gold-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(201, 160, 92, 0.15) 50%,
+    transparent 100%
+  );
+  transform: rotate(30deg);
+  animation: btn-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes btn-shimmer {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
+}
+
+/* Glow pulse — 呼吸光晕 */
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(201, 160, 92, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(201, 160, 92, 0.4); }
+}
+
+/* Smooth transitions for all interactive elements */
+.transition-smooth {
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.transition-smooth-fast {
+  transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.transition-smooth-slow {
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Fade-in on scroll — 滚动渐入 */
+.fade-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.fade-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

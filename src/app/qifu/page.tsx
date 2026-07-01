@@ -116,6 +116,7 @@ export default function QifuPage() {
   const [lights, setLights] = useState(126);
   const [merit, setMerit] = useState(834.6);
   const [selectedLantern, setSelectedLantern] = useState(0);
+  const [showPayment, setShowPayment] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     relation: '',
@@ -301,8 +302,8 @@ export default function QifuPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={handleLight}
-                  className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a05c]/40 disabled:cursor-not-allowed disabled:opacity-50 min-w-[180px] rounded-lg tracking-wider h-12 px-8 text-lg"
+                  onClick={() => setShowPayment(true)}
+                  className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/40 disabled:cursor-not-allowed disabled:opacity-50 min-w-[180px] rounded-lg tracking-wider h-12 px-8 text-lg"
                   style={{
                     background: 'linear-gradient(135deg, #c0392b, #e74c3c)',
                     color: '#fff',
@@ -341,6 +342,28 @@ export default function QifuPage() {
       </main>
 
       <BottomNav active="qifu" />
+      <PaymentModal show={showPayment} onClose={() => setShowPayment(false)} />
+    </div>
+  );
+}
+
+function PaymentModal({ show, onClose }: { show: boolean; onClose: () => void }) {
+  if (!show) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 animate-slide-up" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-xl text-gold font-display">心愿供灯</h3>
+        <p className="text-sm text-paper-dark/70">请扫描下方二维码完成供灯</p>
+        <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
+        <p className="text-xs text-paper-dark/50">供灯完成后请截图发送给我们确认</p>
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-full rounded-lg border border-gold/30 py-2 text-sm text-paper-dark/70 hover:text-gold transition-colors"
+        >
+          关闭
+        </button>
+      </div>
     </div>
   );
 }

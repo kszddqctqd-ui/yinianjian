@@ -109,6 +109,7 @@ export default function PalmistryPage() {
   const [type, setType] = useState<'hand' | 'face'>('hand');
   const [analysis, setAnalysis] = useState<{ title: string; items: { pattern: string; desc: string }[] }[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -241,14 +242,28 @@ export default function PalmistryPage() {
                 <button
                   type="button"
                   className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all"
-                  onClick={() => {
-                    if (photo) {
-                      saveRecord('palmistry', { type, analysis }, `${type === 'hand' ? '手相' : '面相'}分析预览`);
-                    }
-                    alert('付费解锁功能即将上线，敬请期待！');
-                  }}
+                  onClick={() => setShowPayment(true)}
                 >
                   解锁完整详批 ¥9.9
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Payment modal */}
+          {showPayment && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
+              <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 animate-slide-up" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-xl text-gold font-display">解锁完整详批</h3>
+                <p className="text-sm text-paper-dark/70">请扫描下方二维码完成支付 ¥9.9</p>
+                <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
+                <p className="text-xs text-paper-dark/50">支付完成后请截图发送给我们确认</p>
+                <button
+                  type="button"
+                  onClick={() => setShowPayment(false)}
+                  className="w-full rounded-lg border border-gold/30 py-2 text-sm text-paper-dark/70 hover:text-gold transition-colors"
+                >
+                  关闭
                 </button>
               </div>
             </div>

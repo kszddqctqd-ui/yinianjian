@@ -110,6 +110,44 @@ export default function PalmistryPage() {
   const [analysis, setAnalysis] = useState<{ title: string; items: { pattern: string; desc: string }[] }[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  // Load saved photo from localStorage on mount
+  const STORAGE_KEY = 'yinianjian_palm_photo';
+  const TYPE_KEY = 'yinianjian_palm_type';
+  const SAVED_KEY = 'yinianjian_palm_saved';
+
+  const savePhoto = () => {
+    if (!photo) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, photo);
+      localStorage.setItem(TYPE_KEY, type);
+      localStorage.setItem(SAVED_KEY, 'true');
+      setSaved(true);
+      alert('照片已保存到本地相册');
+    } catch {
+      alert('照片太大无法保存，请缩小后重试');
+    }
+  };
+
+  const loadSavedPhoto = () => {
+    try {
+      const saved = localStorage.getItem(SAVED_KEY);
+      if (saved === 'true') {
+        const p = localStorage.getItem(STORAGE_KEY);
+        const t = localStorage.getItem(TYPE_KEY);
+        if (p) {
+          setPhoto(p);
+          setType(t === 'face' ? 'face' : 'hand');
+          setSaved(true);
+          setStep(2);
+        }
+      }
+    } catch {}
+  };
+
+  // Try load on mount
+  loadSavedPhoto();
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -165,6 +203,12 @@ export default function PalmistryPage() {
           {/* Step 1: Upload */}
           {step === 1 && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
+              {saved && photo && (
+                <div className="rounded-lg border border-gold/20 bg-gold/5 p-3 text-center">
+                  <img src={photo} alt="已保存的照片" className="mx-auto max-h-40 rounded-lg border border-gold/20" />
+                  <p className="text-xs text-gold mt-2">📸 已保存上次上传的照片</p>
+                </div>
+              )}
               <div className="space-y-2">
                 <p className="text-sm text-paper-dark/75">选择类型</p>
                 <div className="flex gap-3">
@@ -207,6 +251,31 @@ export default function PalmistryPage() {
                   预览分析
                 </button>
               </div>
+              {!saved && (
+                <button
+                  type="button"
+                  onClick={savePhoto}
+                  className="w-full rounded-lg border border-gold/30 py-3 text-sm text-gold hover:bg-gold/10 transition-all"
+                >
+                  📸 保存到相册
+                </button>
+              )}
+              {saved && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(TYPE_KEY);
+                    localStorage.removeItem(SAVED_KEY);
+                    setSaved(false);
+                    setPhoto(null);
+                    setStep(1);
+                  }}
+                  className="w-full rounded-lg border border-vermillion/30 py-3 text-sm text-vermillion hover:bg-vermillion/10 transition-all"
+                >
+                  🗑 清除已保存的照片
+                </button>
+              )}
             </div>
           )}
 

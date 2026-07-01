@@ -5,17 +5,23 @@ import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { calculateBaZi, TIAN_GAN_WUXING } from '@/lib/bazi';
+import { generateNames, getFavorableElements, type NameSuggestion } from '@/lib/names';
+import { saveRecord } from '@/lib/records';
 
 export default function NamingPage() {
   const [formData, setFormData] = useState({
     surname: '',
     gender: '男' as '男' | '女',
-    birthYear: 1990,
-    birthMonth: 5,
-    birthDay: 15,
+    birthYear: 2024,
+    birthMonth: 7,
+    birthDay: 1,
     style: '诗词典故',
     generation: '',
   });
+  const [results, setResults] = useState<NameSuggestion[]>([]);
+  const [generating, setGenerating] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   const styles = ['诗词典故', '五行互补', '音韵优美', '寓意吉祥', '国学经典', '现代简约'];
 
@@ -24,7 +30,40 @@ export default function NamingPage() {
       alert('请输入姓氏');
       return;
     }
-    alert(`正在为"${formData.surname}宝宝"生成名字...\n风格：${formData.style}\n（AI 名字生成功能开发中）`);
+    setGenerating(true);
+    setShowResult(false);
+
+    setTimeout(() => {
+      // Calculate bazi to get wu xing counts
+      let wuXingCount: Record<string, number> = { '金': 0, '木': 0, '水': 0, '火': 0, '土': 0 };
+      try {
+        const bazi = calculateBaZi(formData.birthYear, formData.birthMonth, formData.birthDay, 12);
+        wuXingCount = bazi.wuXingCount;
+      } catch {
+        // Use default if calculation fails
+      }
+
+      const suggestions = generateNames(
+        formData.surname,
+        wuXingCount,
+        formData.style,
+        3,
+      );
+      setResults(suggestions);
+      setGenerating(false);
+      setShowResult(true);
+
+      // Save to records
+      if (suggestions.length > 0) {
+        saveRecord('naming', {
+          surname: formData.surname,
+          gender: formData.gender,
+          birth: `${formData.birthYear}-${formData.birthMonth}-${formData.birthDay}`,
+          style: formData.style,
+          suggestions,
+        }, `为${formData.surname}宝宝起名 (${formData.style})`);
+      }
+    }, 800);
   };
 
   return (
@@ -62,6 +101,7 @@ export default function NamingPage() {
                 value={formData.surname}
                 onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
                 placeholder="请输入姓氏"
+                maxLength={4}
                 className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-4 text-sm text-paper-dark focus:border-gold focus:outline-none"
               />
             </div>
@@ -83,15 +123,15 @@ export default function NamingPage() {
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className="text-xs text-paper-dark/50">年</label>
-                <input type="number" value={formData.birthYear} onChange={(e) => setFormData({ ...formData, birthYear: parseInt(e.target.value) || 1990 })} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
+                <input type="number" value={formData.birthYear} onChange={(e) => setFormData({ ...formData, birthYear: parseInt(e.target.value) || 2024 })} min={1900} max={2100} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
               </div>
               <div>
                 <label className="text-xs text-paper-dark/50">月</label>
-                <input type="number" value={formData.birthMonth} onChange={(e) => setFormData({ ...formData, birthMonth: parseInt(e.target.value) || 5 })} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
+                <input type="number" value={formData.birthMonth} onChange={(e) => setFormData({ ...formData, birthMonth: Math.min(12, Math.max(1, parseInt(e.target.value) || 5)) })} min={1} max={12} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
               </div>
               <div>
                 <label className="text-xs text-paper-dark/50">日</label>
-                <input type="number" value={formData.birthDay} onChange={(e) => setFormData({ ...formData, birthDay: parseInt(e.target.value) || 15 })} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
+                <input type="number" value={formData.birthDay} onChange={(e) => setFormData({ ...formData, birthDay: Math.min(31, Math.max(1, parseInt(e.target.value) || 15)) })} min={1} max={31} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
               </div>
             </div>
 
@@ -115,17 +155,53 @@ export default function NamingPage() {
                 value={formData.generation}
                 onChange={(e) => setFormData({ ...formData, generation: e.target.value })}
                 placeholder="如有家谱辈分字请填写"
+                maxLength={2}
                 className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-4 text-sm text-paper-dark focus:border-gold focus:outline-none"
               />
             </div>
 
             {/* Submit */}
-            <button type="button" onClick={handleSubmit} className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all active:scale-[0.98]">
-              AI 起名
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={generating || !formData.surname.trim()}
+              className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {generating ? '起名中...' : 'AI 起名'}
             </button>
           </div>
 
-          <p className="text-center text-xs text-paper-dark/60">仅作传统文化参考，请结合现实情况判断</p>
+          {/* Results */}
+          {showResult && results.length > 0 && (
+            <div className="space-y-3 animate-slide-up">
+              <div className="text-center">
+                <span className="text-xs text-gold/80 tracking-wider">起名结果</span>
+              </div>
+              {results.map((r, i) => (
+                <div key={i} className="rounded-lg border border-gold/20 bg-xuan-card/95 p-4 shadow-paper backdrop-blur-sm">
+                  <div className="flex items-start gap-4">
+                    <div className="text-3xl text-gold font-display font-bold">{r.fullName}</div>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex gap-2 flex-wrap">
+                        <span className="text-xs rounded-full px-2 py-0.5 bg-gold/10 text-gold">{r.element}行</span>
+                        <span className="text-xs rounded-full px-2 py-0.5 bg-paper-dark/10 text-paper-dark/60">{r.style}</span>
+                        {formData.generation && <span className="text-xs rounded-full px-2 py-0.5 bg-vermillion/10 text-vermillion">辈分字：{formData.generation}</span>}
+                      </div>
+                      <p className="text-sm text-paper-dark/85">{r.meaning}</p>
+                      {r.source && <p className="text-xs text-paper-dark/50">出处：{r.source}</p>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <p className="text-center text-xs text-paper-dark/60">以上名字仅供参考，最终由家长自行决定</p>
+            </div>
+          )}
+
+          {showResult && results.length === 0 && (
+            <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad text-center space-y-2">
+              <p className="text-sm text-paper-dark/70">未能生成合适的名字，请尝试更换风格或出生日期</p>
+            </div>
+          )}
         </div>
       </main>
 

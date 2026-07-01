@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { saveRecord } from '@/lib/records';
 
 const DREAMS = [
   { id: 1, keyword: '蛇', result: '梦见蛇，主有财。若蛇缠身，主有贵人相助。' },
@@ -29,8 +30,10 @@ export default function DreamPage() {
     setLoading(true);
     setTimeout(() => {
       const found = DREAMS.find(d => d.keyword.includes(keyword) || keyword.includes(d.keyword));
-      setResult(found || { id: 0, keyword, result: '暂无此梦境记录，百梦皆有意，古今相参证。' });
+      const res = found || { id: 0, keyword, result: '暂无此梦境记录，百梦皆有意，古今相参证。' };
+      setResult(res);
       setLoading(false);
+      saveRecord('dream', { keyword, result: res.result }, `解梦：${keyword}`);
     }, 500);
   };
 

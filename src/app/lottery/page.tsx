@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { saveRecord } from '@/lib/records';
 import { calculateBaZi, type BaZiResult } from '@/lib/bazi';
 
 const LOTTERIES = [
@@ -42,9 +43,11 @@ export default function LotteryPage() {
     setShakeCount(prev => prev + 1);
     setTimeout(() => {
       const idx = Math.floor(Math.random() * LOTTERIES.length);
-      setLottery(LOTTERIES[idx]);
+      const lot = LOTTERIES[idx];
+      setLottery(lot);
       setShowLottery(true);
       setLoading(false);
+      saveRecord('lottery', { num: lot.num, title: lot.title, text: lot.text, desc: lot.desc, fortune: lot.fortune }, `${lot.title} 第${lot.num}签`);
     }, 1500);
   }, [selectedMaster]);
 

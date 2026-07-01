@@ -22,7 +22,7 @@ export function BottomNav({ active = 'home' }: { active?: string }) {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-scroll-text size-5" aria-hidden="true"><path d="M15 12h-5"></path><path d="M15 8h-5"></path><path d="M19 17V5a2 2 0 0 0-2-2H4"></path><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"></path></svg>
           <span className="text-[11px]">灵签</span>
         </a>
-        <a className={`flex flex-col items-center gap-0.5 rounded-md px-0 py-2 text-xs transition-colors duration-fast ${isActive('profile') ? 'text-gold' : 'text-ink-muted'}`} href="/more/">
+        <a className={`flex flex-col items-center gap-0.5 rounded-md px-0 py-2 text-xs transition-colors duration-fast ${isActive('profile') ? 'text-gold' : 'text-ink-muted'}`} href="/profile/">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user size-5" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           <span className="text-[11px]">我的</span>
         </a>

@@ -1,8 +1,11 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { MusicToggle } from './MusicToggle';
 
 export function Header() {
+  const router = useRouter();
+
   return (
     <header className="fixed top-0 z-50 h-14 w-full transition-all duration-base safe-top bg-transparent">
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
@@ -35,7 +38,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <MusicToggle />
           <div className="hidden items-center gap-2 md:flex">
-            <button type="button" className="inline-flex items-center gap-2 rounded-full border border-gold/30 px-3 py-1.5 text-sm text-gold hover:bg-gold/10" onClick={() => alert('功能开发中')}>
+            <button type="button" className="inline-flex items-center gap-2 rounded-full border border-gold/30 px-3 py-1.5 text-sm text-gold hover:bg-gold/10" onClick={() => router.push('/records/')}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-key-round size-4" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
               找回记录
             </button>

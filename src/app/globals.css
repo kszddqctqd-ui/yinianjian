@@ -1,55 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors - gold system */
+  /* ========== 颜色系统 ========== */
   --color-gold: #c9a05c;
   --color-gold-light: #e0b97a;
   --color-gold-deep: #d4a843;
   --color-gold-dark: #8b6914;
 
-  /* Paper system */
   --color-paper: #f5f0e8;
   --color-paper-dark: #3a322a;
   --color-paper-warm: #f0e6d3;
 
-  /* Ink system */
   --color-ink: #5a5047;
   --color-ink-light: #8a7e72;
   --color-ink-muted: #6b6158;
 
-  /* Abyss black system */
   --color-xuan: #0a0a0c;
   --color-xuan-card: #1a1410;
   --color-xuan-surface: #252018;
 
-  /* Vermillion */
   --color-vermillion: #c0392b;
   --color-vermillion-light: #e74c3c;
   --color-vermillion-dark: #96281b;
 
-  /* Fonts */
+  /* ========== 字体 ========== */
   --font-family-display: "ZhiMangXing", cursive;
   --font-family-number: "KaiTi", "STKaiti", serif;
   --font-family-body: "Noto Serif SC", "Source Han Serif CN", "Songti SC", serif;
 
-  /* Spacing */
+  /* ========== 间距 ========== */
   --spacing-card: 1rem;
   --spacing-section: 1.5rem;
   --spacing-card-pad: 1.25rem;
   --spacing-pb-section: 1.5rem;
 
-  /* Durations */
+  /* ========== 动画时长 ========== */
   --duration-slow: 1000ms;
   --duration-base: 300ms;
   --duration-fast: 150ms;
 
-  /* Shadows */
+  /* ========== 阴影 ========== */
   --shadow-paper: 0 2px 8px rgba(0,0,0,0.3);
   --shadow-card: 0 4px 16px rgba(0,0,0,0.4);
   --shadow-gold: 0 4px 20px rgba(201,160,92,0.3);
   --shadow-vermillion: 0 4px 16px rgba(192,57,43,0.3);
 
-  /* Animations */
+  /* ========== 动画 ========== */
   --animate-glow-rise: glow-rise 5s ease-in-out infinite;
   --animate-fade-in: fade-in 0.6s ease-out forwards;
   --animate-slide-up: slide-up 0.5s ease-out forwards;
@@ -59,56 +55,45 @@
   --animate-float-up: float-up 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
+/* ========== 关键帧 ========== */
 @keyframes glow-rise {
   0%, 100% { opacity: 0.2; transform: translateY(0); }
   50% { opacity: 0.6; transform: translateY(-8px); }
 }
-
 @keyframes fade-in {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
-
 @keyframes slide-up {
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-
 @keyframes lantern-glow {
-  0%, 100% {
-    filter: brightness(1) drop-shadow(0 0 4px rgba(201,160,92,0.2));
-  }
-  50% {
-    filter: brightness(1.3) drop-shadow(0 0 12px rgba(201,160,92,0.5));
-  }
+  0%, 100% { filter: brightness(1) drop-shadow(0 0 4px rgba(201,160,92,0.2)); }
+  50% { filter: brightness(1.3) drop-shadow(0 0 12px rgba(201,160,92,0.5)); }
 }
-
 @keyframes scale-in {
   0% { opacity: 0; transform: scale(0.95); }
   100% { opacity: 1; transform: scale(1); }
 }
-
 @keyframes float-up {
   0% { opacity: 0; transform: translateY(24px); }
   100% { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fade-in-down {
   0% { opacity: 0; transform: translateY(-12px); }
   100% { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes modal-enter {
   0% { opacity: 0; transform: scale(0.92) translateY(16px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Mobile-First container */
+/* ========== 容器 ========== */
 .app-container {
   max-width: 28rem;
   margin: 0 auto;
@@ -119,18 +104,49 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ========== 全局字体与排版（核心升级） ========== */
 body {
   font-family: var(--font-family-body);
   background-color: #0a0a0c;
   color: #f5f0e8;
   overscroll-behavior: none;
+  /* 字体平滑 — 让文字在所有屏幕上锐利清晰 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* 正文默认字号 15px，行高 1.75，字间距 0.01em */
+  font-size: 15px;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  font-weight: 400;
 }
 
-/* ============================================
-   GOLD GRADIENT TEXT
-   ============================================ */
+/* ========== 标题层级 ========== */
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  color: #f5e6b8;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+  color: #f5e6b8;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: #f5e6b8;
+}
+
+/* ========== 金色渐变文字 — 提高亮度确保可读性 ========== */
 .text-gold-gradient {
   background: linear-gradient(135deg, #e0b97a, #d4a843, #c9a05c, #e0b97a);
   background-size: 200% auto;
@@ -138,11 +154,10 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmer 3s ease-in-out infinite;
+  font-weight: 600;
 }
 
-/* ============================================
-   CARD QUALITY — 卡片质感
-   ============================================ */
+/* ========== 卡片系统 ========== */
 .card-quality {
   background: rgba(26, 20, 16, 0.6);
   backdrop-filter: blur(12px);
@@ -150,42 +165,32 @@ body {
   border-radius: 0.75rem;
 }
 
-/* ============================================
-   GOLD SILK BORDER — 金边丝绒
-   ============================================ */
+/* ========== 金边丝绒 ========== */
 .border-gold-silk {
   border: 1px solid rgba(201, 160, 92, 0.2);
 }
-
 .border-gold-silk:hover {
   border-color: rgba(201, 160, 92, 0.35);
 }
 
-/* ============================================
-   INPUT QUALITY — 输入框质感
-   ============================================ */
+/* ========== 输入框 ========== */
 .input-quality {
   background: rgba(26, 20, 16, 0.6);
   border: 1px solid rgba(201, 160, 92, 0.15);
   border-radius: 0.75rem;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .input-quality:hover {
   border-color: rgba(201, 160, 92, 0.3);
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
 
-/* ============================================
-   SAFE AREA
-   ============================================ */
+/* ========== 安全区域 ========== */
 .safe-top {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
-/* ============================================
-   SCROLLBAR
-   ============================================ */
+/* ========== 滚动条 ========== */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #0a0a0c; }
 ::-webkit-scrollbar-thumb { background: rgba(201, 160, 92, 0.27); border-radius: 2px; }
@@ -195,57 +200,81 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; }
 
-/* ============================================
-   GOLD DIVIDER
-   ============================================ */
+/* ========== 金色分割线 ========== */
 .gold-divider {
   width: 1px;
   height: 20px;
   background: linear-gradient(to bottom, transparent, var(--color-gold, #c9a05c), transparent);
 }
 
-/* ============================================
-   TABULAR NUMS
-   ============================================ */
+/* ========== 数字等宽 ========== */
 .font-number {
   font-variant-numeric: tabular-nums;
 }
 
-/* ============================================
-   FOCUS STYLES
-   ============================================ */
+/* ========== 焦点样式 ========== */
 *:focus-visible {
   outline: 2px solid var(--color-gold, #c9a05c);
   outline-offset: 2px;
 }
 
-/* ============================================
-   BUTTON PRESS FEEDBACK
-   ============================================ */
+/* ========== 按钮按压反馈 ========== */
 button:active {
   transform: scale(0.98);
 }
 
-/* ============================================
-   DEEP BACKGROUND
-   ============================================ */
+/* ========== 深色背景 ========== */
 .bg-deep {
   background: radial-gradient(ellipse at 50% 0%, rgba(201, 160, 92, 0.08) 0%, transparent 60%),
               radial-gradient(ellipse at 50% 100%, rgba(192, 57, 43, 0.05) 0%, transparent 50%),
               #0a0a0c;
 }
 
-/* ============================================
-   ANIMATION UTILITY CLASSES
-   ============================================ */
+/* ========== 文字可读性增强 ========== */
+/* 正文 — 提高对比度，确保深色背景上清晰可见 */
+.text-body {
+  color: #e8dcc8;
+  line-height: 1.75;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
 
-/* Staggered children — 交错动画 */
+/* 次要文字 — 提高亮度 */
+.text-muted {
+  color: #c4b89a;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* 标签文字 */
+.text-label {
+  color: #d4c8a8;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* 小字 */
+.text-small {
+  color: #b8a88a;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 超小字 */
+.text-tiny {
+  color: #a09078;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ========== 交错动画 ========== */
 .animate-stagger > * {
   opacity: 0;
   transform: translateY(16px);
   animation: stagger-fade-in 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
-
 .animate-stagger > *:nth-child(1) { animation-delay: 0ms; }
 .animate-stagger > *:nth-child(2) { animation-delay: 60ms; }
 .animate-stagger > *:nth-child(3) { animation-delay: 120ms; }
@@ -260,50 +289,47 @@ button:active {
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Smooth hover lift — 悬停上浮 */
+/* ========== 悬停上浮 ========== */
 .hover-lift {
   transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1),
               box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1),
               border-color 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .hover-lift:hover {
   transform: translateY(-2px) scale(1.01);
   box-shadow: 0 8px 24px rgba(201, 160, 92, 0.15);
 }
 
-/* Smooth scale on hover */
+/* ========== 悬停缩放 ========== */
 .hover-scale {
   transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1),
               box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .hover-scale:hover {
   transform: scale(1.02);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Page transition — 页面切换淡入 */
+/* ========== 页面切换淡入 ========== */
 .page-transition {
   animation: fade-in 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* Modal entrance — 弹窗进入 */
+/* ========== 弹窗进入 ========== */
 .modal-enter {
   animation: modal-enter 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* Section entrance — 区块进入 */
+/* ========== 区块进入 ========== */
 .section-enter {
   animation: float-up 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* Gold shimmer button — 金色闪烁按钮 */
+/* ========== 金色闪烁按钮 ========== */
 .btn-gold-shimmer {
   position: relative;
   overflow: hidden;
 }
-
 .btn-gold-shimmer::after {
   content: '';
   position: absolute;
@@ -320,44 +346,82 @@ button:active {
   transform: rotate(30deg);
   animation: btn-shimmer 3s ease-in-out infinite;
 }
-
 @keyframes btn-shimmer {
   0% { transform: translateX(-100%) rotate(30deg); }
   100% { transform: translateX(100%) rotate(30deg); }
 }
 
-/* Glow pulse — 呼吸光晕 */
+/* ========== 呼吸光晕 ========== */
 .glow-pulse {
   animation: glow-pulse 2s ease-in-out infinite;
 }
-
 @keyframes glow-pulse {
   0%, 100% { box-shadow: 0 0 8px rgba(201, 160, 92, 0.2); }
   50% { box-shadow: 0 0 20px rgba(201, 160, 92, 0.4); }
 }
 
-/* Smooth transitions for all interactive elements */
+/* ========== 平滑过渡工具类 ========== */
 .transition-smooth {
   transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .transition-smooth-fast {
   transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .transition-smooth-slow {
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Fade-in on scroll — 滚动渐入 */
+/* ========== 滚动渐入 ========== */
 .fade-on-scroll {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
               transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .fade-on-scroll.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ========== 高对比度文字（深色背景专用） ========== */
+.text-on-dark {
+  color: #f5f0e8;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.text-on-dark-strong {
+  color: #ffffff;
+  font-weight: 500;
+  line-height: 1.7;
+}
+.text-on-dark-muted {
+  color: #d4c8a8;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* ========== 卡片内文字增强可读性 ========== */
+.card-text {
+  color: #e8dcc8;
+  line-height: 1.75;
+  font-size: 15px;
+  font-weight: 400;
+}
+.card-text-strong {
+  color: #f5e6b8;
+  line-height: 1.7;
+  font-size: 15px;
+  font-weight: 500;
+}
+.card-text-muted {
+  color: #b8a88a;
+  line-height: 1.6;
+  font-size: 14px;
+  font-weight: 400;
+}
+.card-text-dim {
+  color: #9a8a6e;
+  line-height: 1.5;
+  font-size: 13px;
+  font-weight: 400;
 }

@@ -79,7 +79,7 @@ function HexagramCard({ title, info, lines, movingLines }: {
         </>
       ) : (
         <div className="text-center py-4">
-          <p className="text-sm text-paper-dark/60">暂无此卦解读</p>
+          <p className="text-sm text-on-dark-muted">暂无此卦解读</p>
           <p className="text-xs text-paper-dark/40 mt-1">请换一卦再试</p>
         </div>
       )}
@@ -212,11 +212,11 @@ export default function DivinationPage() {
                   {coinResults.map((r, i) => (
                     <div key={i} className="flex flex-col items-center">
                       <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-lg font-bold font-number ${
-                        r === 9 || r === 6 ? 'bg-gold/20 border-gold/60 text-gold' : 'bg-xuan-surface/50 border-gold/20 text-paper-dark/60'
+                        r === 9 || r === 6 ? 'bg-gold/20 border-gold/60 text-gold' : 'bg-xuan-surface/50 border-gold/20 text-on-dark-muted'
                       }`}>
                         {r}
                       </div>
-                      <span className="text-[10px] text-paper-dark/45 mt-1">第{i + 1}爻</span>
+                      <span className="text-[10px] text-on-dark-dim mt-1">第{i + 1}爻</span>
                     </div>
                   ))}
                   {Array.from({ length: 6 - coinResults.length }).map((_, i) => (
@@ -236,7 +236,7 @@ export default function DivinationPage() {
 
             {/* Time method */}
             {method === 'time' && (
-              <p className="text-sm text-paper-dark/70 text-center py-2">
+              <p className="text-sm text-on-dark-muted text-center py-2">
                 以当前时间起卦，系统将自动生成卦象
               </p>
             )}
@@ -244,7 +244,7 @@ export default function DivinationPage() {
             {/* Number method */}
             {method === 'number' && (
               <div className="space-y-2">
-                <label className="text-sm text-paper-dark/75">输入三个数字（逗号分隔）</label>
+                <label className="text-sm text-label">输入三个数字（逗号分隔）</label>
                 <input
                   type="text"
                   value={numberInput}
@@ -277,7 +277,7 @@ export default function DivinationPage() {
               />
               <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-4 text-center">
                 <span className="text-xs text-gold/80 tracking-wider">互卦</span>
-                <p className="text-lg text-paper-dark/70 mt-2">{result.hu}</p>
+                <p className="text-lg text-on-dark-muted mt-2">{result.hu}</p>
                 <p className="text-xs text-paper-dark/40 mt-1">由本卦中间四爻演变而来，代表过程</p>
               </div>
               {result.bian && (
@@ -301,7 +301,7 @@ export default function DivinationPage() {
             </div>
           )}
 
-          <p className="text-center text-xs text-paper-dark/60">仅作传统文化参考，请结合现实情况判断</p>
+          <p className="text-center text-xs text-on-dark-muted">仅作传统文化参考，请结合现实情况判断</p>
         </div>
       </main>
 

@@ -8,7 +8,7 @@ export function HiddenStems({ gan, zhi, riGan, hideGan }: {
   return (
     <div className="flex justify-center gap-2 text-[10px]">
       {hideGan.map((cg) => (
-        <span key={cg} className="text-paper-dark/45">
+        <span key={cg} className="text-on-dark-dim">
           {cg} <span className="text-paper-dark/25">({getShiShen(cg, riGan)})</span>
         </span>
       ))}

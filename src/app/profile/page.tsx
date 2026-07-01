@@ -92,7 +92,7 @@ export default function ProfilePage() {
             {/* About */}
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-4">
               <h3 className="text-gold font-display text-base mb-3">关于</h3>
-              <div className="space-y-2 text-sm text-paper-dark/70">
+              <div className="space-y-2 text-sm text-on-dark-muted">
                 <div className="flex justify-between">
                   <span>版本</span>
                   <span className="text-paper-dark/50">4.0.0</span>

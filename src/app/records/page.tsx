@@ -63,7 +63,7 @@ export default function RecordsPage() {
                 className={`flex-shrink-0 rounded-full border px-4 py-1.5 text-sm transition-all ${
                   filter === t
                     ? 'border-gold/60 bg-gold/10 text-gold'
-                    : 'border-gold/20 text-paper-dark/60 hover:text-gold'
+                    : 'border-gold/20 text-on-dark-muted hover:text-gold'
                 }`}
               >
                 {t === 'all' ? '全部' : TYPE_LABELS[t]?.icon + ' ' + TYPE_LABELS[t]?.label}
@@ -107,11 +107,11 @@ export default function RecordsPage() {
                         <span className="text-xl">{TYPE_LABELS[record.type]?.icon || '📋'}</span>
                         <div>
                           <div className="text-sm text-gold">{TYPE_LABELS[record.type]?.label || record.type}</div>
-                          <div className="text-xs text-paper-dark/60">{record.summary}</div>
+                          <div className="text-xs text-on-dark-muted">{record.summary}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xs text-paper-dark/45">{formatRelativeTime(record.timestamp)}</div>
+                        <div className="text-xs text-on-dark-dim">{formatRelativeTime(record.timestamp)}</div>
                         <svg
                           className={`w-4 h-4 text-paper-dark/40 transition-transform ml-auto ${expandedId === record.id ? 'rotate-180' : ''}`}
                           viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
@@ -125,7 +125,7 @@ export default function RecordsPage() {
                   {/* Expanded detail */}
                   {expandedId === record.id && (
                     <div className="border-t border-gold/10 p-4 space-y-3">
-                      <pre className="text-xs text-paper-dark/70 whitespace-pre-wrap break-all font-mono bg-xuan-surface/50 p-3 rounded-lg max-h-48 overflow-y-auto">
+                      <pre className="text-xs text-on-dark-muted whitespace-pre-wrap break-all font-mono bg-xuan-surface/50 p-3 rounded-lg max-h-48 overflow-y-auto">
                         {JSON.stringify(record.data, null, 2)}
                       </pre>
                       <button

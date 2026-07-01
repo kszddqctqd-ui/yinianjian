@@ -57,13 +57,13 @@ export function MasterSelector({ selected, onSelect }: { selected: number | null
                     <p className={`font-display text-lg transition-colors ${isSelected ? 'text-gold' : 'text-paper-dark'}`}>
                       {m.title}
                     </p>
-                    <p className="text-xs text-paper-dark/65">{m.subtitle}</p>
+                    <p className="text-xs text-on-dark-muted">{m.subtitle}</p>
                   </div>
                 </div>
                 <p className={`mt-2 text-sm transition-colors ${isSelected ? 'text-gold/85' : 'text-gold/85'}`}>
                   {m.desc}
                 </p>
-                <p className="mt-1 text-xs text-paper-dark/65">{m.descBreak}</p>
+                <p className="mt-1 text-xs text-on-dark-muted">{m.descBreak}</p>
               </button>
             );
           })}

@@ -128,7 +128,7 @@ export function BaziPage() {
               </svg>
             </div>
             <h1 className="text-4xl text-gold">八字精批</h1>
-            <p className="text-base text-paper-dark/85">
+            <p className="text-base text-on-dark-muted">
               输入生辰，真排盘、看格局、看大运、看建议，先把命盘根基看清，再往后看流年节奏。
             </p>
           </section>
@@ -173,7 +173,7 @@ export function BaziPage() {
               </div>
               <div className="grid gap-3 md:grid-cols-2">
                 <label className="space-y-2">
-                  <span className="text-sm text-paper-dark/75">出生时辰</span>
+                  <span className="text-label">出生时辰</span>
                   <select
                     value={shichen}
                     onChange={(e) => setShichen(e.target.value)}
@@ -185,7 +185,7 @@ export function BaziPage() {
                   </select>
                 </label>
                 <div className="space-y-2">
-                  <p className="text-sm text-paper-dark/75">性别</p>
+                  <p className="text-label">性别</p>
                   <div className="flex h-16 items-stretch overflow-hidden rounded-xl border border-gold/30 bg-xuan-surface transition-smooth">
                     <button
                       type="button"
@@ -207,7 +207,7 @@ export function BaziPage() {
             </div>
 
             {/* Disclaimer */}
-            <div className="rounded-xl border border-gold/12 bg-xuan-surface/30 px-4 py-3 text-xs leading-6 text-paper-dark/78 transition-smooth hover:bg-xuan-surface/50">
+            <div className="rounded-xl border border-gold/12 bg-xuan-surface/30 px-4 py-3 text-small leading-relaxed text-on-dark-muted transition-smooth hover:bg-xuan-surface/50">
               <div className="flex items-start gap-2.5">
                 <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border border-gold/20 bg-gold/10">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check size-3.5 text-gold" aria-hidden="true">
@@ -216,7 +216,7 @@ export function BaziPage() {
                   </svg>
                 </div>
                 <div className="space-y-1.5">
-                  <p className="text-paper-dark/85">
+                  <p className="text-on-dark">
                     点击<span className="mx-1 text-gold">"开始真排盘"</span>即表示您已阅读并同意
                     <a className="mx-1 text-gold transition-smooth-fast hover:text-gold-light" href="/terms/">《用户协议》</a>
                     <a className="mr-1 text-gold transition-smooth-fast hover:text-gold-light" href="/privacy/">《隐私说明》</a>
@@ -224,7 +224,7 @@ export function BaziPage() {
                     <a className="ml-1 text-gold transition-smooth-fast hover:text-gold-light" href="/ai-notice/">《AI 生成说明》</a>
                     ，并同意我们按说明处理您主动提交的生辰信息。
                   </p>
-                  <p className="text-paper-dark/65">
+                  <p className="text-on-dark-muted">
                     仅作传统文化参考，请结合现实情况判断；未满18周岁请勿使用本服务，请勿提交他人的照片、生辰或其他信息。
                   </p>
                 </div>
@@ -243,7 +243,7 @@ export function BaziPage() {
                 <span className="contents">{loading ? '排盘中...' : '开始真排盘'}</span>
               </button>
             </div>
-            <p className="text-center text-xs text-paper-dark/60">仅作传统文化参考，请结合现实情况判断</p>
+            <p className="text-center text-tiny text-on-dark-dim">仅作传统文化参考，请结合现实情况判断</p>
           </div>
 
           {/* Result */}
@@ -271,13 +271,13 @@ function DatePicker({
   const displaySuffix = label === '出生年' ? '年' : label === '出生月' ? '月' : '日';
   return (
     <div className="relative space-y-2">
-      <p className="text-sm text-paper-dark/75">{label}</p>
+      <p className="text-label">{label}</p>
       <div className="relative flex h-16 items-stretch overflow-visible rounded-xl border border-gold/30 bg-xuan-surface">
         <button
           type="button"
           aria-label={ariaLabel}
           onClick={() => onChange(Math.max(min, value - 1))}
-          className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30 transition-smooth-fast"
+          className="flex w-12 items-center justify-center text-on-dark-muted hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30 transition-smooth-fast"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down size-5" aria-hidden="true">
             <path d="m6 9 6 6 6-6" />
@@ -289,13 +289,13 @@ function DatePicker({
           className="flex flex-1 flex-col items-center justify-center transition-smooth hover:bg-gold/5 active:bg-gold/10"
         >
           <span className="font-number text-2xl text-gold">{value}{displaySuffix}</span>
-          <span className="text-[10px] text-paper-dark/45">点击选择</span>
+          <span className="text-tiny text-on-dark-dim">点击选择</span>
         </button>
         <button
           type="button"
           aria-label={ariaLabelInc}
           onClick={() => onChange(Math.min(max, value + 1))}
-          className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30 transition-smooth-fast"
+          className="flex w-12 items-center justify-center text-on-dark-muted hover:bg-gold/10 active:bg-gold/15 disabled:opacity-30 transition-smooth-fast"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-up size-5" aria-hidden="true">
             <path d="m18 15-6-6-6 6" />

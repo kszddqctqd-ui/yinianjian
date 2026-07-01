@@ -82,7 +82,7 @@ export default function MeditationPage() {
                 >
                   <span className="text-3xl">{mode.icon}</span>
                   <p className="text-sm text-gold mt-2 font-display">{mode.name}</p>
-                  <p className="text-[10px] text-paper-dark/60 mt-1">{mode.desc}</p>
+                  <p className="text-[10px] text-on-dark-muted mt-1">{mode.desc}</p>
                 </button>
               ))}
             </div>
@@ -106,12 +106,12 @@ export default function MeditationPage() {
                 <button
                   type="button"
                   onClick={() => { setTimer(0); setIsRunning(false); }}
-                  className="rounded-lg border border-gold/30 px-6 py-2 text-sm text-paper-dark/70 hover:text-gold transition-colors"
+                  className="rounded-lg border border-gold/30 px-6 py-2 text-sm text-on-dark-muted hover:text-gold transition-colors"
                 >
                   重置
                 </button>
               </div>
-              <p className="text-xs text-paper-dark/60">建议每次禅坐 15-30 分钟</p>
+              <p className="text-xs text-on-dark-muted">建议每次禅坐 15-30 分钟</p>
             </div>
           )}
 
@@ -121,11 +121,11 @@ export default function MeditationPage() {
               <p className="text-sm text-paper-dark/85 leading-loose">
                 "菩提本无树，明镜亦非台。<br />本来无一物，何处惹尘埃。"
               </p>
-              <p className="text-xs text-paper-dark/60">—— 六祖惠能</p>
+              <p className="text-xs text-on-dark-muted">—— 六祖惠能</p>
             </div>
           </div>
 
-          <p className="text-center text-xs text-paper-dark/60">仅作传统文化参考，请结合现实情况判断</p>
+          <p className="text-center text-xs text-on-dark-muted">仅作传统文化参考，请结合现实情况判断</p>
         </div>
       </main>
 

@@ -210,7 +210,7 @@ export default function PalmistryPage() {
                 </div>
               )}
               <div className="space-y-2">
-                <p className="text-sm text-paper-dark/75">选择类型</p>
+                <p className="text-sm text-label">选择类型</p>
                 <div className="flex gap-3">
                   <button type="button" onClick={() => setType('hand')} className={`flex-1 rounded-lg border p-3 text-center transition-all ${type === 'hand' ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
                     <span className="text-2xl">🤚</span>
@@ -224,11 +224,11 @@ export default function PalmistryPage() {
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm text-paper-dark/75">上传照片</p>
+                <p className="text-sm text-label">上传照片</p>
                 <label className="flex flex-col items-center justify-center h-40 rounded-xl border-2 border-dashed border-gold/30 bg-xuan-surface/40 cursor-pointer hover:border-gold/40 hover:bg-xuan-surface/70 transition-all">
                   <svg className="size-8 text-gold/40 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
-                  <span className="text-sm text-paper-dark/60">点击上传 {type === 'hand' ? '掌心照' : '正脸照'}</span>
-                  <span className="text-xs text-paper-dark/45 mt-1">支持 jpg/png，最大 5MB</span>
+                  <span className="text-sm text-on-dark-muted">点击上传 {type === 'hand' ? '掌心照' : '正脸照'}</span>
+                  <span className="text-xs text-on-dark-dim mt-1">支持 jpg/png，最大 5MB</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
                 </label>
               </div>
@@ -244,7 +244,7 @@ export default function PalmistryPage() {
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
               <img src={photo} alt="预览" className="w-full max-h-64 object-contain rounded-lg border border-gold/20" />
               <div className="flex gap-3">
-                <button type="button" onClick={() => setStep(1)} className="flex-1 rounded-lg border border-gold/30 py-3 text-sm text-paper-dark/70 hover:text-gold transition-colors">
+                <button type="button" onClick={() => setStep(1)} className="flex-1 rounded-lg border border-gold/30 py-3 text-sm text-on-dark-muted hover:text-gold transition-colors">
                   重新上传
                 </button>
                 <button type="button" onClick={handlePreview} className="flex-1 rounded-lg bg-vermillion py-3 text-sm text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all disabled:opacity-50">
@@ -283,8 +283,8 @@ export default function PalmistryPage() {
           {step === 3 && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm text-center py-12">
               <div className="text-4xl animate-pulse">🔍</div>
-              <p className="mt-3 text-sm text-paper-dark/70">AI 正在分析中...</p>
-              <p className="text-xs text-paper-dark/45 mt-1">请稍候</p>
+              <p className="mt-3 text-sm text-on-dark-muted">AI 正在分析中...</p>
+              <p className="text-xs text-on-dark-dim mt-1">请稍候</p>
             </div>
           )}
 
@@ -307,7 +307,7 @@ export default function PalmistryPage() {
 
               {/* Paywall */}
               <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm text-center space-y-3">
-                <p className="text-sm text-paper-dark/70">以上为预览内容，完整详批包含更深入的分析和个性化建议。</p>
+                <p className="text-sm text-on-dark-muted">以上为预览内容，完整详批包含更深入的分析和个性化建议。</p>
                 <button
                   type="button"
                   className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all"
@@ -324,13 +324,13 @@ export default function PalmistryPage() {
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
               <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 animate-slide-up" onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-xl text-gold font-display">解锁完整详批</h3>
-                <p className="text-sm text-paper-dark/70">请扫描下方二维码完成支付 ¥9.9</p>
+                <p className="text-sm text-on-dark-muted">请扫描下方二维码完成支付 ¥9.9</p>
                 <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
                 <p className="text-xs text-paper-dark/50">支付完成后请截图发送给我们确认</p>
                 <button
                   type="button"
                   onClick={() => setShowPayment(false)}
-                  className="w-full rounded-lg border border-gold/30 py-2 text-sm text-paper-dark/70 hover:text-gold transition-colors"
+                  className="w-full rounded-lg border border-gold/30 py-2 text-sm text-on-dark-muted hover:text-gold transition-colors"
                 >
                   关闭
                 </button>

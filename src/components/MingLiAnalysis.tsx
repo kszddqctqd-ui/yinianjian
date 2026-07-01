@@ -146,7 +146,7 @@ export function MingLiAnalysis({ result, gender }: { result: BaZiResult; gender:
             <div className="flex gap-4 text-sm">
               {wuxingOrder.map(wx => (
                 <div key={wx} className="flex items-center gap-1">
-                  <span className="text-xs text-paper-dark/60">{wx}</span>
+                  <span className="text-xs text-on-dark-muted">{wx}</span>
                   <span className="font-number text-gold">{result.wuXingCount[wx]}</span>
                 </div>
               ))}
@@ -215,7 +215,7 @@ export function MingLiAnalysis({ result, gender }: { result: BaZiResult; gender:
           <p>
             <span className="text-gold">【近三年运势提示】</span>
           </p>
-          <ul className="ml-4 space-y-1 text-paper-dark/70">
+          <ul className="ml-4 space-y-1 text-on-dark-muted">
             <li>• 2026 丙午年：火旺之年，{['木','火'].includes(TIAN_GAN_WUXING[riZhu[0]]) ? '火势过旺，注意调节情绪' : '火能生扶，运势上升'}。</li>
             <li>• 2027 丁未年：火土相生，{['土','金'].includes(TIAN_GAN_WUXING[riZhu[0]]) ? '土金得生，事业有利' : '火土耗身，宜守不宜进'}。</li>
             <li>• 2028 戊申年：土金相生，{['金','水'].includes(TIAN_GAN_WUXING[riZhu[0]]) ? '金水得源，财运不错' : '土金耗身，注意健康'}。</li>

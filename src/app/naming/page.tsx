@@ -95,7 +95,7 @@ export default function NamingPage() {
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
             {/* Surname */}
             <div>
-              <label className="text-sm text-paper-dark/75">姓氏</label>
+              <label className="text-sm text-label">姓氏</label>
               <input
                 type="text"
                 value={formData.surname}
@@ -108,7 +108,7 @@ export default function NamingPage() {
 
             {/* Gender */}
             <div>
-              <label className="text-sm text-paper-dark/75">性别</label>
+              <label className="text-sm text-label">性别</label>
               <div className="flex gap-3 mt-1">
                 <button type="button" onClick={() => setFormData({ ...formData, gender: '男' })} className={`flex-1 h-12 rounded-lg border text-sm transition-all ${formData.gender === '男' ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
                   男
@@ -137,7 +137,7 @@ export default function NamingPage() {
 
             {/* Style */}
             <div>
-              <label className="text-sm text-paper-dark/75">起名风格</label>
+              <label className="text-sm text-label">起名风格</label>
               <div className="grid grid-cols-3 gap-2 mt-2">
                 {styles.map(s => (
                   <button key={s} type="button" onClick={() => setFormData({ ...formData, style: s })} className={`rounded-lg border p-2 text-xs transition-all ${formData.style === s ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
@@ -149,7 +149,7 @@ export default function NamingPage() {
 
             {/* Generation name */}
             <div>
-              <label className="text-sm text-paper-dark/75">辈分字（选填）</label>
+              <label className="text-sm text-label">辈分字（选填）</label>
               <input
                 type="text"
                 value={formData.generation}
@@ -184,7 +184,7 @@ export default function NamingPage() {
                     <div className="flex-1 space-y-1">
                       <div className="flex gap-2 flex-wrap">
                         <span className="text-xs rounded-full px-2 py-0.5 bg-gold/10 text-gold">{r.element}行</span>
-                        <span className="text-xs rounded-full px-2 py-0.5 bg-paper-dark/10 text-paper-dark/60">{r.style}</span>
+                        <span className="text-xs rounded-full px-2 py-0.5 bg-paper-dark/10 text-on-dark-muted">{r.style}</span>
                         {formData.generation && <span className="text-xs rounded-full px-2 py-0.5 bg-vermillion/10 text-vermillion">辈分字：{formData.generation}</span>}
                       </div>
                       <p className="text-sm text-paper-dark/85">{r.meaning}</p>
@@ -193,13 +193,13 @@ export default function NamingPage() {
                   </div>
                 </div>
               ))}
-              <p className="text-center text-xs text-paper-dark/60">以上名字仅供参考，最终由家长自行决定</p>
+              <p className="text-center text-xs text-on-dark-muted">以上名字仅供参考，最终由家长自行决定</p>
             </div>
           )}
 
           {showResult && results.length === 0 && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad text-center space-y-2">
-              <p className="text-sm text-paper-dark/70">未能生成合适的名字，请尝试更换风格或出生日期</p>
+              <p className="text-sm text-on-dark-muted">未能生成合适的名字，请尝试更换风格或出生日期</p>
             </div>
           )}
         </div>

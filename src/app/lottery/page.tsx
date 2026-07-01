@@ -96,7 +96,7 @@ export default function LotteryPage() {
                       <span className="text-3xl">{m.icon}</span>
                       <div>
                         <p className={`font-display text-lg ${selectedMaster === i ? 'text-gold' : 'text-paper-dark'}`}>{m.title}</p>
-                        <p className="text-xs text-paper-dark/65">{m.subtitle}</p>
+                        <p className="text-xs text-on-dark-muted">{m.subtitle}</p>
                       </div>
                     </div>
                     <p className="mt-2 text-sm text-gold/85">{m.desc}</p>
@@ -131,7 +131,7 @@ export default function LotteryPage() {
                 {loading ? '求签中...' : '求签'}
               </button>
               {shakeCount > 0 && (
-                <p className="mt-2 text-xs text-paper-dark/60">已求签 {shakeCount} 次</p>
+                <p className="mt-2 text-xs text-on-dark-muted">已求签 {shakeCount} 次</p>
               )}
             </div>
           </div>
@@ -145,11 +145,11 @@ export default function LotteryPage() {
               <div className="text-center space-y-2">
                 <p className="text-3xl text-gold font-display">{lottery.title}</p>
                 <p className="text-xl text-paper-dark/85 italic">{lottery.text}</p>
-                <p className="text-sm text-paper-dark/75">{lottery.desc}</p>
+                <p className="text-sm text-label">{lottery.desc}</p>
                 <div className={`inline-block rounded-full px-4 py-1 text-sm font-medium ${
                   lottery.fortune === '大吉' ? 'bg-gold/20 text-gold' :
                   lottery.fortune === '吉' ? 'bg-gold/10 text-gold/80' :
-                  lottery.fortune === '平' ? 'bg-paper-dark/10 text-paper-dark/70' :
+                  lottery.fortune === '平' ? 'bg-paper-dark/10 text-on-dark-muted' :
                   lottery.fortune === '凶' ? 'bg-vermillion/10 text-vermillion' :
                   'bg-vermillion/20 text-vermillion-light'
                 }`}>

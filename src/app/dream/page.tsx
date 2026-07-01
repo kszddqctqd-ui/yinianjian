@@ -87,7 +87,7 @@ export default function DreamPage() {
               {/* Quick keywords */}
               <div className="flex flex-wrap gap-2">
                 {['蛇', '鱼', '火', '水', '飞', '龙', '牙齿掉落', '迷路', '考试', '棺材'].map(kw => (
-                  <button key={kw} type="button" onClick={() => { setKeyword(kw); }} className="rounded-full border border-gold/20 px-3 py-1 text-xs text-paper-dark/70 hover:border-gold/40 hover:text-gold transition-colors">
+                  <button key={kw} type="button" onClick={() => { setKeyword(kw); }} className="rounded-full border border-gold/20 px-3 py-1 text-xs text-on-dark-muted hover:border-gold/40 hover:text-gold transition-colors">
                     {kw}
                   </button>
                 ))}
@@ -107,7 +107,7 @@ export default function DreamPage() {
           )}
 
           {/* Disclaimer */}
-          <p className="text-center text-xs text-paper-dark/60">仅作传统文化参考，请结合现实情况判断</p>
+          <p className="text-center text-xs text-on-dark-muted">仅作传统文化参考，请结合现实情况判断</p>
         </div>
       </main>
 

@@ -32,7 +32,7 @@ export function ZhuPan({ result, gender }: { result: BaZiResult; gender: string 
           ))}
         </div>
 
-        <div className="text-center text-xs text-paper-dark/45 pt-1">
+        <div className="text-center text-xs text-on-dark-dim pt-1">
           旬空地支索引 {result.xunKong.length ? result.xunKong.join(', ') : '无'}
         </div>
       </div>
@@ -55,13 +55,13 @@ function PillarCard({ pillar, gender, riGan }: {
         <div className="text-center">
           <span className="font-number text-2xl text-gold">{pillar.gan}</span>
           {pillar.shiShen && (
-            <span className="text-[10px] text-paper-dark/45 block mt-0.5">{pillar.shiShen}</span>
+            <span className="text-[10px] text-on-dark-dim block mt-0.5">{pillar.shiShen}</span>
           )}
         </div>
         <span className="mx-1 text-gold">│</span>
         <div className="text-center">
           <span className="font-number text-2xl text-gold">{pillar.zhi}</span>
-          <span className="text-[10px] text-paper-dark/45 block mt-0.5">{ZHI_SHICHEN[pillar.zhi] ?? '--'}</span>
+          <span className="text-[10px] text-on-dark-dim block mt-0.5">{ZHI_SHICHEN[pillar.zhi] ?? '--'}</span>
         </div>
       </div>
 

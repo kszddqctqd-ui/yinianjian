@@ -1,12 +1,19 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { t, getLocale } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { saveRecord } from '@/lib/records';
 import { calculateBaZi, type BaZiResult } from '@/lib/bazi';
+
+function resolve(key: string): string {
+  return t(key);
+}
 
 const LOTTERIES = [
   { num: 1, title: '上上签', text: '春风得意马蹄疾，一日看尽长安花。', desc: '万事如意，心想事成。', fortune: '大吉' },
@@ -21,22 +28,30 @@ const LOTTERIES = [
   { num: 10, title: '下下签', text: '山雨欲来风满楼。', desc: '危机将至，谨慎应对。', fortune: '大凶' },
 ];
 
+const masters = [
+  { icon: '🧘', nameKey: 'bazi.master.0.name', roleKey: 'bazi.master.0.role', featureKey: 'bazi.master.0.feature' },
+  { icon: '🙏', nameKey: 'bazi.master.1.name', roleKey: 'bazi.master.1.role', featureKey: 'bazi.master.1.feature' },
+  { icon: '☯️', nameKey: 'bazi.master.2.name', roleKey: 'bazi.master.2.role', featureKey: 'bazi.master.2.feature' },
+];
+
 export default function LotteryPage() {
+  const [lang, setLang] = useState<SupportedLang>(getLocale());
   const [shakeCount, setShakeCount] = useState(0);
   const [lottery, setLottery] = useState<typeof LOTTERIES[0] | null>(null);
   const [showLottery, setShowLottery] = useState(false);
   const [selectedMaster, setSelectedMaster] = useState<number | null>(0);
   const [loading, setLoading] = useState(false);
 
-  const masters = [
-    { icon: '🧘', title: '慧明长老', subtitle: '古寺住持', desc: '庄重持重，引经据典' },
-    { icon: '🙏', title: '明心师父', subtitle: '尼众法师', desc: '慈悲温柔，劝人向善' },
-    { icon: '☯️', title: '玄真道长', subtitle: '山中道人', desc: '直爽通透，说大白话' },
-  ];
+  useEffect(() => {
+    setLang(getLocale());
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
 
   const shakeLottery = useCallback(() => {
     if (selectedMaster === null) {
-      alert('请先选择一位师父');
+      alert(resolve('lottery.alert.noMaster'));
       return;
     }
     setLoading(true);
@@ -47,16 +62,13 @@ export default function LotteryPage() {
       setLottery(lot);
       setShowLottery(true);
       setLoading(false);
-      saveRecord('lottery', { num: lot.num, title: lot.title, text: lot.text, desc: lot.desc, fortune: lot.fortune }, `${lot.title} 第${lot.num}签`);
+      saveRecord('lottery', { num: lot.num, title: lot.title, text: lot.text, desc: lot.desc, fortune: lot.fortune }, `${resolve('lottery.signNumber').replace('{num}', lot.num.toString())}`);
     }, 1500);
   }, [selectedMaster]);
 
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
-      <div className="fixed inset-x-0 top-0 z-0 h-32 bg-gradient-to-b from-gold/15 to-transparent" />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -65,21 +77,20 @@ export default function LotteryPage() {
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
             <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg className="size-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-                <line x1="4" y1="22" x2="4" y2="15" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sparkles size-8 text-gold" aria-hidden="true">
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
               </svg>
             </div>
-            <h1 className="text-4xl text-gold">求灵签</h1>
-            <p className="text-base text-paper-dark/85">
-              心诚则灵。一签一事，为当前事项提供一版文化参考。
+            <h1 className="font-display text-4xl tracking-widest" style={{ color: '#C9A96E' }}>{resolve('lottery.title')}</h1>
+            <p className="text-base" style={{ color: '#D4C5A9' }}>
+              {resolve('lottery.subtitle')}
             </p>
           </section>
 
           {/* Master selector */}
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm">
             <div className="space-y-3">
-              <p className="text-base text-paper-dark/80">请选一位师父为您开示</p>
+              <p className="text-base text-paper-dark/80">{resolve('lottery.chooseMaster')}</p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {masters.map((m, i) => (
                   <button
@@ -95,11 +106,11 @@ export default function LotteryPage() {
                     <div className="flex items-center gap-3">
                       <span className="text-3xl">{m.icon}</span>
                       <div>
-                        <p className={`font-display text-lg ${selectedMaster === i ? 'text-gold' : 'text-paper-dark'}`}>{m.title}</p>
-                        <p className="text-xs text-on-dark-muted">{m.subtitle}</p>
+                        <p className={`font-display text-lg ${selectedMaster === i ? 'text-gold' : 'text-paper-dark'}`}>{resolve(m.nameKey)}</p>
+                        <p className="text-xs text-on-dark-muted">{resolve(m.roleKey)}</p>
                       </div>
                     </div>
-                    <p className="mt-2 text-sm text-gold/85">{m.desc}</p>
+                    <p className="mt-2 text-sm text-gold/85">{resolve(m.featureKey)}</p>
                   </button>
                 ))}
               </div>
@@ -121,17 +132,17 @@ export default function LotteryPage() {
                   <line x1="30" y1="110" x2="70" y2="110" />
                 </svg>
               </div>
-              <p className="text-sm text-paper-dark/80 mb-4">摇动签筒，诚心求签</p>
+              <p className="text-sm text-paper-dark/80 mb-4">{resolve('lottery.shakeHint')}</p>
               <button
                 type="button"
                 onClick={shakeLottery}
                 disabled={loading}
                 className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/40 disabled:cursor-not-allowed disabled:opacity-50 min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg"
               >
-                {loading ? '求签中...' : '求签'}
+                {loading ? resolve('lottery.loading') : resolve('lottery.btn.shake')}
               </button>
               {shakeCount > 0 && (
-                <p className="mt-2 text-xs text-on-dark-muted">已求签 {shakeCount} 次</p>
+                <p className="mt-2 text-xs text-on-dark-muted">{resolve('lottery.count').replace('{count}', shakeCount.toString())}</p>
               )}
             </div>
           </div>
@@ -140,7 +151,7 @@ export default function LotteryPage() {
           {showLottery && lottery && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4 animate-slide-up">
               <div className="text-center">
-                <span className="text-xs text-gold/80 tracking-wider">第 {lottery.num} 签</span>
+                <span className="text-xs text-gold/80 tracking-wider">{resolve('lottery.signNumber').replace('{num}', lottery.num.toString())}</span>
               </div>
               <div className="text-center space-y-2">
                 <p className="text-3xl text-gold font-display">{lottery.title}</p>

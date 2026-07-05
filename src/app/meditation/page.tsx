@@ -1,22 +1,38 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { t, getLocale } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
+import { sanitizeHTML } from '@/lib/sanitize';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
+
+function resolve(key: string): string {
+  return t(key);
+}
 
 const ZEN_MODES = [
-  { id: 'bell', name: '钟磬古乐', icon: '🔔', desc: '禅钟声远，涤荡心灵' },
-  { id: 'chant', name: '佛号梵音', icon: '🙏', desc: '南无阿弥陀佛，清净自在' },
-  { id: 'nature', name: '深山溪水', icon: '🏔️', desc: '溪水潺潺，松涛阵阵' },
+  { id: 'bell', nameKey: 'meditation.modes.0.name', icon: '🔔', descKey: 'meditation.modes.0.desc' },
+  { id: 'chant', nameKey: 'meditation.modes.1.name', icon: '🙏', descKey: 'meditation.modes.1.desc' },
+  { id: 'nature', nameKey: 'meditation.modes.2.name', icon: '🏔️', descKey: 'meditation.modes.2.desc' },
 ];
 
 export default function MeditationPage() {
+  const [lang, setLang] = useState<SupportedLang>('zh-CN');
   const [activeMode, setActiveMode] = useState<string | null>(null);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setLang(getLocale());
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
 
   const startSession = (mode: string) => {
     setActiveMode(mode);
@@ -39,11 +55,8 @@ export default function MeditationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
-      <div className="fixed inset-x-0 top-0 z-0 h-32 bg-gradient-to-b from-gold/15 to-transparent" />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -51,22 +64,21 @@ export default function MeditationPage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg className="size-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
+            <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame size-8 text-gold" aria-hidden="true">
+                <path d="M8.5 14.1A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
               </svg>
             </div>
-            <h1 className="text-4xl text-gold">静心禅坐</h1>
-            <p className="text-base text-paper-dark/85">
-              钟磬古乐、佛号梵音、深山溪水。日日一坐，让自己慢下来。
+            <h1 className="font-display text-4xl tracking-widest" style={{ color: '#C9A96E' }}>{resolve('meditation.title')}</h1>
+            <p className="text-base" style={{ color: '#D4C5A9' }}>
+              {resolve('meditation.subtitle')}
             </p>
           </section>
 
           {/* Mode selection */}
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
             <div className="text-center">
-              <span className="text-xs text-gold/80 tracking-wider">选择禅修模式</span>
+              <span className="text-xs text-gold/80 tracking-wider">{resolve('meditation.modeTitle')}</span>
             </div>
             <div className="grid grid-cols-3 gap-3">
               {ZEN_MODES.map(mode => (
@@ -81,8 +93,8 @@ export default function MeditationPage() {
                   }`}
                 >
                   <span className="text-3xl">{mode.icon}</span>
-                  <p className="text-sm text-gold mt-2 font-display">{mode.name}</p>
-                  <p className="text-[10px] text-on-dark-muted mt-1">{mode.desc}</p>
+                  <p className="text-sm text-gold mt-2 font-display">{resolve(mode.nameKey)}</p>
+                  <p className="text-[10px] text-on-dark-muted mt-1">{resolve(mode.descKey)}</p>
                 </button>
               ))}
             </div>
@@ -92,7 +104,7 @@ export default function MeditationPage() {
           {activeMode && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4 text-center">
               <div>
-                <span className="text-xs text-gold/80 tracking-wider">禅修计时</span>
+                <span className="text-xs text-gold/80 tracking-wider">{resolve('meditation.timerTitle')}</span>
               </div>
               <div className="text-5xl text-gold font-number tracking-wider">{formatTime(timer)}</div>
               <div className="flex gap-3 justify-center">
@@ -101,31 +113,28 @@ export default function MeditationPage() {
                   onClick={() => setIsRunning(!isRunning)}
                   className="rounded-lg bg-vermillion px-6 py-2 text-sm text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all"
                 >
-                  {isRunning ? '暂停' : '开始'}
+                  {isRunning ? resolve('meditation.btn.pause') : resolve('meditation.btn.start')}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setTimer(0); setIsRunning(false); }}
                   className="rounded-lg border border-gold/30 px-6 py-2 text-sm text-on-dark-muted hover:text-gold transition-colors"
                 >
-                  重置
+                  {resolve('meditation.btn.reset')}
                 </button>
               </div>
-              <p className="text-xs text-on-dark-muted">建议每次禅坐 15-30 分钟</p>
+              <p className="text-xs text-on-dark-muted">{resolve('meditation.tip')}</p>
             </div>
           )}
 
           {/* Daily quote */}
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm">
             <div className="text-center space-y-2">
-              <p className="text-sm text-paper-dark/85 leading-loose">
-                "菩提本无树，明镜亦非台。<br />本来无一物，何处惹尘埃。"
-              </p>
-              <p className="text-xs text-on-dark-muted">—— 六祖惠能</p>
+              <p className="text-sm text-paper-dark/85 leading-loose" dangerouslySetInnerHTML={{ __html: sanitizeHTML(resolve('meditation.quote').replace(/\n/g, '<br />')) }} />
             </div>
           </div>
 
-          <p className="text-center text-xs text-on-dark-muted">仅作传统文化参考，请结合现实情况判断</p>
+          <p className="text-center text-xs text-on-dark-muted">{resolve('common.disclaimer')}</p>
         </div>
       </main>
 

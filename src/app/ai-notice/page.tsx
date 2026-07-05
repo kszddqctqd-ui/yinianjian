@@ -4,13 +4,12 @@ import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 
 export default function AiNoticePage() {
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -58,7 +57,7 @@ export default function AiNoticePage() {
         </div>
       </main>
 
-      <BottomNav />
+      <BottomNav active="more" />
     </div>
   );
 }

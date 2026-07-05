@@ -1,25 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { t, getLocale } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { getRecords, deleteRecord, formatRelativeTime, clearRecords, type RecordEntry } from '@/lib/records';
 
-const TYPE_LABELS: Record<string, { label: string; icon: string }> = {
-  'bazi': { label: '八字', icon: '☯' },
-  'lottery': { label: '灵签', icon: '🏮' },
-  'dream': { label: '解梦', icon: '📖' },
-  'divination': { label: '占卜', icon: '🪙' },
-  'naming': { label: '起名', icon: '✍' },
-  'palmistry': { label: '手相', icon: '🤚' },
+function resolve(key: string): string {
+  return t(key);
+}
+
+const TYPE_LABELS: Record<string, { labelKey: string; icon: string }> = {
+  'bazi': { labelKey: 'profile.recordTypes.bazi', icon: '☯' },
+  'lottery': { labelKey: 'profile.recordTypes.lottery', icon: '🏮' },
+  'dream': { labelKey: 'profile.recordTypes.dream', icon: '📖' },
+  'divination': { labelKey: 'profile.recordTypes.divination', icon: '🪙' },
+  'naming': { labelKey: 'profile.recordTypes.naming', icon: '✍' },
+  'palmistry': { labelKey: 'profile.recordTypes.palmistry', icon: '🤚' },
 };
 
 export default function RecordsPage() {
+  const [lang, setLang] = useState<SupportedLang>(getLocale());
   const [records, setRecords] = useState<RecordEntry[]>(getRecords());
   const [filter, setFilter] = useState<string>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLang(getLocale());
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
 
   const filtered = filter === 'all' ? records : records.filter(r => r.type === filter);
   const types = ['all', ...Object.keys(TYPE_LABELS)];
@@ -31,17 +46,15 @@ export default function RecordsPage() {
   };
 
   const handleClearAll = () => {
-    if (confirm('确定要清空所有记录吗？此操作不可撤销。')) {
+    if (confirm(resolve('records.clearConfirm'))) {
       clearRecords();
       setRecords([]);
     }
   };
 
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -50,8 +63,8 @@ export default function RecordsPage() {
         <div className="mx-auto max-w-4xl px-4 pb-24">
           {/* Title */}
           <div className="pt-8 text-center space-y-3">
-            <h1 className="text-3xl text-gold font-display tracking-[0.15em]">我的记录</h1>
-            <p className="text-xs text-paper-dark/50">共 {records.length} 条记录</p>
+            <h1 className="text-3xl text-gold font-display tracking-[0.15em]">{resolve('records.title')}</h1>
+            <p className="text-xs text-paper-dark/50">{resolve('records.count').replace('{count}', records.length.toString())}</p>
           </div>
 
           {/* Tabs */}
@@ -66,7 +79,7 @@ export default function RecordsPage() {
                     : 'border-gold/20 text-on-dark-muted hover:text-gold'
                 }`}
               >
-                {t === 'all' ? '全部' : TYPE_LABELS[t]?.icon + ' ' + TYPE_LABELS[t]?.label}
+                {t === 'all' ? resolve('profile.all') : TYPE_LABELS[t]?.icon + ' ' + resolve(TYPE_LABELS[t]?.labelKey)}
               </button>
             ))}
           </div>
@@ -78,7 +91,7 @@ export default function RecordsPage() {
                 onClick={handleClearAll}
                 className="text-xs text-paper-dark/40 hover:text-vermillion transition-colors"
               >
-                清空所有记录
+                {resolve('profile.clearAll')}
               </button>
             </div>
           )}
@@ -87,8 +100,8 @@ export default function RecordsPage() {
           {filtered.length === 0 ? (
             <div className="mt-12 text-center space-y-3">
               <div className="text-5xl opacity-30">📜</div>
-              <p className="text-sm text-paper-dark/50">暂无记录</p>
-              <p className="text-xs text-paper-dark/40">使用八字、灵签等功能后将自动保存记录</p>
+              <p className="text-sm text-paper-dark/50">{resolve('records.noRecords')}</p>
+              <p className="text-xs text-paper-dark/40">{resolve('records.useFeature')}</p>
             </div>
           ) : (
             <div className="mt-6 space-y-3">
@@ -106,7 +119,7 @@ export default function RecordsPage() {
                       <div className="flex items-center gap-3">
                         <span className="text-xl">{TYPE_LABELS[record.type]?.icon || '📋'}</span>
                         <div>
-                          <div className="text-sm text-gold">{TYPE_LABELS[record.type]?.label || record.type}</div>
+                          <div className="text-sm text-gold">{resolve(TYPE_LABELS[record.type]?.labelKey) || record.type}</div>
                           <div className="text-xs text-on-dark-muted">{record.summary}</div>
                         </div>
                       </div>
@@ -132,7 +145,7 @@ export default function RecordsPage() {
                         onClick={(e) => { e.stopPropagation(); handleDelete(record.id); }}
                         className="text-xs text-vermillion/60 hover:text-vermillion transition-colors"
                       >
-                        删除此记录
+                        {resolve('profile.deleteRecord')}
                       </button>
                     </div>
                   )}

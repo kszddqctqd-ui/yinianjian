@@ -6,8 +6,16 @@ import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
+import { t, getLocale, shichenLabels } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
+
+function resolve(key: string): string {
+  return t(key);
+}
 
 export default function AlmanacPage() {
+  const [lang, setLang] = useState<SupportedLang>(getLocale());
   const [loading, setLoading] = useState(true);
   const [almanac, setAlmanac] = useState<{
     date: string;
@@ -22,6 +30,13 @@ export default function AlmanacPage() {
   } | null>(null);
 
   useEffect(() => {
+    setLang(getLocale());
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
+
+  useEffect(() => {
     const today = new Date();
     const solar = Solar.fromYmdHms(
       today.getFullYear(),
@@ -34,7 +49,7 @@ export default function AlmanacPage() {
     const lunar = solar.getLunar();
 
     setAlmanac({
-      date: `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`,
+      date: `${today.getFullYear()}${resolve('almanac.ganZhi.year')}${today.getMonth() + 1}${resolve('almanac.ganZhi.month')}${today.getDate()}${resolve('almanac.ganZhi.day')}`,
       lunarDate: lunar.toString(),
       ganZhi: {
         year: lunar.getYearInGanZhi(),
@@ -50,18 +65,17 @@ export default function AlmanacPage() {
       jieQi: (lunar as any).getCurrentJieQi?.() || '',
     });
     setLoading(false);
-  }, []);
+  }, [lang]);
+
+  const shichenList = Object.entries(shichenLabels).map(([key, val]) => ({
+    name: val[lang === 'zh-CN' ? 'zh' : 'en'],
+    key,
+  }));
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #1a1510 0%, #2d2216 50%, #1a1510 100%)' }}>
-      {/* Side feather masks */}
-      <div className="pointer-events-none fixed inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#0a0a0c] to-transparent" />
-      <div className="pointer-events-none fixed inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#0a0a0c] to-transparent" />
-
-      {/* Background layers */}
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(201,160,92,0.06) 0%, transparent 60%)' }} />
-      <div className="fixed inset-x-0 top-0 z-0 h-32 bg-gradient-to-b from-[#c9a05c]/10 to-transparent" />
+    <div className="min-h-screen relative overflow-hidden" style={{ background: '#0a0a0c' }}>
+      {/* 金色荷花艺术背景 */}
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -79,15 +93,15 @@ export default function AlmanacPage() {
                 <path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" />
               </svg>
             </div>
-            <h1 className="text-4xl tracking-[0.2em] font-display" style={{ color: '#f5e6b8' }}>今日黄历</h1>
+            <h1 className="text-4xl tracking-[0.2em] font-display" style={{ color: '#f5e6b8' }}>{resolve('almanac.title')}</h1>
             <p className="mx-auto max-w-md text-base" style={{ color: '#dfc59fcc' }}>
-              干支宜忌、神煞冲煞、十二时辰，传统择吉一目了然。
+              {resolve('almanac.subtitle')}
             </p>
           </section>
 
           {loading ? (
             <div className="flex h-[60vh] items-center justify-center" style={{ color: '#dfc59f99' }}>
-              加载今日黄历...
+              {resolve('almanac.loading')}
             </div>
           ) : almanac ? (
             <div className="space-y-4">
@@ -97,22 +111,22 @@ export default function AlmanacPage() {
                 <div className="text-sm" style={{ color: '#dfc59f' }}>{almanac.weekDay}</div>
                 <div className="text-xs" style={{ color: '#dfc59f99' }}>{almanac.lunarDate}</div>
                 {almanac.jieQi && (
-                  <div className="text-xs mt-1" style={{ color: '#c9a05c' }}>节气：{almanac.jieQi}</div>
+                  <div className="text-xs mt-1" style={{ color: '#c9a05c' }}>{resolve('almanac.solarTermPrefix')}{almanac.jieQi}</div>
                 )}
-                <div className="text-xs" style={{ color: '#dfc59f99' }}>星座：{almanac.xingzuo}</div>
+                <div className="text-xs" style={{ color: '#dfc59f99' }}>{resolve('almanac.zodiac')}: {almanac.xingzuo}</div>
               </div>
 
               {/* GanZhi */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md">
                 <div className="text-center mb-3">
-                  <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>干支</span>
+                  <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.ganZhi')}</span>
                 </div>
                 <div className="grid grid-cols-4 gap-3 text-center">
                   {[
-                    { label: '年', value: almanac.ganZhi.year },
-                    { label: '月', value: almanac.ganZhi.month },
-                    { label: '日', value: almanac.ganZhi.day },
-                    { label: '时', value: almanac.ganZhi.hour },
+                    { label: resolve('almanac.ganZhi.year'), value: almanac.ganZhi.year },
+                    { label: resolve('almanac.ganZhi.month'), value: almanac.ganZhi.month },
+                    { label: resolve('almanac.ganZhi.day'), value: almanac.ganZhi.day },
+                    { label: resolve('almanac.ganZhi.hour'), value: almanac.ganZhi.hour },
                   ].map((g, i) => (
                     <div key={i}>
                       <div className="text-xs mb-1" style={{ color: '#dfc59f99' }}>{g.label}</div>
@@ -127,20 +141,20 @@ export default function AlmanacPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-center mb-2">
-                      <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>宜</span>
+                      <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.yi')}</span>
                     </div>
                     <div className="space-y-1">
-                      {(almanac.yi.length > 0 ? almanac.yi : ['诸事不宜']).map((item, i) => (
+                      {(almanac.yi.length > 0 ? almanac.yi : [resolve('almanac.neither')]).map((item, i) => (
                         <div key={i} className="text-sm text-center" style={{ color: '#dfc59f' }}>{item}</div>
                       ))}
                     </div>
                   </div>
                   <div>
                     <div className="text-center mb-2">
-                      <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>忌</span>
+                      <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.ji')}</span>
                     </div>
                     <div className="space-y-1">
-                      {(almanac.ji.length > 0 ? almanac.ji : ['诸事不宜']).map((item, i) => (
+                      {(almanac.ji.length > 0 ? almanac.ji : [resolve('almanac.neither')]).map((item, i) => (
                         <div key={i} className="text-sm text-center" style={{ color: '#dfc59f' }}>{item}</div>
                       ))}
                     </div>
@@ -150,34 +164,21 @@ export default function AlmanacPage() {
 
               {/* Chong */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md text-center">
-                <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>冲煞</span>
-                <div className="mt-2 text-sm" style={{ color: '#dfc59f' }}>{almanac.chong || '无'}</div>
+                <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.chong')}</span>
+                <div className="mt-2 text-sm" style={{ color: '#dfc59f' }}>{almanac.chong || resolve('almanac.none')}</div>
               </div>
 
-              {/* 十二时辰 */}
+              {/* Twelve Hours */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md">
                 <div className="text-center mb-3">
-                  <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>十二时辰</span>
+                  <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.twelveHours')}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { name: '子时', time: '23:00-01:00' },
-                    { name: '丑时', time: '01:00-03:00' },
-                    { name: '寅时', time: '03:00-05:00' },
-                    { name: '卯时', time: '05:00-07:00' },
-                    { name: '辰时', time: '07:00-09:00' },
-                    { name: '巳时', time: '09:00-11:00' },
-                    { name: '午时', time: '11:00-13:00' },
-                    { name: '未时', time: '13:00-15:00' },
-                    { name: '申时', time: '15:00-17:00' },
-                    { name: '酉时', time: '17:00-19:00' },
-                    { name: '戌时', time: '19:00-21:00' },
-                    { name: '亥时', time: '21:00-23:00' },
-                  ].map((shichen, i) => {
+                  {shichenList.map((shichen, i) => {
                     const nowHour = new Date().getHours();
-                    const startHour = parseInt(shichen.time.split(':')[0]);
-                    const endHour = parseInt(shichen.time.split('-')[0].split(':')[1] || '24');
-                    const isCurrent = nowHour >= startHour && nowHour < endHour;
+                    const timeMatch = shichen.name.match(/\((\d+):(\d+)-(\d+):(\d+)\)/);
+                    const startHour = timeMatch ? parseInt(timeMatch[1]) : -1;
+                    const isCurrent = startHour >= 0 && nowHour >= startHour && nowHour < (startHour + 2) % 24;
                     return (
                       <div
                         key={i}
@@ -189,7 +190,6 @@ export default function AlmanacPage() {
                         }}
                       >
                         <div className="font-display">{shichen.name}</div>
-                        <div className="text-[10px] mt-0.5" style={{ color: isCurrent ? '#dfc59f' : '#dfc59f60' }}>{shichen.time}</div>
                       </div>
                     );
                   })}

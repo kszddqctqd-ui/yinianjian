@@ -1,11 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { saveRecord } from '@/lib/records';
+import { t, getLocale } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
+
+function resolve(key: string): string {
+  return t(key);
+}
 
 const DREAMS = [
   { id: 1, keyword: '蛇', result: '梦见蛇，主有财。若蛇缠身，主有贵人相助。' },
@@ -24,25 +31,29 @@ export default function DreamPage() {
   const [keyword, setKeyword] = useState('');
   const [result, setResult] = useState<typeof DREAMS[number] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [lang, setLang] = useState<SupportedLang>(getLocale());
+  useEffect(() => {
+    setLang(getLocale());
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
 
   const searchDream = () => {
     if (!keyword.trim()) return;
     setLoading(true);
     setTimeout(() => {
       const found = DREAMS.find(d => d.keyword.includes(keyword) || keyword.includes(d.keyword));
-      const res = found || { id: 0, keyword, result: '暂无此梦境记录，百梦皆有意，古今相参证。' };
+      const res = found || { id: 0, keyword, result: resolve('dream.noResult') };
       setResult(res);
       setLoading(false);
-      saveRecord('dream', { keyword, result: res.result }, `解梦：${keyword}`);
+      saveRecord('dream', { keyword, result: res.result }, `${resolve('dream.resultTitle')}：${keyword}`);
     }, 500);
   };
 
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
-      <div className="fixed inset-x-0 top-0 z-0 h-32 bg-gradient-to-b from-gold/15 to-transparent" />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -50,15 +61,14 @@ export default function DreamPage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg className="size-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-moon size-8 text-gold" aria-hidden="true">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
               </svg>
             </div>
-            <h1 className="text-4xl text-gold">周公解梦</h1>
-            <p className="text-base text-paper-dark/85">
-              百梦皆有意，古今相参证。80 余条经典梦境，直接告诉您吉凶。
+            <h1 className="font-display text-4xl tracking-widest" style={{ color: '#C9A96E' }}>{resolve('dream.title')}</h1>
+            <p className="text-base" style={{ color: '#D4C5A9' }}>
+              {resolve('dream.subtitle')}
             </p>
           </section>
 
@@ -71,7 +81,7 @@ export default function DreamPage() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && searchDream()}
-                  placeholder="输入梦境关键词，如：蛇、鱼、飞..."
+                  placeholder={resolve('dream.searchPlaceholder')}
                   className="flex-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-4 text-sm text-paper-dark focus:border-gold focus:outline-none"
                 />
                 <button
@@ -80,7 +90,7 @@ export default function DreamPage() {
                   disabled={loading || !keyword.trim()}
                   className="rounded-lg bg-vermillion px-6 text-sm text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all disabled:opacity-50"
                 >
-                  {loading ? '查询中...' : '解梦'}
+                  {loading ? resolve('dream.loading') : resolve('dream.btn.search')}
                 </button>
               </div>
 
@@ -99,7 +109,7 @@ export default function DreamPage() {
           {result && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-2 animate-slide-up">
               <div className="text-center">
-                <span className="text-xs text-gold/80 tracking-wider">解梦结果</span>
+                <span className="text-xs text-gold/80 tracking-wider">{resolve('dream.resultTitle')}</span>
               </div>
               <p className="text-lg text-gold text-center font-display">"{result.keyword}"</p>
               <p className="text-sm text-paper-dark/85 text-center leading-7">{result.result}</p>
@@ -107,7 +117,7 @@ export default function DreamPage() {
           )}
 
           {/* Disclaimer */}
-          <p className="text-center text-xs text-on-dark-muted">仅作传统文化参考，请结合现实情况判断</p>
+          <p className="text-center text-xs text-on-dark-muted">{resolve('common.disclaimer')}</p>
         </div>
       </main>
 

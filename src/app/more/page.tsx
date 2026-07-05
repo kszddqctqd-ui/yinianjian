@@ -1,33 +1,48 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
+import { t, getLocale } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
+
+function resolve(key: string): string {
+  return t(key);
+}
 
 const FEATURES = [
-  { icon: '☯', title: '八字精批', desc: '真排盘，看格局、大运、流年', href: '/' },
-  { icon: '🪷', title: '为家人祈福', desc: '心愿供灯，传统签谱', href: '/qifu/' },
-  { icon: '📅', title: '今日黄历', desc: '干支宜忌，神煞冲煞', href: '/almanac/' },
-  { icon: '🏮', title: '求灵签', desc: '心诚则灵，一签一事', href: '/lottery/' },
-  { icon: '📖', title: '周公解梦', desc: '百梦皆有意，古今相参证', href: '/dream/' },
-  { icon: '🤚', title: '手相 / 面相', desc: 'AI 分析，预览解锁详批', href: '/palmistry/' },
-  { icon: '✍', title: '宝宝起名', desc: '结合八字喜忌，典故诗词', href: '/naming/' },
-  { icon: '🪙', title: '六爻占卜', desc: '三铜起卦，本互变卦象', href: '/divination/' },
-  { icon: '🧘', title: '静心禅坐', desc: '钟磬古乐，松涛溪水', href: '/meditation/' },
-  { icon: '📜', title: '用户协议', desc: '服务条款与免责声明', href: '/terms/' },
-  { icon: '🔒', title: '隐私说明', desc: '个人信息保护政策', href: '/privacy/' },
-  { icon: '🤖', title: 'AI 生成说明', desc: '算法分析与结果局限性', href: '/ai-notice/' },
-  { icon: '📋', title: '查看记录', desc: '历史查询记录汇总', href: '/records/' },
-  { icon: '👤', title: '个人中心', desc: '统计、设置、关于', href: '/profile/' },
+  { icon: '☯', nameKey: 'more.features.0.title', descKey: 'more.features.0.desc', href: '/' },
+  { icon: '🪷', nameKey: 'more.features.1.title', descKey: 'more.features.1.desc', href: '/qifu/' },
+  { icon: '📅', nameKey: 'more.features.2.title', descKey: 'more.features.2.desc', href: '/almanac/' },
+  { icon: '🏮', nameKey: 'more.features.3.title', descKey: 'more.features.3.desc', href: '/lottery/' },
+  { icon: '📖', nameKey: 'more.features.4.title', descKey: 'more.features.4.desc', href: '/dream/' },
+  { icon: '🤚', nameKey: 'more.features.5.title', descKey: 'more.features.5.desc', href: '/palmistry/' },
+  { icon: '✍', nameKey: 'more.features.6.title', descKey: 'more.features.6.desc', href: '/naming/' },
+  { icon: '🪙', nameKey: 'more.features.7.title', descKey: 'more.features.7.desc', href: '/divination/' },
+  { icon: '🧘', nameKey: 'more.features.8.title', descKey: 'more.features.8.desc', href: '/meditation/' },
+  { icon: '📜', nameKey: 'more.features.9.title', descKey: 'more.features.9.desc', href: '/terms/' },
+  { icon: '🔒', nameKey: 'more.features.10.title', descKey: 'more.features.10.desc', href: '/privacy/' },
+  { icon: '🤖', nameKey: 'more.features.11.title', descKey: 'more.features.11.desc', href: '/ai-notice/' },
+  { icon: '📋', nameKey: 'more.features.12.title', descKey: 'more.features.12.desc', href: '/records/' },
+  { icon: '👤', nameKey: 'more.features.13.title', descKey: 'more.features.13.desc', href: '/profile/' },
 ];
 
 export default function MorePage() {
+  const [lang, setLang] = useState<SupportedLang>(getLocale());
+
+  useEffect(() => {
+    setLang(getLocale());
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -35,8 +50,8 @@ export default function MorePage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-4xl px-4 pb-24">
           <div className="pt-8 text-center space-y-3">
-            <h1 className="text-3xl text-gold font-display tracking-[0.15em]">更多服务</h1>
-            <p className="text-xs text-paper-dark/50">一念之间，万事皆通</p>
+            <h1 className="text-3xl text-gold font-display tracking-[0.15em]">{resolve('more.title')}</h1>
+            <p className="text-xs text-paper-dark/50">{resolve('more.subtitle')}</p>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -51,8 +66,8 @@ export default function MorePage() {
                     {f.icon}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm text-gold group-hover:text-gold-light transition-colors truncate">{f.title}</div>
-                    <div className="text-[10px] text-paper-dark/50 truncate">{f.desc}</div>
+                    <div className="text-sm text-gold group-hover:text-gold-light transition-colors truncate">{resolve(f.nameKey)}</div>
+                    <div className="text-[10px] text-paper-dark/50 truncate">{resolve(f.descKey)}</div>
                   </div>
                 </div>
                 <svg className="w-4 h-4 text-paper-dark/20 ml-auto group-hover:text-gold/40 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -1,41 +1,65 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { t, getLocale } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { calculateBaZi, TIAN_GAN_WUXING } from '@/lib/bazi';
 import { generateNames, getFavorableElements, type NameSuggestion } from '@/lib/names';
 import { saveRecord } from '@/lib/records';
 
+function resolve(key: string): string {
+  return t(key);
+}
+
 export default function NamingPage() {
+  const [lang, setLang] = useState<SupportedLang>(getLocale());
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
+
   const [formData, setFormData] = useState({
     surname: '',
     gender: '男' as '男' | '女',
     birthYear: 2024,
     birthMonth: 7,
     birthDay: 1,
-    style: '诗词典故',
+    nameLength: 2,
+    style: resolve('naming.styles.0'),
     generation: '',
+    taboo: '',
   });
   const [results, setResults] = useState<NameSuggestion[]>([]);
   const [generating, setGenerating] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
-  const styles = ['诗词典故', '五行互补', '音韵优美', '寓意吉祥', '国学经典', '现代简约'];
+  const styleKeys = ['naming.styles.0', 'naming.styles.1', 'naming.styles.2', 'naming.styles.3', 'naming.styles.4', 'naming.styles.5'];
+  const styles = styleKeys.map(s => resolve(s));
 
   const handleSubmit = () => {
     if (!formData.surname.trim()) {
-      alert('请输入姓氏');
+      alert(resolve('naming.alert.enterSurname'));
       return;
     }
     setGenerating(true);
     setShowResult(false);
 
     setTimeout(() => {
-      // Calculate bazi to get wu xing counts
-      let wuXingCount: Record<string, number> = { '金': 0, '木': 0, '水': 0, '火': 0, '土': 0 };
+      let wuXingCount: Record<string, number> = {
+        [resolve('naming.wuxing.gold')]: 0,
+        [resolve('naming.wuxing.wood')]: 0,
+        [resolve('naming.wuxing.water')]: 0,
+        [resolve('naming.wuxing.fire')]: 0,
+        [resolve('naming.wuxing.earth')]: 0,
+      };
       try {
         const bazi = calculateBaZi(formData.birthYear, formData.birthMonth, formData.birthDay, 12);
         wuXingCount = bazi.wuXingCount;
@@ -47,13 +71,12 @@ export default function NamingPage() {
         formData.surname,
         wuXingCount,
         formData.style,
-        3,
+        formData.nameLength,
       );
       setResults(suggestions);
       setGenerating(false);
       setShowResult(true);
 
-      // Save to records
       if (suggestions.length > 0) {
         saveRecord('naming', {
           surname: formData.surname,
@@ -67,139 +90,230 @@ export default function NamingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
-      <div className="fixed inset-x-0 top-0 z-0 h-32 bg-gradient-to-b from-gold/15 to-transparent" />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
 
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
-        <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
+        <div className="mx-auto max-w-4xl space-y-section px-4 pb-24">
+          {/* Title */}
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg className="size-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
+            <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-book-open size-8 text-gold" aria-hidden="true">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
               </svg>
             </div>
-            <h1 className="text-4xl text-gold">宝宝起名</h1>
-            <p className="text-base text-paper-dark/85">
-              结合八字喜忌、音韵笔画、典故诗词，给孩子一个耐看的名字。
+            <h1 className="font-display text-4xl tracking-widest" style={{ color: '#C9A96E' }}>{resolve('naming.title')}</h1>
+            <p className="text-base" style={{ color: '#D4C5A9' }}>
+              {resolve('naming.subtitle')}
             </p>
           </section>
 
-          <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
-            {/* Surname */}
-            <div>
-              <label className="text-sm text-label">姓氏</label>
-              <input
-                type="text"
-                value={formData.surname}
-                onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
-                placeholder="请输入姓氏"
-                maxLength={4}
-                className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-4 text-sm text-paper-dark focus:border-gold focus:outline-none"
-              />
-            </div>
+          {/* Form */}
+          <div>
+            <div className="card-standard space-y-6">
+              {/* Surname */}
+              <label className="block space-y-2">
+                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.surname')}</span>
+                <input
+                  type="text"
+                  value={formData.surname}
+                  onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
+                  placeholder={resolve('naming.form.surname.placeholder')}
+                  maxLength={4}
+                  className="input-standard h-12 w-full px-3 text-base"
+                  style={{ color: '#D4C5A9' }}
+                />
+              </label>
 
-            {/* Gender */}
-            <div>
-              <label className="text-sm text-label">性别</label>
-              <div className="flex gap-3 mt-1">
-                <button type="button" onClick={() => setFormData({ ...formData, gender: '男' })} className={`flex-1 h-12 rounded-lg border text-sm transition-all ${formData.gender === '男' ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                  男
-                </button>
-                <button type="button" onClick={() => setFormData({ ...formData, gender: '女' })} className={`flex-1 h-12 rounded-lg border text-sm transition-all ${formData.gender === '女' ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                  女
-                </button>
-              </div>
-            </div>
-
-            {/* Birth info */}
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <label className="text-xs text-paper-dark/50">年</label>
-                <input type="number" value={formData.birthYear} onChange={(e) => setFormData({ ...formData, birthYear: parseInt(e.target.value) || 2024 })} min={1900} max={2100} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
-              </div>
-              <div>
-                <label className="text-xs text-paper-dark/50">月</label>
-                <input type="number" value={formData.birthMonth} onChange={(e) => setFormData({ ...formData, birthMonth: Math.min(12, Math.max(1, parseInt(e.target.value) || 5)) })} min={1} max={12} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
-              </div>
-              <div>
-                <label className="text-xs text-paper-dark/50">日</label>
-                <input type="number" value={formData.birthDay} onChange={(e) => setFormData({ ...formData, birthDay: Math.min(31, Math.max(1, parseInt(e.target.value) || 15)) })} min={1} max={31} className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-3 text-sm text-paper-dark focus:border-gold focus:outline-none" />
-              </div>
-            </div>
-
-            {/* Style */}
-            <div>
-              <label className="text-sm text-label">起名风格</label>
-              <div className="grid grid-cols-3 gap-2 mt-2">
-                {styles.map(s => (
-                  <button key={s} type="button" onClick={() => setFormData({ ...formData, style: s })} className={`rounded-lg border p-2 text-xs transition-all ${formData.style === s ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                    {s}
+              {/* Gender */}
+              <label className="block space-y-2">
+                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.gender')}</span>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, gender: '男' })}
+                    className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
+                      formData.gender === '男'
+                        ? 'border-gold/60 bg-gold/10 text-gold'
+                        : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
+                    }`}
+                  >
+                    {resolve('bazi.form.male')}
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, gender: '女' })}
+                    className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
+                      formData.gender === '女'
+                        ? 'border-gold/60 bg-gold/10 text-gold'
+                        : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
+                    }`}
+                  >
+                    {resolve('bazi.form.female')}
+                  </button>
+                </div>
+              </label>
+
+              {/* Birth info */}
+              <div className="grid grid-cols-3 gap-3">
+                <label className="block space-y-1">
+                  <span className="text-xs" style={{ color: '#D4C5A9/65' }}>{resolve('naming.form.year')}</span>
+                  <input
+                    type="number"
+                    value={formData.birthYear}
+                    onChange={(e) => setFormData({ ...formData, birthYear: parseInt(e.target.value) || 2024 })}
+                    min={1900} max={2100}
+                    className="input-standard h-12 w-full px-3 text-base"
+                    style={{ color: '#D4C5A9' }}
+                  />
+                </label>
+                <label className="block space-y-1">
+                  <span className="text-xs" style={{ color: '#D4C5A9/65' }}>{resolve('naming.form.month')}</span>
+                  <input
+                    type="number"
+                    value={formData.birthMonth}
+                    onChange={(e) => setFormData({ ...formData, birthMonth: Math.min(12, Math.max(1, parseInt(e.target.value) || 5)) })}
+                    min={1} max={12}
+                    className="input-standard h-12 w-full px-3 text-base"
+                    style={{ color: '#D4C5A9' }}
+                  />
+                </label>
+                <label className="block space-y-1">
+                  <span className="text-xs" style={{ color: '#D4C5A9/65' }}>{resolve('naming.form.day')}</span>
+                  <input
+                    type="number"
+                    value={formData.birthDay}
+                    onChange={(e) => setFormData({ ...formData, birthDay: Math.min(31, Math.max(1, parseInt(e.target.value) || 15)) })}
+                    min={1} max={31}
+                    className="input-standard h-12 w-full px-3 text-base"
+                    style={{ color: '#D4C5A9' }}
+                  />
+                </label>
               </div>
-            </div>
 
-            {/* Generation name */}
-            <div>
-              <label className="text-sm text-label">辈分字（选填）</label>
-              <input
-                type="text"
-                value={formData.generation}
-                onChange={(e) => setFormData({ ...formData, generation: e.target.value })}
-                placeholder="如有家谱辈分字请填写"
-                maxLength={2}
-                className="w-full mt-1 h-12 rounded-lg border border-gold/30 bg-xuan-surface px-4 text-sm text-paper-dark focus:border-gold focus:outline-none"
-              />
-            </div>
+              {/* Name length */}
+              <label className="block space-y-2">
+                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.nameLength')}</span>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, nameLength: 1 })}
+                    className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
+                      formData.nameLength === 1
+                        ? 'border-gold/60 bg-gold/10 text-gold'
+                        : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
+                    }`}
+                  >
+                    {resolve('naming.form.singleChar')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, nameLength: 2 })}
+                    className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
+                      formData.nameLength === 2
+                        ? 'border-gold/60 bg-gold/10 text-gold'
+                        : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
+                    }`}
+                  >
+                    {resolve('naming.form.doubleChar')}
+                  </button>
+                </div>
+              </label>
 
-            {/* Submit */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={generating || !formData.surname.trim()}
-              className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {generating ? '起名中...' : 'AI 起名'}
-            </button>
+              {/* Style */}
+              <label className="block space-y-2">
+                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.style')}</span>
+                <div className="grid grid-cols-3 gap-2">
+                  {styles.map((s, idx) => (
+                    <button
+                      key={styleKeys[idx]}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, style: s })}
+                      className={`rounded-md border p-2 text-xs transition-all ${
+                        formData.style === s
+                          ? 'border-gold/60 bg-gold/10 text-gold'
+                          : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </label>
+
+              {/* Generation name */}
+              <label className="block space-y-2">
+                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.generation')}</span>
+                <input
+                  type="text"
+                  value={formData.generation}
+                  onChange={(e) => setFormData({ ...formData, generation: e.target.value })}
+                  placeholder={resolve('naming.form.generation.placeholder')}
+                  maxLength={2}
+                  className="input-standard h-12 w-full px-3 text-base"
+                  style={{ color: '#D4C5A9' }}
+                />
+              </label>
+
+              {/* Taboo characters */}
+              <label className="block space-y-2">
+                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.taboo')}</span>
+                <input
+                  type="text"
+                  value={formData.taboo}
+                  onChange={(e) => setFormData({ ...formData, taboo: e.target.value })}
+                  placeholder={resolve('naming.form.taboo.placeholder')}
+                  maxLength={50}
+                  className="input-standard h-12 w-full px-3 text-base"
+                  style={{ color: '#D4C5A9' }}
+                />
+              </label>
+
+              {/* Submit */}
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={generating || !formData.surname.trim()}
+                className="btn-primary w-full"
+              >
+                {generating ? resolve('naming.generating') : resolve('naming.btn.generate')}
+              </button>
+            </div>
           </div>
 
           {/* Results */}
           {showResult && results.length > 0 && (
-            <div className="space-y-3 animate-slide-up">
+            <div className="space-y-3">
               <div className="text-center">
-                <span className="text-xs text-gold/80 tracking-wider">起名结果</span>
+                <span className="text-xs text-gold-80 tracking-wider">{resolve('naming.results')}</span>
               </div>
               {results.map((r, i) => (
-                <div key={i} className="rounded-lg border border-gold/20 bg-xuan-card/95 p-4 shadow-paper backdrop-blur-sm">
+                <div key={i} className="card-standard">
                   <div className="flex items-start gap-4">
                     <div className="text-3xl text-gold font-display font-bold">{r.fullName}</div>
                     <div className="flex-1 space-y-1">
                       <div className="flex gap-2 flex-wrap">
-                        <span className="text-xs rounded-full px-2 py-0.5 bg-gold/10 text-gold">{r.element}行</span>
-                        <span className="text-xs rounded-full px-2 py-0.5 bg-paper-dark/10 text-on-dark-muted">{r.style}</span>
-                        {formData.generation && <span className="text-xs rounded-full px-2 py-0.5 bg-vermillion/10 text-vermillion">辈分字：{formData.generation}</span>}
+                        <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80">{r.element}{resolve('naming.elementSuffix')}</span>
+                        <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80">{r.style}</span>
+                        {formData.generation && <span className="rounded-full border border-vermillion/25 px-2 py-0.5 text-xs text-vermillion">{resolve('naming.generationChar')}{formData.generation}</span>}
                       </div>
-                      <p className="text-sm text-paper-dark/85">{r.meaning}</p>
-                      {r.source && <p className="text-xs text-paper-dark/50">出处：{r.source}</p>}
+                      <p className="text-sm" style={{ color: '#D4C5A9' }}>{r.meaning}</p>
+                      {r.source && <p className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('naming.sourceLabel')}{r.source}</p>}
                     </div>
                   </div>
                 </div>
               ))}
-              <p className="text-center text-xs text-on-dark-muted">以上名字仅供参考，最终由家长自行决定</p>
+              <p className="text-center text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('naming.resultNote')}</p>
             </div>
           )}
 
           {showResult && results.length === 0 && (
-            <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad text-center space-y-2">
-              <p className="text-sm text-on-dark-muted">未能生成合适的名字，请尝试更换风格或出生日期</p>
+            <div className="card-standard text-center space-y-2">
+              <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('naming.noResult')}</p>
             </div>
           )}
         </div>

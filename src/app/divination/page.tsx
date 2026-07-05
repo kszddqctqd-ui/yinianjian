@@ -1,12 +1,19 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { t, getLocale } from '@/lib/i18n';
+import type { SupportedLang } from '@/lib/i18n';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
+import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { castHexagram, type HexagramInfo } from '@/lib/hexagrams';
 import { saveRecord } from '@/lib/records';
+
+function resolve(key: string): string {
+  return t(key);
+}
 
 // Map 3-line binary to trigram name
 function linesToTrigram(lines: number[]): string {
@@ -79,8 +86,8 @@ function HexagramCard({ title, info, lines, movingLines }: {
         </>
       ) : (
         <div className="text-center py-4">
-          <p className="text-sm text-on-dark-muted">暂无此卦解读</p>
-          <p className="text-xs text-paper-dark/40 mt-1">请换一卦再试</p>
+          <p className="text-sm text-on-dark-muted">{resolve('divination.noReading')}</p>
+          <p className="text-xs text-paper-dark/40 mt-1">{resolve('divination.tryAgain')}</p>
         </div>
       )}
     </div>
@@ -88,6 +95,14 @@ function HexagramCard({ title, info, lines, movingLines }: {
 }
 
 export default function DivinationPage() {
+  const [lang, setLang] = useState<SupportedLang>(getLocale());
+  useEffect(() => {
+    setLang(getLocale());
+    const handler = () => setLang(getLocale());
+    window.addEventListener('lang-change', handler);
+    return () => window.removeEventListener('lang-change', handler);
+  }, []);
+
   const [method, setMethod] = useState<'coins' | 'time' | 'number'>('coins');
   const [result, setResult] = useState<{ ben: HexagramInfo | null; hu: string; bian: HexagramInfo | null; movingLines: number[]; lines: number[] } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -107,7 +122,7 @@ export default function DivinationPage() {
     const lines = coinResults;
     const hex = castHexagram(lines);
     setResult({ ben: hex.ben ?? null, hu: hex.hu, bian: hex.bian ?? null, movingLines: hex.movingLines, lines });
-    saveRecord('divination', { method: '铜钱起卦', lines, result: hex.ben?.name ?? '未知' }, `六爻占卜：${hex.ben?.name ?? '未知卦'}`);
+    saveRecord('divination', { method: resolve('divination.method.coins'), lines, result: hex.ben?.name ?? '未知' }, `${resolve('divination.title')}${hex.ben?.name ? `：${hex.ben.name}` : ''}`);
   }, [coinResults]);
 
   // Time divination: use current hour/minute
@@ -124,14 +139,14 @@ export default function DivinationPage() {
     const hex = castHexagram(lines);
     setResult({ ben: hex.ben ?? null, hu: hex.hu, bian: hex.bian ?? null, movingLines: hex.movingLines, lines });
     setCoinResults(lines);
-    saveRecord('divination', { method: '时间起卦', lines, result: hex.ben?.name ?? '未知' }, `六爻占卜（时间）：${hex.ben?.name ?? '未知卦'}`);
+    saveRecord('divination', { method: resolve('divination.method.time'), lines, result: hex.ben?.name ?? '未知' }, `${resolve('divination.title')}（${resolve('divination.method.time')}）${hex.ben?.name ? `：${hex.ben.name}` : ''}`);
   }, []);
 
   // Number divination
   const castFromNumbers = useCallback(() => {
     const nums = numberInput.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
     if (nums.length < 3) {
-      alert('请输入至少3个数字，用逗号分隔');
+      alert(resolve('divination.numberError'));
       return;
     }
     const lines: number[] = [];
@@ -142,7 +157,7 @@ export default function DivinationPage() {
     const hex = castHexagram(lines);
     setResult({ ben: hex.ben ?? null, hu: hex.hu, bian: hex.bian ?? null, movingLines: hex.movingLines, lines });
     setCoinResults(lines);
-    saveRecord('divination', { method: '数字起卦', nums, lines, result: hex.ben?.name ?? '未知' }, `六爻占卜（数字）：${hex.ben?.name ?? '未知卦'}`);
+    saveRecord('divination', { method: resolve('divination.method.number'), nums, lines, result: hex.ben?.name ?? '未知' }, `${resolve('divination.title')}（${resolve('divination.method.number')}）${hex.ben?.name ? `：${hex.ben.name}` : ''}`);
   }, [numberInput]);
 
   const handleSubmit = () => {
@@ -162,11 +177,8 @@ export default function DivinationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-deep relative overflow-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
-      <div className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]" style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }} />
-      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)' }} />
-      <div className="fixed inset-x-0 top-0 z-0 h-32 bg-gradient-to-b from-gold/15 to-transparent" />
+    <div className="min-h-screen bg-xuan relative overflow-hidden">
+      <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
@@ -174,33 +186,32 @@ export default function DivinationPage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg className="size-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="mx-auto mb-3 flex size-20 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-compass size-8 text-gold" aria-hidden="true">
                 <circle cx="12" cy="12" r="10" />
-                <path d="M8 12h8" />
-                <path d="M12 8v8" />
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
               </svg>
             </div>
-            <h1 className="text-4xl text-gold">六爻占卜</h1>
-            <p className="text-base text-paper-dark/85">
-              心起一念，三铜起卦，再看本卦、互卦、变卦，为当前事项补一版卦象参考。
+            <h1 className="text-4xl tracking-widest" style={{ color: '#C9A96E', fontFamily: "'ZhiMangXing', cursive" }}>{resolve('divination.title')}</h1>
+            <p className="text-base" style={{ color: '#D4C5A9' }}>
+              {resolve('divination.subtitle')}
             </p>
           </section>
 
           {/* Method selection */}
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
             <div className="text-center">
-              <span className="text-xs text-gold/80 tracking-wider">起卦方式</span>
+              <span className="text-xs text-gold/80 tracking-wider">{resolve('divination.methodTitle')}</span>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { key: 'coins' as const, label: '铜钱起卦', icon: '🪙' },
-                { key: 'time' as const, label: '时间起卦', icon: '⏰' },
-                { key: 'number' as const, label: '数字起卦', icon: '🔢' },
+                { key: 'coins' as const },
+                { key: 'time' as const },
+                { key: 'number' as const },
               ].map(m => (
                 <button key={m.key} type="button" onClick={() => { setMethod(m.key); resetAll(); }} className={`rounded-lg border p-3 text-center transition-all ${method === m.key ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                  <span className="text-2xl">{m.icon}</span>
-                  <p className="text-xs mt-1">{m.label}</p>
+                  <span className="text-2xl">{m.key === 'coins' ? '🪙' : m.key === 'time' ? '⏰' : '🔢'}</span>
+                  <p className="text-xs mt-1">{resolve(`divination.method.${m.key}`)}</p>
                 </button>
               ))}
             </div>
@@ -216,7 +227,7 @@ export default function DivinationPage() {
                       }`}>
                         {r}
                       </div>
-                      <span className="text-[10px] text-on-dark-dim mt-1">第{i + 1}爻</span>
+                      <span className="text-[10px] text-on-dark-dim mt-1">{resolve('divination.line').replace('{num}', (i + 1).toString())}</span>
                     </div>
                   ))}
                   {Array.from({ length: 6 - coinResults.length }).map((_, i) => (
@@ -229,7 +240,7 @@ export default function DivinationPage() {
                   disabled={coinResults.length >= 6 || loading}
                   className="w-full rounded-lg border border-gold/30 py-2 text-sm text-gold hover:bg-gold/10 transition-all disabled:opacity-50"
                 >
-                  {coinResults.length >= 6 ? '六爻已满' : '投掷铜钱'}
+                  {coinResults.length >= 6 ? resolve('divination.coin.full') : resolve('divination.coin.toss')}
                 </button>
               </div>
             )}
@@ -237,19 +248,19 @@ export default function DivinationPage() {
             {/* Time method */}
             {method === 'time' && (
               <p className="text-sm text-on-dark-muted text-center py-2">
-                以当前时间起卦，系统将自动生成卦象
+                {resolve('divination.timeHint')}
               </p>
             )}
 
             {/* Number method */}
             {method === 'number' && (
               <div className="space-y-2">
-                <label className="text-sm text-label">输入三个数字（逗号分隔）</label>
+                <label className="text-sm text-label">{resolve('divination.numberLabel')}</label>
                 <input
                   type="text"
                   value={numberInput}
                   onChange={(e) => setNumberInput(e.target.value)}
-                  placeholder="例如：6,8,9"
+                  placeholder={resolve('divination.numberPlaceholder')}
                   className="w-full h-12 rounded-lg border border-gold/30 bg-xuan-surface px-4 text-sm text-paper-dark focus:border-gold focus:outline-none"
                 />
               </div>
@@ -262,7 +273,7 @@ export default function DivinationPage() {
               disabled={loading || (method === 'coins' && coinResults.length < 6)}
               className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all disabled:opacity-50"
             >
-              {loading ? '起卦中...' : '起卦'}
+              {loading ? resolve('divination.btn.casting') : resolve('divination.btn.cast')}
             </button>
           </div>
 
@@ -270,19 +281,19 @@ export default function DivinationPage() {
           {result && (
             <div className="space-y-4 animate-slide-up">
               <HexagramCard
-                title="本卦（当前）"
+                title={resolve('divination.primary')}
                 info={result.ben}
                 lines={result.lines}
                 movingLines={result.movingLines}
               />
               <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-4 text-center">
-                <span className="text-xs text-gold/80 tracking-wider">互卦</span>
+                <span className="text-xs text-gold/80 tracking-wider">{resolve('divination.mutual')}</span>
                 <p className="text-lg text-on-dark-muted mt-2">{result.hu}</p>
-                <p className="text-xs text-paper-dark/40 mt-1">由本卦中间四爻演变而来，代表过程</p>
+                <p className="text-xs text-paper-dark/40 mt-1">{resolve('divination.mutualNote')}</p>
               </div>
               {result.bian && (
                 <HexagramCard
-                  title={`变卦${result.movingLines.length > 0 ? `（${result.movingLines.length}爻动）` : '（无动爻）'}`}
+                  title={`${resolve('divination.transformed')}${result.movingLines.length > 0 ? `（${result.movingLines.length}爻动）` : '（无动爻）'}`}
                   info={result.bian}
                   lines={result.lines.map(l => l === 9 ? 8 : l === 6 ? 7 : l)}
                   movingLines={[]}
@@ -291,17 +302,18 @@ export default function DivinationPage() {
               {result.movingLines.length > 0 && result.ben && (
                 <div className="rounded-lg border border-vermillion/20 bg-vermillion/5 p-4 text-center">
                   <p className="text-sm text-paper-dark/80">
-                    动爻在第 {result.movingLines.map(i => i + 1).join('、')} 爻，
-                    {result.movingLines.length === 1
-                      ? `以第${result.movingLines[0] + 1}爻爻辞为主解读`
-                      : '多爻齐动，以本卦卦辞为主，变卦为辅'}
+                    {resolve('divination.movingLineNote').replace('{lines}', result.movingLines.map(i => i + 1).join('、')).replace('{detail}',
+                      result.movingLines.length === 1
+                        ? resolve('divination.movingDetail.one').replace('{num}', (result.movingLines[0] + 1).toString())
+                        : resolve('divination.movingDetail.multi')
+                    )}
                   </p>
                 </div>
               )}
             </div>
           )}
 
-          <p className="text-center text-xs text-on-dark-muted">仅作传统文化参考，请结合现实情况判断</p>
+          <p className="text-center text-xs text-on-dark-muted">{resolve('common.disclaimer')}</p>
         </div>
       </main>
 

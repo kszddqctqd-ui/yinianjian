@@ -100,8 +100,8 @@ export default function NamingPage() {
         <div className="mx-auto max-w-4xl space-y-section px-4 pb-24">
           {/* Title */}
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-book-open size-8 text-gold" aria-hidden="true">
+            <div className="mx-auto mb-2 flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-book-open size-[2.25rem] text-gold" aria-hidden="true">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
               </svg>
@@ -161,7 +161,7 @@ export default function NamingPage() {
               {/* Birth info */}
               <div className="grid grid-cols-3 gap-3">
                 <label className="block space-y-1">
-                  <span className="text-xs" style={{ color: '#D4C5A9/65' }}>{resolve('naming.form.year')}</span>
+                  <span className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('naming.form.year')}</span>
                   <input
                     type="number"
                     value={formData.birthYear}
@@ -172,7 +172,7 @@ export default function NamingPage() {
                   />
                 </label>
                 <label className="block space-y-1">
-                  <span className="text-xs" style={{ color: '#D4C5A9/65' }}>{resolve('naming.form.month')}</span>
+                  <span className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('naming.form.month')}</span>
                   <input
                     type="number"
                     value={formData.birthMonth}
@@ -183,7 +183,7 @@ export default function NamingPage() {
                   />
                 </label>
                 <label className="block space-y-1">
-                  <span className="text-xs" style={{ color: '#D4C5A9/65' }}>{resolve('naming.form.day')}</span>
+                  <span className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('naming.form.day')}</span>
                   <input
                     type="number"
                     value={formData.birthDay}
@@ -294,7 +294,7 @@ export default function NamingPage() {
               {results.map((r, i) => (
                 <div key={i} className="card-standard">
                   <div className="flex items-start gap-4">
-                    <div className="text-3xl text-gold font-display font-bold">{r.fullName}</div>
+                    <div className="text-[1.875rem] text-gold font-display font-bold">{r.fullName}</div>
                     <div className="flex-1 space-y-1">
                       <div className="flex gap-2 flex-wrap">
                         <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80">{r.element}{resolve('naming.elementSuffix')}</span>
@@ -302,12 +302,12 @@ export default function NamingPage() {
                         {formData.generation && <span className="rounded-full border border-vermillion/25 px-2 py-0.5 text-xs text-vermillion">{resolve('naming.generationChar')}{formData.generation}</span>}
                       </div>
                       <p className="text-sm" style={{ color: '#D4C5A9' }}>{r.meaning}</p>
-                      {r.source && <p className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('naming.sourceLabel')}{r.source}</p>}
+                      {r.source && <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('naming.sourceLabel')}{r.source}</p>}
                     </div>
                   </div>
                 </div>
               ))}
-              <p className="text-center text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('naming.resultNote')}</p>
+              <p className="text-center text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('naming.resultNote')}</p>
             </div>
           )}
 

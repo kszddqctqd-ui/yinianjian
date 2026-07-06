@@ -50,7 +50,7 @@ export default function MorePage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-4xl px-4 pb-24">
           <div className="pt-8 text-center space-y-3">
-            <h1 className="text-3xl text-gold font-display tracking-[0.15em]">{resolve('more.title')}</h1>
+            <h1 className="text-[1.875rem] text-gold font-display tracking-[0.15em]">{resolve('more.title')}</h1>
             <p className="text-xs text-paper-dark/50">{resolve('more.subtitle')}</p>
           </div>
 
@@ -62,7 +62,7 @@ export default function MorePage() {
                 className="group rounded-lg border border-gold/20 bg-xuan-card/95 p-4 transition-all duration-300 hover:border-gold/40 hover:bg-xuan-card/97"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full border border-gold/20 bg-gold/5 text-xl transition-colors group-hover:border-gold/40 group-hover:bg-gold/10">
+                  <div className="flex size-[2.6875rem] shrink-0 items-center justify-center rounded-full border border-gold/20 bg-gold/5 text-[1.25rem] transition-colors group-hover:border-gold/40 group-hover:bg-gold/10">
                     {f.icon}
                   </div>
                   <div className="min-w-0">

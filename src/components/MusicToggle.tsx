@@ -75,9 +75,9 @@ export function MusicToggle() {
   useEffect(() => { return () => { audioCtx?.close(); }; }, []);
   return (
     <button
-      aria-label="禅修音乐开关"
+      aria-label="音乐开关"
       onClick={toggle}
-      className="relative inline-flex size-9 items-center justify-center rounded-full border transition-colors border-gold/25 text-paper-dark hover:border-gold/40 hover:text-gold"
+      className="relative flex size-8 items-center justify-center rounded-full border border-gold/30 text-gold/70 transition-colors hover:border-gold/40 hover:text-gold"
     >
       {playing ? <Volume2 size={18} /> : <VolumeX size={18} />}
     </button>

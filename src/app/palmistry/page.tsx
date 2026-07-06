@@ -132,7 +132,7 @@ export default function PalmistryPage() {
             {faceResult.faceDetected ? (
               <>
                 <div className="text-lg font-display" style={{ color: '#C9A96E' }}>{resolve('palmistry.face.detected')}</div>
-                <div className="text-xs mt-1" style={{ color: '#D4C5A9/65' }}>
+                <div className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.65)' }}>
                   {resolve('palmistry.faceSize').replace('{width}', String(faceResult.faceWidth)).replace('{height}', String(faceResult.faceHeight))}
                 </div>
               </>
@@ -226,8 +226,8 @@ export default function PalmistryPage() {
         <div className="mx-auto max-w-4xl space-y-section px-4 pb-24">
           {/* Title */}
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-hand size-8 text-gold" aria-hidden="true">
+            <div className="mx-auto mb-2 flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-hand size-[2.25rem] text-gold" aria-hidden="true">
                 <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
                 <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
                 <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
@@ -275,7 +275,7 @@ export default function PalmistryPage() {
                         : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
                     }`}
                   >
-                    <span className="text-2xl">🤚</span>
+                    <span className="text-[1.5rem]">🤚</span>
                     <p className="text-sm mt-1">{resolve('palmistry.type.hand')}</p>
                   </button>
                   <button
@@ -287,7 +287,7 @@ export default function PalmistryPage() {
                         : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
                     }`}
                   >
-                    <span className="text-2xl">😊</span>
+                    <span className="text-[1.5rem]">😊</span>
                     <p className="text-sm mt-1">{resolve('palmistry.type.face')}</p>
                   </button>
                 </div>
@@ -296,13 +296,13 @@ export default function PalmistryPage() {
               <div className="space-y-2">
                 <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.upload')}</p>
                 <label className="flex flex-col items-center justify-center h-40 rounded-xl border-2 border-dashed border-gold/30 bg-xuan-surface/40 cursor-pointer hover:border-gold/40 hover:bg-xuan-surface/70 transition-all">
-                  <svg className="size-8 text-gold/40 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <svg className="size-[2.25rem] text-gold/40 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                     <polyline points="17 8 12 3 7 8" />
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
                   <span className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.uploadText')} {type === 'hand' ? resolve('palmistry.uploadHand') : resolve('palmistry.uploadFace')}</span>
-                  <span className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('palmistry.uploadHint')}</span>
+                  <span className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('palmistry.uploadHint')}</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
                 </label>
               </div>
@@ -312,22 +312,22 @@ export default function PalmistryPage() {
                 <p className="text-sm font-medium" style={{ color: '#C9A96E' }}>{resolve('palmistry.photoGuide')}</p>
                 {type === 'hand' ? (
                   <>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.handGuide.0')}</p>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.handGuide.1')}</p>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.handGuide.2')}</p>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.handGuide.3')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.0')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.1')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.2')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.3')}</p>
                   </>
                 ) : (
                   <>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.faceGuide.0')}</p>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.faceGuide.1')}</p>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.faceGuide.2')}</p>
-                    <p className="text-xs" style={{ color: '#D4C5A9/80' }}>• {resolve('palmistry.faceGuide.3')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.0')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.1')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.2')}</p>
+                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.3')}</p>
                   </>
                 )}
               </div>
 
-              <p className="text-xs text-center" style={{ color: '#D4C5A9/50' }}>
+              <p className="text-xs text-center" style={{ color: 'rgba(212,197,169,0.5)' }}>
                 {resolve('palmistry.uploadHint')}
               </p>
             </div>
@@ -387,7 +387,7 @@ export default function PalmistryPage() {
             <div className="card-standard text-center py-12 space-y-3">
               <div className="text-4xl animate-pulse">🔍</div>
               <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.analyzing')}</p>
-              <p className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('palmistry.modelLoading')}</p>
+              <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('palmistry.modelLoading')}</p>
             </div>
           )}
 
@@ -412,10 +412,10 @@ export default function PalmistryPage() {
           {showPayment && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
               <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4" onClick={(e) => e.stopPropagation()}>
-                <h3 className="text-xl text-gold font-display">{resolve('palmistry.unlock.title')}</h3>
+                <h3 className="text-[1.25rem] text-gold font-display">{resolve('palmistry.unlock.title')}</h3>
                 <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.payment.desc')}</p>
                 <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
-                <p className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('palmistry.payment.confirm')}</p>
+                <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('palmistry.payment.confirm')}</p>
                 <button
                   type="button"
                   onClick={() => setShowPayment(false)}

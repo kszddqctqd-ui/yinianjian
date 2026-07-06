@@ -76,8 +76,8 @@ export default function LotteryPage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sparkles size-8 text-gold" aria-hidden="true">
+            <div className="mx-auto mb-3 flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sparkles size-[2.25rem] text-gold" aria-hidden="true">
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
               </svg>
             </div>
@@ -104,7 +104,7 @@ export default function LotteryPage() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">{m.icon}</span>
+                      <span className="text-[1.875rem]">{m.icon}</span>
                       <div>
                         <p className={`font-display text-lg ${selectedMaster === i ? 'text-gold' : 'text-paper-dark'}`}>{resolve(m.nameKey)}</p>
                         <p className="text-xs text-on-dark-muted">{resolve(m.roleKey)}</p>
@@ -154,8 +154,8 @@ export default function LotteryPage() {
                 <span className="text-xs text-gold/80 tracking-wider">{resolve('lottery.signNumber').replace('{num}', lottery.num.toString())}</span>
               </div>
               <div className="text-center space-y-2">
-                <p className="text-3xl text-gold font-display">{lottery.title}</p>
-                <p className="text-xl text-paper-dark/85 italic">{lottery.text}</p>
+                <p className="text-[1.875rem] text-gold font-display">{lottery.title}</p>
+                <p className="text-[1.25rem] text-paper-dark/85 italic">{lottery.text}</p>
                 <p className="text-sm text-label">{lottery.desc}</p>
                 <div className={`inline-block rounded-full px-4 py-1 text-sm font-medium ${
                   lottery.fortune === '大吉' ? 'bg-gold/20 text-gold' :

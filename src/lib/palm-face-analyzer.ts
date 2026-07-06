@@ -131,33 +131,21 @@ export interface PalmAnalysisResult {
   overall: string;
 }
 
-// 分析手相（基于 MediaPipe 手部关键点 + 图像处理）
+// 分析手相（纯图像处理，不依赖 MediaPipe）
 export async function analyzePalm(imageElement: HTMLImageElement): Promise<PalmAnalysisResult> {
-  try {
-    // 使用 MediaPipe Hands 检测手部关键点
-    const { HAND_CONNECTIONS, Hands } = await import('@mediapipe/hands');
-
-    // 创建 canvas 进行图像处理
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      return getFallbackPalmResult();
-    }
-
-    canvas.width = imageElement.naturalWidth;
-    canvas.height = imageElement.naturalHeight;
-    ctx.drawImage(imageElement, 0, 0);
-
-    // 使用简单的图像处理来模拟掌纹分析
-    // 在实际项目中，这里会集成 MediaPipe Hands 的关键点检测
-    // 但由于 MediaPipe 需要额外的模型加载，我们先返回基于图片特征的模拟分析
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-    return analyzePalmFromImageData(imageData, canvas.width, canvas.height);
-  } catch (e) {
-    console.error('Palm analysis error:', e);
+  // 创建 canvas 进行图像处理
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
     return getFallbackPalmResult();
   }
+
+  canvas.width = imageElement.naturalWidth;
+  canvas.height = imageElement.naturalHeight;
+  ctx.drawImage(imageElement, 0, 0);
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  return analyzePalmFromImageData(imageData, canvas.width, canvas.height);
 }
 
 // 从图像数据中提取掌纹特征

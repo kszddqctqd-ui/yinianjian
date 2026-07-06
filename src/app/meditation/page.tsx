@@ -64,8 +64,8 @@ export default function MeditationPage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame size-8 text-gold" aria-hidden="true">
+            <div className="mx-auto mb-2 flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame size-[2.25rem] text-gold" aria-hidden="true">
                 <path d="M8.5 14.1A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
               </svg>
             </div>
@@ -92,7 +92,7 @@ export default function MeditationPage() {
                       : 'border-gold/20 bg-xuan-surface/40 hover:border-gold/40 hover:bg-xuan-surface/70'
                   }`}
                 >
-                  <span className="text-3xl">{mode.icon}</span>
+                  <span className="text-[1.875rem]">{mode.icon}</span>
                   <p className="text-sm text-gold mt-2 font-display">{resolve(mode.nameKey)}</p>
                   <p className="text-[10px] text-on-dark-muted mt-1">{resolve(mode.descKey)}</p>
                 </button>

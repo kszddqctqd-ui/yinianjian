@@ -70,7 +70,7 @@ function HexagramCard({ title, info, lines, movingLines }: {
       {info ? (
         <>
           <div className="text-center mb-3">
-            <p className="text-2xl text-gold font-display">{info.name}</p>
+            <p className="text-[1.5rem] text-gold font-display">{info.name}</p>
             <p className="text-xs text-paper-dark/50 mt-1">{info.upper}上{info.lower}下</p>
           </div>
           <HexagramLines lines={lines} movingLines={movingLines} />
@@ -187,7 +187,7 @@ export default function DivinationPage() {
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
             <div className="mx-auto mb-3 flex size-20 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-compass size-8 text-gold" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-compass size-[2.25rem] text-gold" aria-hidden="true">
                 <circle cx="12" cy="12" r="10" />
                 <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
               </svg>
@@ -210,7 +210,7 @@ export default function DivinationPage() {
                 { key: 'number' as const },
               ].map(m => (
                 <button key={m.key} type="button" onClick={() => { setMethod(m.key); resetAll(); }} className={`rounded-lg border p-3 text-center transition-all ${method === m.key ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                  <span className="text-2xl">{m.key === 'coins' ? '🪙' : m.key === 'time' ? '⏰' : '🔢'}</span>
+                  <span className="text-[1.5rem]">{m.key === 'coins' ? '🪙' : m.key === 'time' ? '⏰' : '🔢'}</span>
                   <p className="text-xs mt-1">{resolve(`divination.method.${m.key}`)}</p>
                 </button>
               ))}

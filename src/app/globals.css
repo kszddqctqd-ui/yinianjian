@@ -60,6 +60,15 @@
   --animate-incense-smoke: incense-smoke 3s ease-out infinite;
   --animate-ritual-shake: ritual-shake 0.08s ease-in-out infinite alternate;
   --animate-slide-up: slide-up 0.4s ease-out forwards;
+  --animate-bounce: bounce 1s ease-in-out infinite;
+  --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-spin: spin 1s linear infinite;
+  --animate-bamboo-shake: bamboo-shake 2s ease-in-out infinite;
+  --animate-stick-rattle: stick-rattle 0.3s ease-in-out infinite;
+  --animate-stick-pop: stick-pop 0.6s ease-out forwards;
+  --animate-stick-fly: stick-fly 0.8s ease-out forwards;
+  --animate-marquee: marquee 30s linear infinite;
 }
 
 /* ========== 关键帧 ========== */
@@ -96,27 +105,83 @@
 
 @keyframes thinking-pulse {
   0% { transform: scale(0.6); opacity: 0.95; }
-  100% { transform: scale(1.5); opacity: 0.05; }
+  60% { transform: scale(1.5); opacity: 0.05; }
+  100% { transform: scale(1.7); opacity: 0; }
 }
 
 @keyframes thinking-dot {
-  0% { transform: scale(0.5); opacity: 0.4; }
-  100% { transform: scale(1.2); opacity: 1; }
+  0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
+  40% { transform: scale(1.2); opacity: 1; }
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
 }
 
 @keyframes incense-smoke {
-  0% { opacity: 0.6; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-120px) scale(2.5); }
+  0% { opacity: 0.6; transform: translateY(0px) translateX(0px) scale(1); }
+  50% { opacity: 0.35; transform: translateY(-60px) translateX(10px) scale(1.5); }
+  100% { opacity: 0; transform: translateY(-120px) translateX(-6px) scale(2.5); }
 }
 
 @keyframes ritual-shake {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-3px); }
+  0%, 100% { transform: translateX(0px); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: none; animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes pulse {
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bamboo-shake {
+  0% { transform: translateX(0px) rotate(0deg); }
+  15% { transform: translateX(-6px) rotate(-4deg); }
+  30% { transform: translateX(8px) rotate(5deg); }
+  45% { transform: translateX(-5px) rotate(-3deg); }
+  60% { transform: translateX(7px) rotate(4deg); }
+  75% { transform: translateX(-3px) rotate(-2deg); }
+  90% { transform: translateX(2px) rotate(1deg); }
+  100% { transform: translateX(0px) rotate(0deg); }
+}
+
+@keyframes stick-rattle {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes stick-pop {
+  0% { transform: translateY(0px) scale(1); opacity: 1; }
+  60% { transform: translateY(-120px) scale(1.3); opacity: 1; }
+  100% { transform: translateY(-160px) scale(0.6); opacity: 0; }
+}
+
+@keyframes stick-fly {
+  0% { transform: translate(-50%, 60px) rotate(0deg); opacity: 0; }
+  30% { transform: translate(-50%) rotate(90deg); opacity: 1; }
+  100% { transform: translate(-50%, -20px) rotate(180deg); opacity: 0; }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0px); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes slide-up {
@@ -134,14 +199,10 @@ html {
   html {
     font-size: 17px;
   }
-  /* 小屏幕优化 */
   .max-w-6xl, .max-w-5xl, .max-w-4xl {
     max-width: 100%;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
-  }
-  .space-y-section > * + * {
-    margin-top: 1rem;
   }
 }
 
@@ -165,9 +226,8 @@ html {
   }
 }
 
-/* ========== 全局背景层（5层叠加，完全对齐菩提苑） ========== */
-
-/* 层1: 渐变底色 */
+/* ========== 全局背景层 ========== */
+/* 层1: 渐变底色（body 全局背景） */
 body {
   background: linear-gradient(to bottom, #1A1410, #2C2418, #1A1410);
   color: #F5F0E8;
@@ -180,43 +240,6 @@ body {
   letter-spacing: 0.01em;
   font-weight: 400;
   min-height: 100vh;
-}
-
-/* 层2: 寺庙山脉 SVG 纹理叠加 */
-.bg-temple-overlay {
-  background-image: url('/temple/temple-mountain.svg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.20;
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* 层3: 径向暗角 */
-.bg-vignette {
-  background: radial-gradient(ellipse at 50% 50%,
-    rgba(10,6,4,0.55) 0%,
-    rgba(10,6,4,0.35) 30%,
-    transparent 60%,
-    rgba(10,6,4,0.6) 100%
-  );
-  pointer-events: none;
-  position: fixed;
-  z-index: 0;
-}
-
-/* 层4: 顶部金色光晕条 */
-.bg-top-glow {
-  position: fixed;
-  inset-x: 0;
-  top: 0;
-  z-index: 0;
-  height: 8rem;
-  background: linear-gradient(to bottom, rgba(201,169,110,0.15), transparent);
-  pointer-events: none;
 }
 
 /* ========== 全局字体 ========== */
@@ -249,8 +272,6 @@ body {
 }
 
 /* ========== 英文字体适配 ========== */
-
-/* 英文环境下：标题字号适当缩小，增加字间距提升可读性 */
 :lang(en) h1,
 :lang(en) .text-4xl {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
@@ -268,18 +289,15 @@ body {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
 }
 
-/* 英文正文：增大字间距让单词更易读 */
 :lang(en) {
   letter-spacing: 0.04em;
 }
 
-/* 英文导航链接：缩短字号避免过长英文溢出 */
 :lang(en) nav a {
   font-size: 0.8125rem;
   white-space: nowrap;
 }
 
-/* 英文按钮：自适应宽度，避免固定最小宽度导致溢出 */
 :lang(en) .btn-primary {
   min-width: auto;
   padding-left: 1.25rem;
@@ -296,63 +314,52 @@ body {
   font-size: 1rem;
 }
 
-/* 英文卡片标题 */
 :lang(en) .card-standard h3 {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
   letter-spacing: 0.02em;
 }
 
-/* 英文副标题 */
 :lang(en) .text-base {
   font-size: clamp(0.875rem, 2.5vw, 1rem);
 }
 
-/* 英文小标签/Tag */
 :lang(en) .text-xs {
   font-size: 0.6875rem;
 }
 
-/* 英文底部导航 */
 :lang(en) .bottom-nav span {
   font-size: 10px;
   white-space: nowrap;
 }
 
-/* 英文表单标签 */
 :lang(en) label span {
   font-size: 0.8125rem;
 }
 
-/* 英文长段落：允许自动换行 */
 :lang(en) p {
   word-break: break-word;
   overflow-wrap: break-word;
 }
 
-/* 英文管理后台 */
 :lang(en) .admin-sidebar-link {
   font-size: 0.75rem;
 }
 
-/* 英文表格 */
 :lang(en) table th,
 :lang(en) table td {
   font-size: 0.75rem;
   white-space: nowrap;
 }
 
-/* 英文品牌标题（一念间 -> Yinianjian） */
 :lang(en) .font-brand {
   font-size: clamp(1.1rem, 3vw, 1.5rem);
 }
 
-/* 英文 hero 副标题（长句子） */
 :lang(en) .brand-tagline {
   font-size: clamp(0.75rem, 2vw, 0.9375rem);
   line-height: 1.6;
 }
 
-/* 英文 feature 描述（较长句子） */
 :lang(en) .feature-desc {
   font-size: clamp(0.6875rem, 1.8vw, 0.8125rem);
   line-height: 1.5;
@@ -364,7 +371,7 @@ body {
   border: 1px solid rgba(201,169,110,0.2);
   background: rgba(44,36,24,0.95);
   padding: 1.5rem;
-  box-shadow: 0 2px 12px rgba(44,44,44,0.08);
+  box-shadow: 0px 2px 12px 0px rgb(245, 240, 232);
   backdrop-filter: blur(4px);
   transition: all 300ms;
 }
@@ -400,12 +407,12 @@ body {
   font-family: var(--font-family-body);
   font-size: 1.125rem;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.056rem;
   height: 3rem;
   padding-left: 2rem;
   padding-right: 2rem;
   min-width: 180px;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1), 0 0 20px rgba(196,61,61,0.2);
+  box-shadow: rgba(196,61,61,0.2) 0px 10px 15px -3px, rgba(196,61,61,0.2) 0px 4px 6px -4px;
   transition: all 150ms;
 }
 .btn-primary:hover {

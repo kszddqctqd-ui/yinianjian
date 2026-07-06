@@ -63,7 +63,7 @@ export default function AdminPage() {
               {resolve('admin.login')}
             </button>
           </div>
-          <p className="text-xs text-center" style={{ color: '#dfc59f/50' }}>{resolve('admin.adminOnly')}</p>
+          <p className="text-xs text-center" style={{ color: 'rgba(223,197,159,0.5)' }}>{resolve('admin.adminOnly')}</p>
         </div>
       </div>
     );
@@ -174,7 +174,7 @@ function DashboardContent({ resolve }: { resolve: (key: string) => string }) {
     } catch {}
   }, []);
 
-  if (!stats) return <div className="text-center py-12" style={{ color: '#dfc59f/60' }}>{resolve('admin.loading')}</div>;
+  if (!stats) return <div className="text-center py-12" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('admin.loading')}</div>;
 
   const COLORS = ['#C43D3D', '#C9A96E', '#5ba3d6', '#5cb85c', '#f0ad4e', '#d9534f', '#6f42c1'];
 
@@ -191,7 +191,7 @@ function DashboardContent({ resolve }: { resolve: (key: string) => string }) {
         ].map((c, i) => (
           <div key={i} className="admin-stat-card">
             <div className="text-2xl font-display" style={{ color: c.color }}>{c.value}</div>
-            <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{c.label}</div>
+            <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{c.label}</div>
           </div>
         ))}
       </div>
@@ -291,7 +291,7 @@ function MonitoringContent({ resolve }: { resolve: (k: string) => string }) {
         <div className="w-full rounded-full h-3 bg-xuan-surface overflow-hidden">
           <div className="h-3 rounded-full transition-all" style={{ width: `${storagePct}%`, backgroundColor: storagePct > 80 ? '#C43D3D' : '#C9A96E' }} />
         </div>
-        <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{storage}</div>
+        <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{storage}</div>
       </div>
       {/* API Health */}
       <div className="rounded-xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-4">
@@ -304,7 +304,7 @@ function MonitoringContent({ resolve }: { resolve: (k: string) => string }) {
                 <span className={`admin-badge ${api.status === 'ok' ? 'green' : 'red'}`}>
                   {api.status === 'ok' ? resolve('monitoring.status.ok') : resolve('monitoring.status.error')}
                 </span>
-                <span className="text-xs" style={{ color: '#dfc59f/60' }}>{api.latency}ms</span>
+                <span className="text-xs" style={{ color: 'rgba(223,197,159,0.6)' }}>{api.latency}ms</span>
               </div>
             </div>
           ))}
@@ -319,17 +319,17 @@ function MonitoringContent({ resolve }: { resolve: (k: string) => string }) {
           )}
         </div>
         {errorLogs.length === 0 ? (
-          <p className="text-xs text-center py-4" style={{ color: '#dfc59f/60' }}>{resolve('dashboard.noData')}</p>
+          <p className="text-xs text-center py-4" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('dashboard.noData')}</p>
         ) : (
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {errorLogs.slice(0, 20).map((log: any) => (
               <div key={log.id} className="rounded bg-[#252018]/60 p-3 text-xs space-y-1">
                 <div className="flex items-center justify-between">
                   <span className={`admin-badge ${log.severity === 'critical' ? 'red' : log.severity === 'error' ? 'yellow' : 'blue'}`}>{log.severity}</span>
-                  <span style={{ color: '#dfc59f/60' }}>{new Date(log.timestamp).toLocaleString()}</span>
+                  <span style={{ color: 'rgba(223,197,159,0.6)' }}>{new Date(log.timestamp).toLocaleString()}</span>
                 </div>
                 <div style={{ color: '#f5e6b8' }}>{log.message}</div>
-                <div style={{ color: '#dfc59f/40' }}>{log.page}</div>
+                <div style={{ color: 'rgba(223,197,159,0.4)' }}>{log.page}</div>
               </div>
             ))}
           </div>
@@ -499,7 +499,7 @@ function OrdersEmbeddedContent({ resolve }: { resolve: (k: string) => string }) 
       </div>
       {/* Records */}
       {filtered.length === 0 ? (
-        <p className="text-sm text-center py-12" style={{ color: '#dfc59f/60' }}>{records.length === 0 ? resolve('admin.noRecords') : resolve('admin.noResults')}</p>
+        <p className="text-sm text-center py-12" style={{ color: 'rgba(223,197,159,0.6)' }}>{records.length === 0 ? resolve('admin.noRecords') : resolve('admin.noResults')}</p>
       ) : (
         <div className="space-y-2">
           {filtered.map(r => (
@@ -511,7 +511,7 @@ function OrdersEmbeddedContent({ resolve }: { resolve: (k: string) => string }) 
                     {r.status === 'pending' ? resolve('admin.pending') : resolve('admin.confirmed')}
                   </span>
                 </div>
-                <div className="text-xs mt-1 flex flex-wrap items-center gap-x-2" style={{ color: '#dfc59f/60' }}>
+                <div className="text-xs mt-1 flex flex-wrap items-center gap-x-2" style={{ color: 'rgba(223,197,159,0.6)' }}>
                   <span>{r.typeName}</span><span>·</span><span className="text-gold">¥{r.amount}</span><span>·</span><span>{new Date(r.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
@@ -595,7 +595,7 @@ function NotificationsContent({ resolve }: { resolve: (k: string) => string }) {
       </div>
       {/* Notification list */}
       {notifs.length === 0 ? (
-        <p className="text-sm text-center py-8" style={{ color: '#dfc59f/60' }}>{resolve('dashboard.noData')}</p>
+        <p className="text-sm text-center py-8" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('dashboard.noData')}</p>
       ) : (
         <div className="space-y-2">
           {notifs.map(n => (
@@ -604,9 +604,9 @@ function NotificationsContent({ resolve }: { resolve: (k: string) => string }) {
                 <span className="font-medium text-sm" style={{ color: '#f5e6b8' }}>{n.title}</span>
                 <span className={`admin-badge ${catColor(n.category)}`}>{n.category}</span>
                 {n.priority !== 'normal' && <span className={`admin-badge ${priBadge(n.priority)}`}>{n.priority}</span>}
-                <span className="text-xs ml-auto" style={{ color: '#dfc59f/40' }}>{new Date(n.publishedAt).toLocaleString()}</span>
+                <span className="text-xs ml-auto" style={{ color: 'rgba(223,197,159,0.4)' }}>{new Date(n.publishedAt).toLocaleString()}</span>
               </div>
-              <p className="text-xs" style={{ color: '#D4C5A9/80' }}>{n.content}</p>
+              <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>{n.content}</p>
             </div>
           ))}
         </div>
@@ -643,15 +643,15 @@ function ReferralsContent({ resolve }: { resolve: (k: string) => string }) {
       <div className="grid grid-cols-3 gap-3">
         <div className="admin-stat-card">
           <div className="text-2xl font-display text-gold">{mockData.length}</div>
-          <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{resolve('referrals.totalInvites')}</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('referrals.totalInvites')}</div>
         </div>
         <div className="admin-stat-card">
           <div className="text-2xl font-display text-gold">{totalReward || mockData.filter((r: any) => r.status === 'completed').length * inviteReward}</div>
-          <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{resolve('referrals.totalRewards')}</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('referrals.totalRewards')}</div>
         </div>
         <div className="admin-stat-card">
           <div className="text-2xl font-display text-gold">{new Set(mockData.map((r: any) => r.inviterCode)).size}</div>
-          <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{resolve('referrals.activeCodes')}</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('referrals.activeCodes')}</div>
         </div>
       </div>
       {/* Rules */}
@@ -679,7 +679,7 @@ function ReferralsContent({ resolve }: { resolve: (k: string) => string }) {
               <div key={code} className="flex items-center gap-3 py-1 border-b border-[#c9a05c]/10 text-sm">
                 <span className="w-6 text-center font-display text-gold" style={{ fontSize: '14px' }}>#{i + 1}</span>
                 <span style={{ color: '#f5e6b8' }}>码: {code}</span>
-                <span className="ml-auto" style={{ color: '#dfc59f/60' }}>{count} {resolve('referrals.completed')} · +{reward} 🎁</span>
+                <span className="ml-auto" style={{ color: 'rgba(223,197,159,0.6)' }}>{count} {resolve('referrals.completed')} · +{reward} 🎁</span>
               </div>
             );
           })}

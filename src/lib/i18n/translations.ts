@@ -1232,6 +1232,78 @@ export const translations: Translations = {
     en: 'AI Notice',
   },
 
+  // ========== Why Choose Us Section ==========
+  'why.title': {
+    zh: '为何选本站',
+    en: 'Why Choose Us',
+  },
+  'why.feature1.title': {
+    zh: '真排盘',
+    en: 'Authentic Charts',
+  },
+  'why.feature1.desc': {
+    zh: '以立春为岁首，依据节气真排盘，非普通软件简化算法',
+    en: 'Calculated from Li Chun based on solar terms, not simplified algorithms',
+  },
+  'why.feature2.title': {
+    zh: '古籍为据',
+    en: 'Classic Sources',
+  },
+  'why.feature2.desc': {
+    zh: '引用《渊海子平》《三命通会》《滴天髓》等经典',
+    en: 'References classic texts: Yuan Hai Zi Ping, San Ming Tong Hui, Di Tian Sui',
+  },
+  'why.feature3.title': {
+    zh: '多风格解读',
+    en: 'Multi-Style Readings',
+  },
+  'why.feature3.desc': {
+    zh: '三位师父不同风格，庄重持重、慈悲温柔、直爽通透',
+    en: 'Three masters with different styles: solemn, compassionate, straightforward',
+  },
+  'why.cta.pray': {
+    zh: '心愿供灯',
+    en: 'Wish Lamp',
+  },
+  'why.cta.bazi': {
+    zh: '大师八字精批',
+    en: 'Master BaZi Reading',
+  },
+
+  // ========== Daily Incense Section ==========
+  'incense.title': {
+    zh: '在线上香',
+    en: 'Offer Incense Online',
+  },
+  'incense.subtitle': {
+    zh: '每日三礼，每礼三炷，心诚则灵',
+    en: 'Three offerings daily, three incense sticks each -- sincerity makes it spiritual',
+  },
+  'incense.btn.offer': {
+    zh: '敬上一炷清香',
+    en: 'Offer Incense',
+  },
+
+  // ========== Share Section ==========
+  'share.title': {
+    zh: '分享给家人 · 一起记录心愿',
+    en: 'Share with Family · Record Wishes Together',
+  },
+  'share.desc': {
+    zh: '把一念间分享给家人朋友，一起祈福许愿，积累功德',
+    en: 'Share Yinianjian with family and friends, pray together and accumulate merit',
+  },
+  'share.btn.share': {
+    zh: '分享返佣 · 赚钱',
+    en: 'Share & Earn',
+  },
+
+  // ========== Earn Float Button ==========
+  'earn.float': {
+    zh: '赚',
+    en: 'Earn',
+  },
+
   // ========== Common ==========
   'common.disclaimer': {
     zh: '仅作传统文化参考，请结合现实情况判断',

@@ -6,6 +6,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { MusicToggleFloat } from '@/components/MusicToggle';
+import { IncenseSmoke } from '@/components/IncenseSmoke';
 import { t, getLocale, shichenLabels } from '@/lib/i18n';
 import type { SupportedLang } from '@/lib/i18n';
 
@@ -128,7 +129,7 @@ function Icon({ name, color = 'text-gold' }: { name: string; color?: string }) {
     ),
     hand: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-hand size-9 ${color}`} aria-hidden="true">
-        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" /><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
+        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
       </svg>
     ),
     flame: (
@@ -194,13 +195,13 @@ export default function HomePage() {
       <Header />
       <MusicToggleFloat />
 
-      <main className="relative z-10 mx-auto min-h-[calc(100svh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
+      <main className="relative z-10 mx-auto min-h-[calc(100svh-3.75rem)] w-full pt-[3.75rem] pb-24 md:pb-8">
         <div className="mx-auto max-w-6xl px-4">
           {/* ===== Hero Section ===== */}
           <section className="flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-6 px-2 text-center">
             {/* Logo 容器 + 光环扩散 */}
-            <div className="relative mx-auto flex size-20 items-center justify-center rounded-full border border-gold/30" style={{ background: 'rgba(201,169,110,0.1)' }}>
-              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="size-12 text-gold drop-shadow-[0_0_8px_rgba(201,160,94,0.4)]" xmlns="http://www.w3.org/2000/svg">
+            <div className="relative mx-auto flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/30" style={{ background: 'rgba(201,169,110,0.1)' }}>
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="size-[2.25rem] text-gold" style={{ filter: 'drop-shadow(0 0 8px rgba(201,160,94,0.4))' }} xmlns="http://www.w3.org/2000/svg">
                 <path d="M32 6 C 22 6, 12 12, 10 22 C 8 32, 14 44, 24 50 C 28 53, 30 56, 31 60 L 32 62 L 33 60 C 34 56, 36 53, 40 50 C 50 44, 56 32, 54 22 C 52 12, 42 6, 32 6 Z" fill="currentColor" fillOpacity="0.12" />
                 <path d="M32 8 V 60" strokeWidth="1.4" />
                 <path d="M32 16 C 26 18, 20 22, 16 28" />
@@ -217,7 +218,7 @@ export default function HomePage() {
 
             {/* 标题 - 品牌字体金色渐变 */}
             <h1
-              className="text-5xl md:text-6xl tracking-[0.15em]"
+              className="text-[3rem] tracking-[0.3rem] md:text-[3.5rem]"
               style={{
                 fontFamily: "'ZhiMangXing', cursive",
                 background: 'linear-gradient(180deg, #f5e6b8 0%, #c9a05c 50%, #8b6914 100%)',
@@ -259,12 +260,12 @@ export default function HomePage() {
             <div className="card-standard max-w-2xl mx-auto space-y-5">
               {/* Title */}
               <div className="text-center">
-                <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-8 text-vermillion" aria-hidden="true">
+                <div className="mx-auto mb-2 flex size-[3.1875rem] items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-[2.25rem] text-vermillion" aria-hidden="true">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                   </svg>
                 </div>
-                <h2 className="font-display text-3xl tracking-widest" style={{ color: '#C9A96E' }}>{resolve('bazi.title')}</h2>
+                <h2 className="font-display text-[1.875rem] tracking-[0.15rem]" style={{ color: '#C9A96E' }}>{resolve('bazi.title')}</h2>
                 <p className="mt-1 text-sm" style={{ color: '#D4C5A9' }}>{resolve('bazi.subtitle')}</p>
               </div>
 
@@ -289,13 +290,13 @@ export default function HomePage() {
                     >
                       {/* Avatar placeholder */}
                       <div className={`mx-auto mb-2 flex size-14 items-center justify-center rounded-full bg-gradient-to-br ${master.gradient} border border-gold/20`}>
-                        <span className="text-xl font-display" style={{ color: '#C9A96E' }}>
+                        <span className="text-[1.25rem] font-display" style={{ color: '#C9A96E' }}>
                           {resolve(master.name).charAt(0)}
                         </span>
                       </div>
                       <div className="text-center text-sm font-display" style={{ color: '#D4C5A9' }}>{resolve(master.name)}</div>
-                      <div className="text-center text-[10px]" style={{ color: '#D4C5A9/65' }}>{resolve(master.role)}</div>
-                      <div className="mt-1 text-center text-xs" style={{ color: '#C9A96E/85' }}>{resolve(master.feature)}</div>
+                      <div className="text-center text-[10px]" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve(master.role)}</div>
+                      <div className="mt-1 text-center text-xs" style={{ color: 'rgba(201,169,110,0.85)' }}>{resolve(master.feature)}</div>
                     </div>
                   ))}
                 </div>
@@ -369,13 +370,12 @@ export default function HomePage() {
           </section>
 
           {/* ===== 九大功能卡片 ===== */}
-          <section className="mt-16 space-y-8">
+          <section className="mt-16 space-y-8 pb-section">
             <h2
-              className="text-center text-3xl tracking-[0.15em]"
+              className="text-center text-[1.875rem] tracking-[0.15rem]"
               style={{
                 color: '#C9A96E',
-                fontFamily: "'ZhiMangXing', cursive",
-                paddingBottom: '4rem',
+                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
               }}
             >
               {resolve('feature.nine.title')}
@@ -396,7 +396,7 @@ export default function HomePage() {
                   </div>
 
                   {/* 标题 */}
-                  <h3 className="mt-3 text-2xl font-display" style={{ color: '#D4C5A9' }}>
+                  <h3 className="mt-3 text-[1.5rem] font-display" style={{ color: '#D4C5A9' }}>
                     {resolve(feature.name)}
                   </h3>
 
@@ -409,29 +409,98 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* ===== 信任/理念区域 ===== */}
-          <section className="mt-16 space-y-6">
+          {/* ===== 为何选本站 (真排盘特色介绍) ===== */}
+          <section className="mt-16 space-y-6 pb-section">
             <h2
-              className="text-center text-3xl tracking-[0.15em]"
+              className="text-center text-[1.5875rem] tracking-[0.1rem]"
               style={{
-                fontFamily: "'ZhiMangXing', cursive",
-                background: 'linear-gradient(180deg, #f5e6b8 0%, #c9a05c 50%, #8b6914 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                color: 'transparent',
+                color: '#C9A96E',
+                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
               }}
             >
-              {resolve('philosophy.title')}
+              {resolve('why.title')}
             </h2>
 
-            <div className="mx-auto max-w-2xl space-y-4 text-center">
-              <p className="text-sm leading-loose" style={{ color: '#D4C5A9' }}>
-                {resolve('philosophy.point1')}
-              </p>
-              <p className="text-sm leading-loose" style={{ color: '#D4C5A9' }}>
-                {resolve('philosophy.point2')}
-              </p>
+            <div className="mx-auto max-w-2xl space-y-6">
+              {[
+                { title: 'why.feature1.title', desc: 'why.feature1.desc', icon: 'compass' },
+                { title: 'why.feature2.title', desc: 'why.feature2.desc', icon: 'book' },
+                { title: 'why.feature3.title', desc: 'why.feature3.desc', icon: 'flame' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-4 rounded-xl border border-gold/20 bg-xuan-card/95 p-5 backdrop-blur-sm transition-all hover:border-gold/40 hover:shadow-gold">
+                  <div className="flex size-[2.6875rem] shrink-0 items-center justify-center rounded-full border border-gold/30 bg-gold/10">
+                    <Icon name={item.icon} color="text-gold" />
+                  </div>
+                  <div>
+                    <h3 className="text-[1.25rem] font-display" style={{ color: '#D4C5A9' }}>{resolve(item.title)}</h3>
+                    <p className="mt-1 text-base text-paper-dark-80" style={{ color: '#D4C5A9' }}>{resolve(item.desc)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA 按钮 */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:px-0">
+              <a href="/qifu/" className="w-full sm:w-auto">
+                <button className="btn-primary w-full text-center">
+                  {resolve('why.cta.pray')}
+                </button>
+              </a>
+              <a href="/" className="w-full sm:w-auto">
+                <button className="btn-primary w-full text-center">
+                  {resolve('why.cta.bazi')}
+                </button>
+              </a>
+            </div>
+          </section>
+
+          {/* ===== 线上烧香 ===== */}
+          <section className="mt-16 space-y-6 pb-section">
+            <h2
+              className="text-center text-[1.5875rem] tracking-[0.1rem]"
+              style={{
+                color: '#C9A96E',
+                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
+              }}
+            >
+              {resolve('incense.title')}
+            </h2>
+            <p className="text-center text-sm leading-loose" style={{ color: 'rgba(212,197,169,0.7)' }}>
+              {resolve('incense.subtitle')}
+            </p>
+
+            {/* 香炉动画 */}
+            <div className="flex justify-center py-8">
+              <IncenseSmoke />
+            </div>
+
+            <div className="flex justify-center">
+              <a href="/qifu/">
+                <button className="btn-primary">
+                  {resolve('incense.btn.offer')}
+                </button>
+              </a>
+            </div>
+          </section>
+
+          {/* ===== 分享返佣 ===== */}
+          <section className="mt-16 space-y-6 pb-section">
+            <h2
+              className="text-center text-[1.5875rem] tracking-[0.1rem]"
+              style={{
+                color: '#C9A96E',
+                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
+              }}
+            >
+              {resolve('share.title')}
+            </h2>
+            <p className="mx-auto max-w-md text-center text-sm leading-loose" style={{ color: 'rgba(212,197,169,0.7)' }}>
+              {resolve('share.desc')}
+            </p>
+            <div className="flex justify-center">
+              <button className="btn-primary">
+                {resolve('share.btn.share')}
+              </button>
             </div>
           </section>
 

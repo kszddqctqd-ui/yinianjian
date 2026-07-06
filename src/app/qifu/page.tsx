@@ -92,6 +92,16 @@ function WishLantern({ name, merit, index }: { name: string; merit: number; inde
   // 脱敏：只显示前2个字符
   const displayName = name.length > 2 ? name.slice(0, 2) : name;
 
+  // 五种灯笼颜色循环（对齐菩提苑）
+  const lanternColors = [
+    { body: '#ff6b35', glow: '#ff8c5a', flame: '#ff4500', name: '橙红' },   // 橙
+    { body: '#e63946', glow: '#ff6b6b', flame: '#c1121f', name: '朱红' },   // 红
+    { body: '#2d6a4f', glow: '#52b788', flame: '#1b4332', name: '翠绿' },   // 绿
+    { body: '#457b9d', glow: '#a8dadc', flame: '#1d3557', name: '靛蓝' },   // 蓝
+    { body: '#c9a96e', glow: '#f5e6b8', flame: '#8b6914', name: '金色' },   // 金
+  ];
+  const color = lanternColors[index % 5];
+
   return (
     <div className="flex flex-col items-center gap-2" style={{ animationDelay: `${delay}s` }}>
       {/* 传统纸灯笼 SVG */}
@@ -112,21 +122,21 @@ function WishLantern({ name, merit, index }: { name: string; merit: number; inde
             <stop offset="0%" stopColor="#fde68a">
               <animate attributeName="stop-color" values="#fde68a;#ffffff;#fde68a" dur="3s" repeatCount="indefinite" />
             </stop>
-            <stop offset="50%" stopColor="#c9a05c" />
-            <stop offset="100%" stopColor="#7c4f1a" />
+            <stop offset="50%" stopColor={color.body} />
+            <stop offset="100%" stopColor={color.flame} />
           </linearGradient>
 
           {/* 灯笼体径向渐变 */}
           <radialGradient id={`body-${index}`} cx="50%" cy="40%" r="60%">
             <stop offset="0%" stopColor="#fff5d8" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#C9A96E" stopOpacity="0.3" />
+            <stop offset="100%" stopColor={color.body} stopOpacity="0.3" />
           </radialGradient>
 
           {/* 外发光 */}
           <radialGradient id={`glow-${index}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#C9A96E" stopOpacity="0.6" />
-            <stop offset="60%" stopColor="#C9A96E" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#C9A96E" stopOpacity="0" />
+            <stop offset="0%" stopColor={color.glow} stopOpacity="0.6" />
+            <stop offset="60%" stopColor={color.glow} stopOpacity="0.25" />
+            <stop offset="100%" stopColor={color.glow} stopOpacity="0" />
           </radialGradient>
 
           {/* 高光 */}
@@ -182,7 +192,7 @@ function WishLantern({ name, merit, index }: { name: string; merit: number; inde
           rx="68"
           ry="92"
           fill={`url(#body-${index})`}
-          stroke="#C9A96E"
+          stroke={color.body}
           strokeWidth="2"
         />
 
@@ -328,7 +338,7 @@ export default function QifuPage() {
           {/* Title */}
           <section className="space-y-3 pt-8 text-center">
             <div className="mx-auto mb-3 flex size-20 items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-10 text-vermillion" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-[2.6875rem] text-vermillion" aria-hidden="true">
                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
               </svg>
             </div>
@@ -341,7 +351,7 @@ export default function QifuPage() {
           {/* Form */}
           <div>
             <div className="card-standard space-y-6">
-              <h2 className="font-display text-2xl" style={{ color: '#C9A96E' }}>{resolve('qifu.section.who')}</h2>
+              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.who')}</h2>
 
               {/* Name */}
               <label className="block space-y-2">
@@ -376,7 +386,7 @@ export default function QifuPage() {
           {/* Lantern Selection */}
           <div>
             <div className="card-standard space-y-4">
-              <h2 className="font-display text-2xl" style={{ color: '#C9A96E' }}>{resolve('qifu.section.lamp')}</h2>
+              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.lamp')}</h2>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                 {LIGHT_AMOUNTS.map((lamp, i) => (
                   <Lantern
@@ -393,7 +403,7 @@ export default function QifuPage() {
           {/* Wish */}
           <div>
             <div className="card-standard space-y-4">
-              <h2 className="font-display text-2xl" style={{ color: '#C9A96E' }}>{resolve('qifu.section.wish')}</h2>
+              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.wish')}</h2>
               <label className="block space-y-2">
                 <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('qifu.section.wish')} <span className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>({resolve('qifu.wish.charLimit')})</span></span>
                 <textarea
@@ -410,8 +420,8 @@ export default function QifuPage() {
               {/* Price */}
               <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
                 <div>
-                  <p className="text-sm" style={{ color: '#D4C5A9/60' }}>{resolve('qifu.perLamp')} ¥</p>
-                  <p className="font-display text-3xl" style={{ color: '#C9A96E' }}>{LIGHT_AMOUNTS[selectedLantern]?.value}</p>
+                  <p className="text-sm" style={{ color: 'rgba(212,197,169,0.6)' }}>{resolve('qifu.perLamp')} ¥</p>
+                  <p className="font-display text-[1.875rem]" style={{ color: '#C9A96E' }}>{LIGHT_AMOUNTS[selectedLantern]?.value}</p>
                 </div>
                 <button type="button" className="btn-primary" onClick={handleLight}>
                   {resolve('qifu.btn.light')}
@@ -423,8 +433,8 @@ export default function QifuPage() {
           {/* 灯墙 */}
           <div>
             <div className="card-standard space-y-4">
-              <h2 className="font-display text-2xl" style={{ color: '#C9A96E' }}>{resolve('qifu.section.wall')}</h2>
-              <p className="text-sm" style={{ color: '#D4C5A9/65' }}>
+              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.wall')}</h2>
+              <p className="text-sm" style={{ color: 'rgba(212,197,169,0.65)' }}>
                 {resolve('qifu.wall.note')}
               </p>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
@@ -451,10 +461,10 @@ export default function QifuPage() {
       {showPayment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
           <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 animate-slide-up" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-xl text-gold font-display">{resolve('qifu.payment.title')}</h3>
+            <h3 className="text-[1.25rem] text-gold font-display">{resolve('qifu.payment.title')}</h3>
             <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('qifu.payment.desc')}</p>
             <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
-            <p className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('qifu.payment.confirm')}</p>
+            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('qifu.payment.confirm')}</p>
             <button
               type="button"
               onClick={() => setShowPayment(false)}

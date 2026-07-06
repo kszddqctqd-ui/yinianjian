@@ -105,8 +105,8 @@ export default function ZiweiPage() {
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
           <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <span className="text-3xl">🏯</span>
+            <div className="mx-auto mb-3 flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+              <span className="text-[1.875rem]">🏯</span>
             </div>
             <h1 className="text-4xl text-gold">{resolve('ziwei.title')}</h1>
             <p className="text-base text-paper-dark/85">
@@ -122,7 +122,7 @@ export default function ZiweiPage() {
                 <div className="relative flex h-16 items-stretch overflow-visible rounded-xl border border-gold/30 bg-xuan-surface">
                   <button type="button" onClick={() => setYear(y => Math.max(1900, y - 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">−</button>
                   <button type="button" className="flex flex-1 flex-col items-center justify-center hover:bg-gold/5">
-                    <span className="font-number text-2xl text-gold">{year}年</span>
+                    <span className="font-number text-[1.5rem] text-gold">{year}年</span>
                   </button>
                   <button type="button" onClick={() => setYear(y => Math.min(2100, y + 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">+</button>
                 </div>
@@ -132,7 +132,7 @@ export default function ZiweiPage() {
                 <div className="relative flex h-16 items-stretch overflow-visible rounded-xl border border-gold/30 bg-xuan-surface">
                   <button type="button" onClick={() => setMonth(m => Math.max(1, m - 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">−</button>
                   <button type="button" className="flex flex-1 flex-col items-center justify-center hover:bg-gold/5">
-                    <span className="font-number text-2xl text-gold">{month}月</span>
+                    <span className="font-number text-[1.5rem] text-gold">{month}月</span>
                   </button>
                   <button type="button" onClick={() => setMonth(m => Math.min(12, m + 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">+</button>
                 </div>
@@ -142,7 +142,7 @@ export default function ZiweiPage() {
                 <div className="relative flex h-16 items-stretch overflow-visible rounded-xl border border-gold/30 bg-xuan-surface">
                   <button type="button" onClick={() => setDay(d => Math.max(1, d - 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">−</button>
                   <button type="button" className="flex flex-1 flex-col items-center justify-center hover:bg-gold/5">
-                    <span className="font-number text-2xl text-gold">{day}日</span>
+                    <span className="font-number text-[1.5rem] text-gold">{day}日</span>
                   </button>
                   <button type="button" onClick={() => setDay(d => Math.min(31, d + 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">+</button>
                 </div>
@@ -207,7 +207,7 @@ export default function ZiweiPage() {
                   ].map((p: any, i) => (
                     <div key={i} className="rounded-lg bg-xuan-surface/50 p-3">
                       <div className="text-xs text-on-dark-muted mb-1">{p.label}</div>
-                      <div className="text-xl text-gold font-display">{p.gan}{p.zhi}</div>
+                      <div className="text-[1.25rem] text-gold font-display">{p.gan}{p.zhi}</div>
                     </div>
                   ))}
                 </div>

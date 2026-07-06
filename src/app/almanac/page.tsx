@@ -85,7 +85,7 @@ export default function AlmanacPage() {
           {/* Title */}
           <section className="space-y-3 pt-8 text-center">
             <div className="mx-auto mb-3 flex size-20 items-center justify-center rounded-full border border-[#c9a05c]/30 bg-[#c9a05c]/10">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c9a05c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar-days size-10" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c9a05c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar-days size-[2.6875rem]" aria-hidden="true">
                 <path d="M8 2v4" /><path d="M16 2v4" />
                 <rect width="18" height="18" x="3" y="4" rx="2" />
                 <path d="M3 10h18" />
@@ -130,7 +130,7 @@ export default function AlmanacPage() {
                   ].map((g, i) => (
                     <div key={i}>
                       <div className="text-xs mb-1" style={{ color: '#dfc59f99' }}>{g.label}</div>
-                      <div className="text-xl font-number font-display" style={{ color: '#f5e6b8' }}>{g.value}</div>
+                      <div className="text-[1.25rem] font-number font-display" style={{ color: '#f5e6b8' }}>{g.value}</div>
                     </div>
                   ))}
                 </div>

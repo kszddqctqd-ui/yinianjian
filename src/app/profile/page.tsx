@@ -129,14 +129,14 @@ export default function ProfilePage() {
                   <span className="font-display text-lg" style={{ color: '#C9A96E' }}>{resolve('profile.myAuspiciousId')}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl tracking-[0.08em] font-display" style={{ color: '#C9A96E' }}>
+                  <span className="text-[1.875rem] tracking-[0.08em] font-display" style={{ color: '#C9A96E' }}>
                     ——
                   </span>
                   <button type="button" className="rounded-md border border-gold/20 bg-xuan-surface/40 px-2 py-1 text-xs text-paper-dark/60 hover:text-gold hover:border-gold/40 transition-all">
                     {resolve('profile.copy')}
                   </button>
                 </div>
-                <p className="text-xs mt-1" style={{ color: '#D4C5A9/65' }}>
+                <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.65)' }}>
                   {resolve('profile.idNote')}
                 </p>
               </div>
@@ -150,14 +150,14 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <div className="font-display text-lg" style={{ color: '#D4C5A9' }}>{resolve('profile.userTitle')}</div>
-                    <div className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('profile.userSub')}</div>
+                    <div className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.userSub')}</div>
                   </div>
                 </div>
 
                 {/* 右侧：功德 */}
                 <div className="ml-auto text-right">
-                  <div className="text-xs" style={{ color: '#D4C5A9/65' }}>{resolve('profile.currentMerit')}</div>
-                  <div className="font-display text-2xl" style={{ color: '#C9A96E' }}>{totalReadings}</div>
+                  <div className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('profile.currentMerit')}</div>
+                  <div className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{totalReadings}</div>
                   <div className="mt-1 inline-flex items-center rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold">
                     {resolve(getMeritBadge(totalReadings).labelKey)}
                   </div>
@@ -165,7 +165,7 @@ export default function ProfilePage() {
               </div>
 
               {/* 统计栏 */}
-              <div className="text-xs" style={{ color: '#D4C5A9/65' }}>
+              <div className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>
                 {resolve('profile.historyCount').replace('{count}', totalReadings.toString())} · {resolve('profile.dailyIncense')} · {resolve('profile.notSignedIn')}
               </div>
             </div>
@@ -177,17 +177,17 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Icon name="lamp" color="text-vermillion" />
-                  <span className="font-display text-xl" style={{ color: '#C9A96E' }}>{resolve('profile.myPrayerLamps')}</span>
+                  <span className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.myPrayerLamps')}</span>
                   <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80">0</span>
                 </div>
               </div>
 
               {/* 空状态 */}
               <div className="rounded-lg border border-gold/20 bg-xuan-surface/40 p-6 text-center">
-                <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full border border-gold/20 bg-vermillion/10">
+                <div className="mx-auto mb-2 flex size-[3rem] items-center justify-center rounded-full border border-gold/20 bg-vermillion/10">
                   <Icon name="lamp" color="text-vermillion" />
                 </div>
-                <p className="text-sm" style={{ color: '#D4C5A9/65' }}>{resolve('profile.noPrayerLamp')}</p>
+                <p className="text-sm" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('profile.noPrayerLamp')}</p>
                 <a href="/qifu/" className="mt-2 inline-block rounded-md border border-gold/30 px-4 py-1.5 text-sm text-gold hover:bg-gold/10 transition-colors">
                   {resolve('profile.lightForFamily')}
                 </a>
@@ -197,7 +197,7 @@ export default function ProfilePage() {
 
           {/* ===== 区块3: 六类记录卡片 ===== */}
           <section>
-            <h2 className="font-display text-xl tracking-wider" style={{ color: '#C9A96E', paddingBottom: '1rem' }}>
+            <h2 className="font-display text-[1.25rem] tracking-wider" style={{ color: '#C9A96E', paddingBottom: '1rem' }}>
               {resolve('profile.myRecords')}
             </h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -230,13 +230,13 @@ export default function ProfilePage() {
                           .map((r, j) => (
                             <div key={j} className="rounded-md bg-xuan-surface/40 p-2">
                               <div className="text-sm" style={{ color: '#D4C5A9' }}>{r.summary}</div>
-                              <div className="text-[10px]" style={{ color: '#D4C5A9/50' }}>{formatRelativeTime(r.timestamp)}</div>
+                              <div className="text-[10px]" style={{ color: 'rgba(212,197,169,0.5)' }}>{formatRelativeTime(r.timestamp)}</div>
                             </div>
                           ))}
                       </div>
                     ) : (
                       <div className="text-center py-4">
-                        <p className="text-xs" style={{ color: '#D4C5A9/50' }}>{resolve('profile.noRecords')}</p>
+                        <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.noRecords')}</p>
                         <a href={rt.href} className="mt-1 inline-block text-xs text-gold hover:underline">
                           {resolve(rt.emptyBtn)}
                         </a>
@@ -261,7 +261,7 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Icon name="refresh" color="text-gold" />
-                  <span className="font-display text-xl" style={{ color: '#C9A96E' }}>{resolve('profile.meritRecords')}</span>
+                  <span className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.meritRecords')}</span>
                 </div>
               </div>
 
@@ -271,7 +271,7 @@ export default function ProfilePage() {
                     <div key={i} className="flex items-center justify-between rounded-md bg-xuan-surface/40 p-3">
                       <div>
                         <div className="text-sm" style={{ color: '#D4C5A9' }}>{r.summary}</div>
-                        <div className="text-xs" style={{ color: '#D4C5A9/50' }}>{formatRelativeTime(r.timestamp)}</div>
+                        <div className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{formatRelativeTime(r.timestamp)}</div>
                       </div>
                       <span className="font-number text-sm" style={{ color: '#C9A96E' }}>+1</span>
                     </div>
@@ -279,7 +279,7 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-sm" style={{ color: '#D4C5A9/50' }}>{resolve('profile.noMerit')}</p>
+                  <p className="text-sm" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.noMerit')}</p>
                   <a href="/qifu/" className="mt-2 inline-block text-sm text-gold hover:underline">
                     {resolve('profile.goOffer')}
                   </a>
@@ -291,7 +291,7 @@ export default function ProfilePage() {
           {/* ===== 区块5: 设置 ===== */}
           <section>
             <div className="card-standard space-y-4">
-              <h3 className="font-display text-xl" style={{ color: '#C9A96E' }}>{resolve('profile.settings')}</h3>
+              <h3 className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.settings')}</h3>
               <div className="space-y-3">
                 <button
                   onClick={() => window.location.href = '/records'}
@@ -320,19 +320,19 @@ export default function ProfilePage() {
           {/* ===== 区块6: 关于 ===== */}
           <section>
             <div className="card-standard space-y-3">
-              <h3 className="font-display text-xl" style={{ color: '#C9A96E' }}>{resolve('profile.about')}</h3>
+              <h3 className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.about')}</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span style={{ color: '#D4C5A9' }}>{resolve('profile.version')}</span>
-                  <span style={{ color: '#D4C5A9/50' }}>4.0.0</span>
+                  <span style={{ color: 'rgba(212,197,169,0.5)' }}>4.0.0</span>
                 </div>
                 <div className="flex justify-between">
                   <span style={{ color: '#D4C5A9' }}>{resolve('profile.copyright')}</span>
-                  <span style={{ color: '#D4C5A9/50' }}>{resolve('profile.copyrightFull')}</span>
+                  <span style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.copyrightFull')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span style={{ color: '#D4C5A9' }}>{resolve('profile.philosophy')}</span>
-                  <span style={{ color: '#D4C5A9/50' }}>{resolve('profile.userSub')}</span>
+                  <span style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.userSub')}</span>
                 </div>
               </div>
             </div>

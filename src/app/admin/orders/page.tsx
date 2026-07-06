@@ -111,19 +111,19 @@ export default function OrdersPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="rounded-xl border border-yellow-500/20 bg-[#1a1510]/80 p-4 text-center">
           <div className="text-2xl font-display text-yellow-400">{pendingCount}</div>
-          <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{resolve('admin.pending')}</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('admin.pending')}</div>
         </div>
         <div className="rounded-xl border border-green-500/20 bg-[#1a1510]/80 p-4 text-center">
           <div className="text-2xl font-display text-green-400">{confirmedCount}</div>
-          <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{resolve('admin.confirmed')}</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('admin.confirmed')}</div>
         </div>
         <div className="rounded-xl border border-gold/20 bg-[#1a1510]/80 p-4 text-center">
           <div className="text-2xl font-display" style={{ color: '#f5e6b8' }}>¥{totalIncome.toFixed(1)}</div>
-          <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{resolve('admin.totalIncome')}</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('admin.totalIncome')}</div>
         </div>
         <div className="rounded-xl border border-blue-500/20 bg-[#1a1510]/80 p-4 text-center">
           <div className="text-2xl font-display" style={{ color: '#5ba3d6' }}>{filteredRecords.length}</div>
-          <div className="text-xs mt-1" style={{ color: '#dfc59f/60' }}>{resolve('admin.paymentRecords')}</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(223,197,159,0.6)' }}>{resolve('admin.paymentRecords')}</div>
         </div>
       </div>
 
@@ -201,7 +201,7 @@ export default function OrdersPage() {
           )}
         </div>
         {filteredRecords.length === 0 ? (
-          <p className="text-sm text-center py-12" style={{ color: '#dfc59f/60' }}>
+          <p className="text-sm text-center py-12" style={{ color: 'rgba(223,197,159,0.6)' }}>
             {records.length === 0 ? resolve('admin.noRecords') : resolve('admin.noResults')}
           </p>
         ) : (
@@ -215,7 +215,7 @@ export default function OrdersPage() {
                       {record.status === 'pending' ? resolve('admin.pending') : resolve('admin.confirmed')}
                     </span>
                   </div>
-                  <div className="text-xs flex flex-wrap items-center gap-x-2" style={{ color: '#dfc59f/60' }}>
+                  <div className="text-xs flex flex-wrap items-center gap-x-2" style={{ color: 'rgba(223,197,159,0.6)' }}>
                     <span>{record.typeName}</span>
                     <span>·</span>
                     <span className="text-gold font-medium">¥{record.amount.toFixed(1)}</span>

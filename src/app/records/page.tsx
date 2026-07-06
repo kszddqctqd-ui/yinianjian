@@ -63,7 +63,7 @@ export default function RecordsPage() {
         <div className="mx-auto max-w-4xl px-4 pb-24">
           {/* Title */}
           <div className="pt-8 text-center space-y-3">
-            <h1 className="text-3xl text-gold font-display tracking-[0.15em]">{resolve('records.title')}</h1>
+            <h1 className="text-[1.875rem] text-gold font-display tracking-[0.15em]">{resolve('records.title')}</h1>
             <p className="text-xs text-paper-dark/50">{resolve('records.count').replace('{count}', records.length.toString())}</p>
           </div>
 
@@ -117,7 +117,7 @@ export default function RecordsPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">{TYPE_LABELS[record.type]?.icon || '📋'}</span>
+                        <span className="text-[1.25rem]">{TYPE_LABELS[record.type]?.icon || '📋'}</span>
                         <div>
                           <div className="text-sm text-gold">{resolve(TYPE_LABELS[record.type]?.labelKey) || record.type}</div>
                           <div className="text-xs text-on-dark-muted">{record.summary}</div>

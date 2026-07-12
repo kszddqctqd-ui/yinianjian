@@ -7,19 +7,24 @@ import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { saveRecord } from '@/lib/records';
-import { loadFaceApiModels, analyzeFace, analyzePalm, type FaceAnalysisResult, type PalmAnalysisResult } from '@/lib/palm-face-analyzer';
 import { sanitizeHTML } from '@/lib/sanitize';
 import { t, getLocale } from '@/lib/i18n';
 import type { SupportedLang } from '@/lib/i18n';
 
 let modelsLoaded = false;
 
+// 动态导入 face-api（避免 SSR 时报错）
+async function loadAnalyzer() {
+  const mod = await import('@/lib/palm-face-analyzer');
+  return mod;
+}
+
 export default function PalmistryPage() {
   const [step, setStep] = useState(1);
   const [photo, setPhoto] = useState<string | null>(null);
   const [type, setType] = useState<'hand' | 'face'>('hand');
-  const [faceResult, setFaceResult] = useState<FaceAnalysisResult | null>(null);
-  const [palmResult, setPalmResult] = useState<PalmAnalysisResult | null>(null);
+  const [faceResult, setFaceResult] = useState<any>(null);
+  const [palmResult, setPalmResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -88,6 +93,8 @@ export default function PalmistryPage() {
     setStep(3);
 
     try {
+      const { loadFaceApiModels, analyzeFace, analyzePalm } = await loadAnalyzer();
+
       // 首次加载 face-api.js 模型
       if (!modelsLoaded) {
         await loadFaceApiModels();
@@ -121,7 +128,7 @@ export default function PalmistryPage() {
     } finally {
       setLoading(false);
     }
-  }, [photo, type]);
+  }, [photo, type, resolve]);
 
   const renderResult = () => {
     if (type === 'face' && faceResult) {

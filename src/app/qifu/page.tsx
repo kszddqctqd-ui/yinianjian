@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
@@ -8,8 +8,6 @@ import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { t, getLocale } from '@/lib/i18n';
 import type { SupportedLang } from '@/lib/i18n';
-
-const RELATIONS = ['qifu.relations.0', 'qifu.relations.1', 'qifu.relations.2', 'qifu.relations.3', 'qifu.relations.4', 'qifu.relations.5', 'qifu.relations.6', 'qifu.relations.7', 'qifu.relations.8', 'qifu.relations.9', 'qifu.relations.10', 'qifu.relations.11', 'qifu.relations.12', 'qifu.relations.13', 'qifu.relations.14'];
 
 function resolve(key: string): string {
   return t(key);
@@ -38,272 +36,154 @@ function injectLanternAnimations() {
       0%, 100% { transform: rotate(-3deg); }
       50% { transform: rotate(3deg); }
     }
+    .lantern-svg {
+      animation: lamp-sway 8s ease-in-out infinite;
+      transform-origin: 120px 28px;
+      animation-delay: var(--dl, 0s);
+    }
+    .lantern-glow {
+      animation: lamp-glow-pulse 4s ease-in-out infinite;
+      transform-origin: 120px 150px;
+      animation-delay: var(--dl, 0s);
+    }
+    .lantern-flame {
+      animation: inner-flame 2.4s ease-in-out infinite;
+      transform-origin: 120px 150px;
+      animation-delay: var(--dl, 0s);
+    }
+    .lantern-tassel line,
+    .lantern-tassel circle {
+      animation: tassel-sway 3.5s ease-in-out infinite;
+      transform-origin: 120px 252px;
+      animation-delay: var(--dl, 0s);
+    }
   `;
   document.head.appendChild(style);
 }
 
-const LIGHT_AMOUNTS = [
-  { value: 6.6, label: 'qifu.lamp.0.label', desc: 'qifu.lamp.0.desc' },
-  { value: 16.6, label: 'qifu.lamp.1.label', desc: 'qifu.lamp.1.desc' },
-  { value: 36.6, label: 'qifu.lamp.2.label', desc: 'qifu.lamp.2.desc' },
-  { value: 66, label: 'qifu.lamp.3.label', desc: 'qifu.lamp.3.desc' },
-  { value: 108, label: 'qifu.lamp.4.label', desc: 'qifu.lamp.4.desc' },
-  { value: 999, label: 'qifu.lamp.5.label', desc: 'qifu.lamp.5.desc' },
-];
-
-function Lantern({ selected, onClick, count }: { selected: boolean; onClick: () => void; count: number }) {
-  const delay = `${(count * 0.7) % 4}s`;
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`group relative flex flex-col items-center justify-center rounded-xl border p-4 transition-all duration-200 ${
-        selected
-          ? 'border-gold/60 bg-gold/10 shadow-gold'
-          : 'border-gold/20 bg-xuan-card/60 hover:border-gold/40 hover:bg-xuan-surface/70'
-      }`}
-    >
-      <div className="text-center">
-        <div className={`font-display text-lg ${selected ? 'text-paper' : 'text-paper-dark/70'}`}>
-          {count}{resolve('common.lampUnit').trim()}
-        </div>
-        <div className={`text-xs ${selected ? 'text-paper-dark/90' : 'text-paper-dark/50'}`}>
-          {resolve(LIGHT_AMOUNTS[count]?.label || '')}
-        </div>
-        <div className={`text-[10px] mt-0.5 ${selected ? 'text-paper-dark/70' : 'text-paper-dark/30'}`}>
-          {resolve(LIGHT_AMOUNTS[count]?.desc || '')}
-        </div>
-      </div>
-
-      {selected && (
-        <div className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-gold shadow-lg">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1a1410" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
-        </div>
-      )}
-    </button>
-  );
-}
-
-function WishLantern({ name, merit, index }: { name: string; merit: number; index: number }) {
+// 单个灯笼组件
+function WallLantern({ name, merit, index, lanternType }: { name: string; merit: number; index: number; lanternType?: string }) {
   const delay = (index * 0.5) % 3;
-  // 脱敏：只显示前2个字符
   const displayName = name.length > 2 ? name.slice(0, 2) : name;
-
-  // 五种灯笼颜色循环（对齐菩提苑）
-  const lanternColors = [
-    { body: '#ff6b35', glow: '#ff8c5a', flame: '#ff4500', name: '橙红' },   // 橙
-    { body: '#e63946', glow: '#ff6b6b', flame: '#c1121f', name: '朱红' },   // 红
-    { body: '#2d6a4f', glow: '#52b788', flame: '#1b4332', name: '翠绿' },   // 绿
-    { body: '#457b9d', glow: '#a8dadc', flame: '#1d3557', name: '靛蓝' },   // 蓝
-    { body: '#c9a96e', glow: '#f5e6b8', flame: '#8b6914', name: '金色' },   // 金
-  ];
-  const color = lanternColors[index % 5];
+  const color = LANTERN_COLORS[index % 5];
+  const colorName = color.name;
 
   return (
-    <div className="flex flex-col items-center gap-2" style={{ animationDelay: `${delay}s` }}>
-      {/* 传统纸灯笼 SVG */}
+    <div className="flex flex-col items-center gap-2">
       <svg
         width="130"
         height="180"
         viewBox="0 0 240 320"
-        className="drop-shadow-[0_0_24px_rgba(255,180,80,0.4)]"
-        style={{
-          animation: `lamp-sway 8s ease-in-out infinite`,
-          animationDelay: `${delay}s`,
-          transformOrigin: '120px 28px',
-        }}
+        className="lantern-svg drop-shadow-[0_0_24px_rgba(255,180,80,0.4)]"
+        style={{ '--dl': `${delay}s` } as React.CSSProperties}
       >
-        <defs>
-          {/* 金属渐变 */}
-          <linearGradient id={`metal-${index}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#fde68a">
-              <animate attributeName="stop-color" values="#fde68a;#ffffff;#fde68a" dur="3s" repeatCount="indefinite" />
-            </stop>
-            <stop offset="50%" stopColor={color.body} />
-            <stop offset="100%" stopColor={color.flame} />
-          </linearGradient>
-
-          {/* 灯笼体径向渐变 */}
-          <radialGradient id={`body-${index}`} cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stopColor="#fff5d8" stopOpacity="0.95" />
-            <stop offset="100%" stopColor={color.body} stopOpacity="0.3" />
-          </radialGradient>
-
-          {/* 外发光 */}
-          <radialGradient id={`glow-${index}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor={color.glow} stopOpacity="0.6" />
-            <stop offset="60%" stopColor={color.glow} stopOpacity="0.25" />
-            <stop offset="100%" stopColor={color.glow} stopOpacity="0" />
-          </radialGradient>
-
-          {/* 高光 */}
-          <radialGradient id={`highlight-${index}`} cx="35%" cy="30%" r="35%">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-          </radialGradient>
-
-          {/* 内部火焰 */}
-          <radialGradient id={`flame-${index}`} cx="50%" cy="60%" r="50%">
-            <stop offset="0%" stopColor="#fff7c0" />
-            <stop offset="40%" stopColor="#ffd97a" />
-            <stop offset="70%" stopColor="#ff8b3d" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#ff5a14" stopOpacity="0" />
-          </radialGradient>
-
-          {/* 流苏渐变 */}
-          <linearGradient id={`tassel-${index}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#dc2626" />
-            <stop offset="100%" stopColor="#7f1d1d" />
-          </linearGradient>
-        </defs>
-
-        {/* 挂绳 */}
-        <line x1="120" y1="0" x2="120" y2="20" stroke={`url(#metal-${index})`} strokeWidth="2" />
-
-        {/* 顶部金属帽 */}
-        <ellipse cx="120" cy="20" rx="8" ry="4" fill={`url(#metal-${index})`} stroke="#7c4f1a" strokeWidth="0.5" />
-        <rect x="108" y="22" width="24" height="6" rx="2" fill={`url(#metal-${index})`} stroke="#7c4f1a" strokeWidth="0.5" />
-
-        {/* 金属顶盖穹顶 */}
-        <path d="M 60 38 Q 120 24 180 38 L 170 50 Q 120 42 70 50 Z" fill={`url(#metal-${index})`} stroke="#7c4f1a" strokeWidth="0.5" />
-
-        {/* 金属装饰环 */}
+        <circle className="lantern-glow" cx="120" cy="150" r="130" fill={`url(#glow-${colorName})`} />
+        <ellipse className="lantern-flame" cx="120" cy="150" rx="68" ry="92" fill={`url(#body-${colorName})`} stroke={color.body} strokeWidth="2" />
+        <ellipse className="lantern-flame" cx="120" cy="150" rx="50" ry="70" fill={`url(#flame-${colorName})`} opacity="0.6" />
+        <line x1="120" y1="0" x2="120" y2="20" stroke="#fde68a" strokeWidth="2" />
+        <ellipse cx="120" cy="20" rx="8" ry="4" fill="#fde68a" stroke="#7c4f1a" strokeWidth="0.5" />
+        <rect x="108" y="22" width="24" height="6" rx="2" fill="#fde68a" stroke="#7c4f1a" strokeWidth="0.5" />
+        <path d="M 60 38 Q 120 24 180 38 L 170 50 Q 120 42 70 50 Z" fill="#fde68a" stroke="#7c4f1a" strokeWidth="0.5" />
         <path d="M 70 50 Q 120 42 170 50 L 165 56 Q 120 50 75 56 Z" fill="#7c4f1a" />
-
-        {/* 外发光圆 */}
-        <circle
-          cx="120"
-          cy="150"
-          r="130"
-          fill={`url(#glow-${index})`}
-          style={{
-            animation: `lamp-glow-pulse 4s ease-in-out infinite`,
-            animationDelay: `${delay}s`,
-          }}
-        />
-
-        {/* 灯笼主体椭圆 */}
-        <ellipse
-          cx="120"
-          cy="150"
-          rx="68"
-          ry="92"
-          fill={`url(#body-${index})`}
-          stroke={color.body}
-          strokeWidth="2"
-        />
-
-        {/* 内部火焰 */}
-        <ellipse
-          cx="120"
-          cy="150"
-          rx="50"
-          ry="70"
-          fill={`url(#flame-${index})`}
-          opacity="0.6"
-          style={{
-            animation: `inner-flame 2.4s ease-in-out infinite`,
-            animationDelay: `${delay}s`,
-            transformOrigin: '120px 150px',
-          }}
-        />
-
-        {/* 6条垂直纹理线 */}
         {[1, 3, 5, 7, 9, 11].map(i => (
-          <line
-            key={`v-${i}`}
-            x1={90 + i * 5}
-            y1="60"
-            x2={90 + i * 5}
-            y2="240"
-            stroke="rgba(0,0,0,0.18)"
-            strokeWidth="1"
-          />
+          <line key={i} x1={90 + i * 5} y1="60" x2={90 + i * 5} y2="240" stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         ))}
-
-        {/* 5条水平纹理线 */}
         {[85, 115, 150, 185, 215].map((y, i) => {
-          const widthAtY = Math.sqrt(1 - Math.pow((y - 150) / 92, 2)) * 68;
-          return (
-            <line
-              key={`h-${i}`}
-              x1={120 - widthAtY}
-              y1={y}
-              x2={120 + widthAtY}
-              y2={y}
-              stroke="rgba(0,0,0,0.12)"
-              strokeWidth="1"
-            />
-          );
+          const w = Math.sqrt(1 - Math.pow((y - 150) / 92, 2)) * 68;
+          return <line key={i} x1={120 - w} y1={y} x2={120 + w} y2={y} stroke="rgba(0,0,0,0.12)" strokeWidth="1" />;
         })}
-
-        {/* 高光椭圆 */}
-        <ellipse
-          cx="102"
-          cy="120"
-          rx="28"
-          ry="36"
-          fill={`url(#highlight-${index})`}
-        />
-
-        {/* 底部金属帽 */}
-        <ellipse cx="120" cy="240" rx="8" ry="4" fill={`url(#metal-${index})`} stroke="#7c4f1a" strokeWidth="0.5" />
-        <rect x="108" y="232" width="24" height="6" rx="2" fill={`url(#metal-${index})`} stroke="#7c4f1a" strokeWidth="0.5" />
-
-        {/* 红色流苏 */}
-        <g style={{
-          animation: `tassel-sway 3.5s ease-in-out infinite`,
-          animationDelay: `${delay}s`,
-          transformOrigin: '120px 252px',
-        }}>
-          <line x1="110" y1="238" x2="105" y2="275" stroke={`url(#tassel-${index})`} strokeWidth="1.5" />
-          <line x1="115" y1="238" x2="112" y2="280" stroke={`url(#tassel-${index})`} strokeWidth="1.5" />
-          <line x1="120" y1="238" x2="120" y2="282" stroke={`url(#tassel-${index})`} strokeWidth="1.5" />
-          <line x1="125" y1="238" x2="128" y2="280" stroke={`url(#tassel-${index})`} strokeWidth="1.5" />
-          <line x1="130" y1="238" x2="135" y2="275" stroke={`url(#tassel-${index})`} strokeWidth="1.5" />
-          {/* 底部珠子 */}
+        <ellipse cx="102" cy="120" rx="28" ry="36" fill="url(#highlight)" />
+        <ellipse cx="120" cy="240" rx="8" ry="4" fill="#fde68a" stroke="#7c4f1a" strokeWidth="0.5" />
+        <rect x="108" y="232" width="24" height="6" rx="2" fill="#fde68a" stroke="#7c4f1a" strokeWidth="0.5" />
+        <g className="lantern-tassel">
+          <line x1="110" y1="238" x2="105" y2="275" stroke="#dc2626" strokeWidth="1.5" />
+          <line x1="115" y1="238" x2="112" y2="280" stroke="#dc2626" strokeWidth="1.5" />
+          <line x1="120" y1="238" x2="120" y2="282" stroke="#dc2626" strokeWidth="1.5" />
+          <line x1="125" y1="238" x2="128" y2="280" stroke="#dc2626" strokeWidth="1.5" />
+          <line x1="130" y1="238" x2="135" y2="275" stroke="#dc2626" strokeWidth="1.5" />
           <circle cx="120" cy="286" r="4" fill="#dc2626" />
           <circle cx="120" cy="286" r="2" fill="#fde68a" opacity="0.5" />
         </g>
-
-        {/* 名字文字 - 楷体 + 金色内发光 */}
-        <text
-          x="120"
-          y="155"
-          textAnchor="middle"
-          fontFamily="'STKaiti', 'KaiTi', 楷体, serif"
-          fontWeight="bold"
-          fontSize="20"
-          fill="#3a1f0a"
-          style={{ filter: 'drop-shadow(0 0 4px rgba(255,220,140,0.95))' }}
-        >
+        <text x="120" y="155" textAnchor="middle" fontFamily="'STKaiti', 'KaiTi', 楷体, serif" fontWeight="bold" fontSize="20" fill="#3a1f0a" style={{ filter: 'drop-shadow(0 0 4px rgba(255,220,140,0.95))' }}>
           {displayName}
         </text>
       </svg>
-
-      {/* 底部小字 */}
       <div className="text-center">
-        <div className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>
-          {resolve('qifu.wall.lantern.offering')} {name}
+        <div className="text-[14.875px]" style={{ color: 'rgba(212,197,169,0.65)' }}>
+          {resolve('qifu.wall.lantern.offering')} {name} 的 {lanternType}
         </div>
-        <div className="text-[10px]" style={{ color: 'rgba(212,197,169,0.4)' }}>
-          {resolve('qifu.wall.lantern.merit')} {merit}
+        <div className="text-[11px]" style={{ color: 'rgba(212,197,169,0.4)' }}>
+          功德 6.6
         </div>
       </div>
     </div>
   );
 }
 
-export default function QifuPage() {
-  const [selectedLantern, setSelectedLantern] = useState(0);
-  const [formData, setFormData] = useState({ name: '', relation: '', wish: '' });
-  const [showPayment, setShowPayment] = useState(false);
-  const [lights, setLights] = useState(126);
-  const [merit, setMerit] = useState(834.6);
+// 六种灯品种（菩提苑源码）
+const LAMP_TYPES = [
+  { name: '清心灯', desc: '祈愿身心安宁、烦恼消解', flameColor: 'rgb(122, 106, 74)' },
+  { name: '智慧灯', desc: '祈愿学业精进、心智明朗', flameColor: 'rgb(122, 106, 74)' },
+  { name: '长寿灯', desc: '祈愿身体康健、福寿绵长', flameColor: 'rgb(122, 106, 74)' },
+  { name: '平安灯', desc: '祈愿出入平安、家宅安宁', flameColor: 'rgb(196, 61, 61)' },
+  { name: '姻缘灯', desc: '祈愿良缘早至、感情和顺', flameColor: 'rgb(122, 106, 74)' },
+  { name: '财福灯', desc: '祈愿财源广进、生意顺遂', flameColor: 'rgb(122, 106, 74)' },
+];
 
+// 供奉时长选项（菩提苑源码）
+const PERIODS = [
+  { id: 'month', label: '一月供奉', price: 3.9 },
+  { id: 'hundred', label: '百日供奉', price: 5.9 },
+  { id: 'year', label: '一年供奉', price: 9.9 },
+  { id: 'permanent', label: '永久长明', price: 19.9 },
+];
+
+// 关系选项（菩提苑源码顺序）
+const RELATION_OPTIONS = ['父亲', '母亲', '爱人', '孩子', '孙辈', '朋友', '自己'];
+
+// 五种灯笼颜色
+const LANTERN_COLORS = [
+  { body: '#ff6b35', glow: '#ff8c5a', flame: '#ff4500', name: '橙红' },
+  { body: '#e63946', glow: '#ff6b6b', flame: '#c1121f', name: '朱红' },
+  { body: '#2d6a4f', glow: '#52b788', flame: '#1b4332', name: '翠绿' },
+  { body: '#457b9d', glow: '#a8dadc', flame: '#1d3557', name: '靛蓝' },
+  { body: '#c9a96e', glow: '#f5e6b8', flame: '#8b6914', name: '金色' },
+] as const;
+
+const COLOR_NAME_MAP: Record<string, { body: string; glow: string; flame: string; name: string }> = {
+  '橙红': LANTERN_COLORS[0],
+  '朱红': LANTERN_COLORS[1],
+  '翠绿': LANTERN_COLORS[2],
+  '靛蓝': LANTERN_COLORS[3],
+  '金色': LANTERN_COLORS[4],
+};
+
+// 灯墙滚动数据
+const WALL_LANTERNS = [
+  { name: '张*', type: '平安灯' },
+  { name: '李*', type: '姻缘灯' },
+  { name: '王*', type: '智慧灯' },
+  { name: '赵*', type: '长寿灯' },
+  { name: '陈*', type: '财福灯' },
+  { name: '刘*', type: '平安灯' },
+  { name: '杨*', type: '清心灯' },
+  { name: '周*', type: '姻缘灯' },
+  { name: '吴*', type: '平安灯' },
+  { name: '郑*', type: '长寿灯' },
+  { name: '孙*', type: '财福灯' },
+  { name: '马*', type: '平安灯' },
+];
+
+export default function QifuPage() {
+  const [selectedLamp, setSelectedLamp] = useState(3); // 默认选中平安灯
+  const [selectedPeriod, setSelectedPeriod] = useState(0);
+  const [familyName, setFamilyName] = useState('');
+  const [relation, setRelation] = useState('');
+  const [wish, setWish] = useState('');
+  const [yourName, setYourName] = useState('');
+  const [showPayment, setShowPayment] = useState(false);
+  const [totalLights, setTotalLights] = useState(51);
+  const [wallScroll, setWallScroll] = useState(WALL_LANTERNS);
   const [lang, setLang] = useState<SupportedLang>(getLocale());
 
   useEffect(() => {
@@ -315,141 +195,234 @@ export default function QifuPage() {
 
   useEffect(() => { injectLanternAnimations(); }, []);
 
+  // 灯墙实时更新
+  useEffect(() => {
+    const surnames = ['黄*', '林*', '何*', '高*', '罗*', '梁*', '谢*', '宋*', '唐*', '许*'];
+    const lampTypes = ['平安灯', '姻缘灯', '智慧灯', '长寿灯', '财福灯', '清心灯'];
+    const timer = setInterval(() => {
+      const newEntry = {
+        name: surnames[Math.floor(Math.random() * surnames.length)],
+        type: lampTypes[Math.floor(Math.random() * lampTypes.length)],
+      };
+      setWallScroll(prev => [newEntry, ...prev.slice(0, 15)]);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const currentPrice = PERIODS[selectedPeriod]?.price || 3.9;
+
   const handleLight = () => {
-    if (!formData.name.trim()) {
-      alert(resolve('qifu.form.name.placeholder'));
-      return;
-    }
-    const amount = LIGHT_AMOUNTS[selectedLantern]?.value || 6.6;
-    setLights(l => l + 1);
-    setMerit(m => m + amount);
+    if (!familyName.trim()) return;
+    setTotalLights(l => l + 1);
     setShowPayment(true);
   };
 
   return (
-    <div className="min-h-screen bg-xuan relative overflow-hidden">
-      <GoldenLotusBg />
-      <FloatingParticles />
-      <Header />
-      <MusicToggleFloat />
+    <>
+      {/* 全局共享渐变 defs — 所有灯笼复用 */}
+      <svg className="absolute -left-[9999px] top-0" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          {Object.entries(COLOR_NAME_MAP).map(([name, c]) => (
+            <g key={name}>
+              <radialGradient id={`body-${name}`} cx="50%" cy="40%" r="60%">
+                <stop offset="0%" stopColor="#fff5d8" stopOpacity="0.95" />
+                <stop offset="100%" stopColor={c.body} stopOpacity="0.3" />
+              </radialGradient>
+              <radialGradient id={`glow-${name}`} cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={c.glow} stopOpacity="0.6" />
+                <stop offset="60%" stopColor={c.glow} stopOpacity="0.25" />
+                <stop offset="100%" stopColor={c.glow} stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id={`flame-${name}`} cx="50%" cy="60%" r="50%">
+                <stop offset="0%" stopColor="#fff7c0" />
+                <stop offset="40%" stopColor="#ffd97a" />
+                <stop offset="70%" stopColor="#ff8b3d" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#ff5a14" stopOpacity="0" />
+              </radialGradient>
+            </g>
+          ))}
+          <radialGradient id="highlight" cx="35%" cy="30%" r="35%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+
+      <div className="min-h-screen bg-xuan relative overflow-hidden">
+        <GoldenLotusBg />
+        <FloatingParticles />
+        <Header />
+        <MusicToggleFloat />
 
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
-        <div className="mx-auto max-w-4xl space-y-section px-4 pb-24">
+        <div className="mx-auto max-w-4xl space-y-6 px-4 pb-24">
           {/* Title */}
           <section className="space-y-3 pt-8 text-center">
             <div className="mx-auto mb-3 flex size-20 items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-[2.6875rem] text-vermillion" aria-hidden="true">
-                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-10 text-vermillion" aria-hidden="true">
+                <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
               </svg>
             </div>
-            <h1 className="text-4xl tracking-[0.15em] font-display" style={{ color: '#C9A96E' }}>{resolve('qifu.title')}</h1>
-            <p className="mx-auto max-w-md text-base" style={{ color: '#D4C5A9' }}>
-              {resolve('qifu.subtitle')}
+            <h1 className="text-4xl tracking-widest text-gold">心愿供灯</h1>
+            <p className="mx-auto max-w-md text-base text-paper-dark/85">
+              点一盏灯，写下一份祝愿，留给家人、自己或重要时刻一份温和的仪式感。
             </p>
           </section>
 
-          {/* Form */}
-          <div>
-            <div className="card-standard space-y-6">
-              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.who')}</h2>
+          {/* 灯墙统计 + 滚动条 */}
+          <div className="flex justify-center">
+            <div className="mx-auto inline-flex items-center gap-4 rounded-full border border-gold/30 bg-xuan-card/70 px-6 py-2 text-sm text-paper-dark/85">
+              <span>已点亮 <span className="font-display text-lg text-gold">{totalLights}</span> 盏</span>
+              <span className="h-4 w-px bg-gold/30" />
+              <span>今日新增 <span className="font-display text-lg text-vermillion">0</span> 盏</span>
+            </div>
+          </div>
+          <div className="relative mx-auto mt-3 max-w-lg overflow-hidden rounded-full border border-gold/20 bg-xuan-card/50 px-4 py-2">
+            <div className="flex animate-[marquee_20s_linear_infinite] whitespace-nowrap gap-8">
+              {wallScroll.map((wl, i) => (
+                <span key={i} className="inline-flex items-center gap-1.5 text-xs text-paper-dark/75">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame size-3 text-vermillion/70" aria-hidden="true">
+                    <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
+                  </svg>
+                  <span className="text-gold/85">{wl.name}</span>
+                  <span>为</span>
+                  <span className="text-gold/85">客**</span>
+                  <span>点亮{wl.type}</span>
+                </span>
+              ))}
+            </div>
+          </div>
 
-              {/* Name */}
-              <label className="block space-y-2">
-                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('qifu.form.name')}</span>
+          {/* Form */}
+          <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-4">
+            {/* 家人姓名 + 关系 */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="space-y-2">
+                <span className="text-base text-paper-dark/85">家人姓名</span>
                 <input
                   type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={familyName}
+                  onChange={(e) => setFamilyName(e.target.value)}
+                  placeholder="例如：王秀英"
                   maxLength={16}
-                  className="input-standard h-10 w-full px-3 text-lg"
-                  style={{ color: '#D4C5A9' }}
-                  placeholder={resolve('qifu.form.name.placeholder')}
+                  className="h-10 rounded-md border border-gold/20 bg-xuan-surface px-3 text-paper-dark placeholder:text-ink-muted transition-all duration-fast focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 text-lg w-full"
                 />
               </label>
-
-              {/* Relation */}
-              <label className="block space-y-2">
-                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('qifu.form.relation')}</span>
+              <label className="space-y-2">
+                <span className="text-base text-paper-dark/85">与您的关系</span>
                 <select
-                  value={formData.relation}
-                  onChange={(e) => setFormData({ ...formData, relation: e.target.value })}
-                  className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface px-3 text-lg text-paper-dark focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all"
-                  style={{ backgroundColor: 'rgba(61,52,40,0.4)', color: '#D4C5A9' }}
+                  value={relation}
+                  onChange={(e) => setRelation(e.target.value)}
+                  className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface px-3 text-lg text-paper-dark focus:border-gold focus:outline-none"
                 >
-                  <option value="">{resolve('qifu.form.relation.placeholder')}</option>
-                  {RELATIONS.map(r => <option key={r} value={resolve(r)}>{resolve(r)}</option>)}
+                  <option value="">请选择</option>
+                  {RELATION_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
                 </select>
               </label>
             </div>
-          </div>
 
-          {/* Lantern Selection */}
-          <div>
-            <div className="card-standard space-y-4">
-              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.lamp')}</h2>
+            {/* 选一盏灯 */}
+            <div>
+              <p className="text-base text-paper-dark/85">选一盏灯</p>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                {LIGHT_AMOUNTS.map((lamp, i) => (
-                  <Lantern
+                {LAMP_TYPES.map((lamp, i) => (
+                  <button
                     key={i}
-                    count={i}
-                    selected={selectedLantern === i}
-                    onClick={() => setSelectedLantern(i)}
-                  />
+                    type="button"
+                    onClick={() => setSelectedLamp(i)}
+                    className={`group relative rounded-xl border p-4 text-left transition-all ${
+                      selectedLamp === i
+                        ? 'border-gold/60 bg-gold/10 shadow-gold'
+                        : 'border-gold/20 bg-xuan-surface/40 hover:border-gold/40'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame mb-2 size-7" aria-hidden="true" style={{ color: selectedLamp === i ? lamp.flameColor : 'rgb(122, 106, 74)' }}>
+                      <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
+                    </svg>
+                    <p className={`font-display text-lg ${selectedLamp === i ? 'text-gold' : 'text-paper-dark'}`}>{lamp.name}</p>
+                    <p className="mt-1 text-sm text-paper-dark/65">{lamp.desc}</p>
+                  </button>
                 ))}
               </div>
             </div>
-          </div>
 
-          {/* Wish */}
-          <div>
-            <div className="card-standard space-y-4">
-              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.wish')}</h2>
-              <label className="block space-y-2">
-                <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('qifu.section.wish')} <span className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>({resolve('qifu.wish.charLimit')})</span></span>
-                <textarea
-                  value={formData.wish}
-                  onChange={(e) => setFormData({ ...formData, wish: e.target.value })}
-                  maxLength={80}
-                  rows={3}
-                  className="w-full rounded-md border border-gold/20 bg-xuan-surface/40 px-4 py-3 text-base focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all"
-                  style={{ color: '#D4C5A9', backgroundColor: 'rgba(61,52,40,0.4)' }}
-                  placeholder={resolve('qifu.wish.placeholder')}
-                />
-              </label>
-
-              {/* Price */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-                <div>
-                  <p className="text-sm" style={{ color: 'rgba(212,197,169,0.6)' }}>{resolve('qifu.perLamp')} ¥</p>
-                  <p className="font-display text-[1.875rem]" style={{ color: '#C9A96E' }}>{LIGHT_AMOUNTS[selectedLantern]?.value}</p>
-                </div>
-                <button type="button" className="btn-primary" onClick={handleLight}>
-                  {resolve('qifu.btn.light')}
-                </button>
+            {/* 供奉时长 */}
+            <div>
+              <p className="text-base text-paper-dark/85">供奉时长</p>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                {PERIODS.map((period, i) => (
+                  <button
+                    key={period.id}
+                    type="button"
+                    onClick={() => setSelectedPeriod(i)}
+                    className={`rounded-xl border p-4 text-center transition-all ${
+                      selectedPeriod === i
+                        ? 'border-gold/60 bg-gold/10 shadow-gold'
+                        : 'border-gold/20 bg-xuan-surface/40 hover:border-gold/40'
+                    }`}
+                  >
+                    <p className="font-display text-lg text-paper-dark">{period.label}</p>
+                    <p className="mt-1 font-number text-2xl text-vermillion">¥{period.price}</p>
+                  </button>
+                ))}
               </div>
             </div>
+
+            {/* 心愿 */}
+            <label className="block space-y-2">
+              <span className="text-base text-paper-dark/85">心愿（可选，最多 80 字）</span>
+              <textarea
+                value={wish}
+                onChange={(e) => setWish(e.target.value)}
+                placeholder="例如：愿父亲身体康健、烦恼消解"
+                maxLength={80}
+                rows={3}
+                className="w-full rounded-md border border-gold/20 bg-xuan-surface px-4 py-3 text-base text-paper-dark focus:border-gold focus:outline-none"
+              />
+            </label>
+
+            {/* 您的称呼 */}
+            <label className="block space-y-2">
+              <span className="text-base text-paper-dark/85">您的称呼（可选，会显示在灯墙）</span>
+              <input
+                type="text"
+                value={yourName}
+                onChange={(e) => setYourName(e.target.value)}
+                placeholder="例如：李小华"
+                maxLength={16}
+                className="h-10 rounded-md border border-gold/20 bg-xuan-surface px-3 text-base text-paper-dark placeholder:text-ink-muted transition-all duration-fast focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 w-full"
+              />
+            </label>
           </div>
 
-          {/* 灯墙 */}
-          <div>
-            <div className="card-standard space-y-4">
-              <h2 className="font-display text-[1.5rem]" style={{ color: '#C9A96E' }}>{resolve('qifu.section.wall')}</h2>
-              <p className="text-sm" style={{ color: 'rgba(212,197,169,0.65)' }}>
-                {resolve('qifu.wall.note')}
-              </p>
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-                {[
-                  { name: '张*', merit: 6.6 },
-                  { name: '李*', merit: 16.6 },
-                  { name: '王*', merit: 36.6 },
-                  { name: '赵*', merit: 6.6 },
-                  { name: '陈*', merit: 108 },
-                  { name: '刘*', merit: 6.6 },
-                  { name: '杨*', merit: 66 },
-                  { name: '周*', merit: 6.6 },
-                  { name: '吴*', merit: 16.6 },
-                ].map((wl, i) => (
-                  <WishLantern key={i} name={wl.name} merit={wl.merit} index={i} />
+          {/* 底部价格 + 按钮 */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-paper-dark/65">需供奉</p>
+              <p className="font-display text-3xl text-gold">¥{currentPrice}</p>
+            </div>
+            <button
+              type="button"
+              className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg"
+              onClick={handleLight}
+            >
+              点亮心愿灯
+            </button>
+          </div>
+
+          {/* 心愿灯墙 */}
+          <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-4">
+            <h2 className="font-display text-2xl text-gold">心愿灯墙</h2>
+            <p className="text-sm" style={{ color: 'rgba(212,197,169,0.65)' }}>
+              姓名已脱敏处理 · 仅作心愿展示
+            </p>
+            <div className="relative overflow-hidden" style={{ maxHeight: '400px' }}>
+              <div
+                className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                style={{ animation: 'marquee-lanterns 40s linear infinite' }}
+              >
+                {WALL_LANTERNS.concat(WALL_LANTERNS).map((wl, i) => (
+                  <WallLantern key={i} name={wl.name} merit={6.6} index={i} lanternType={wl.type} />
                 ))}
               </div>
             </div>
@@ -461,20 +434,21 @@ export default function QifuPage() {
       {showPayment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
           <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 animate-slide-up" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-[1.25rem] text-gold font-display">{resolve('qifu.payment.title')}</h3>
-            <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('qifu.payment.desc')}</p>
+            <h3 className="text-[1.25rem] text-gold font-display">心愿供灯</h3>
+            <p className="text-sm" style={{ color: '#D4C5A9' }}>请扫描下方二维码完成供灯</p>
             <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
-            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('qifu.payment.confirm')}</p>
+            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>供灯完成后请截图发送给我们确认</p>
             <button
               type="button"
               onClick={() => setShowPayment(false)}
               className="w-full rounded-lg border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors"
             >
-              {resolve('common.close')}
+              关闭
             </button>
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

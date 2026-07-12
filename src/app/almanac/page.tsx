@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Solar, Lunar } from 'lunar-javascript';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
@@ -14,20 +14,72 @@ function resolve(key: string): string {
   return t(key);
 }
 
+// 时辰吉凶数据（基于传统黄历）
+const SHICHEN_JIXIONG: Record<string, { ji: string[]; xiong: string[] }> = {
+  zi:  { ji: ['求仙', '宴饮'], xiong: ['出行', '嫁娶'] },
+  chou:{ ji: ['交易', '立券'], xiong: ['动土', '破土'] },
+  yin: { ji: ['祭祀', '祈福'], xiong: ['安葬', '伐木'] },
+  mao: { ji: ['出行', '嫁娶'], xiong: ['动土', '开仓'] },
+  chen:{ ji: ['交易', '祭祀'], xiong: ['安床', '栽种'] },
+  si:  { ji: ['祈福', '求嗣'], xiong: ['词讼', '远行'] },
+  wu:  { ji: ['出行', '移徙'], xiong: ['安门', '服药'] },
+  wei: { ji: ['嫁娶', '祭祀'], xiong: ['开市', '安葬'] },
+  shen:{ ji: ['交易', '出行'], xiong: ['动土', '破土'] },
+  you: { ji: ['祭祀', '祈福'], xiong: ['安床', '作灶'] },
+  xu:  { ji: ['嫁娶', '开市'], xiong: ['词讼', '打劫'] },
+  hai: { ji: ['出行', '求嗣'], xiong: ['安葬', '修造'] },
+};
+
+// 黄历单日数据接口
+interface DayAlmanac {
+  date: string;
+  lunarDate: string;
+  ganZhi: { year: string; month: string; day: string; hour: string };
+  yi: string[];
+  ji: string[];
+  chong: string;
+  xingzuo: string;
+  weekDay: string;
+  jieQi: string;
+  solarDateObj: Date;
+}
+
+// 获取某日的黄历数据
+function getDayAlmanac(date: Date, lang: SupportedLang): DayAlmanac {
+  const solar = Solar.fromYmdHms(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    date.getDate(),
+    12, 0, 0
+  );
+  const lunar = solar.getLunar();
+
+  return {
+    date: lang === 'en'
+      ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      : `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`,
+    lunarDate: lunar.toString(),
+    ganZhi: {
+      year: lunar.getYearInGanZhi(),
+      month: lunar.getMonthInGanZhi(),
+      day: lunar.getDayInGanZhi(),
+      hour: lunar.getTimeInGanZhi(),
+    },
+    yi: lunar.getDayYi() || [],
+    ji: lunar.getDayJi() || [],
+    chong: lunar.getChongDesc() || '',
+    xingzuo: solar.getXingzuo(),
+    weekDay: lang === 'en' ? ['周日','周一','周二','周三','周四','周五','周六'][date.getDay()] : solar.getWeekInChinese(),
+    jieQi: (lunar as any).getCurrentJieQi?.() || '',
+    solarDateObj: date,
+  };
+}
+
 export default function AlmanacPage() {
   const [lang, setLang] = useState<SupportedLang>(getLocale());
   const [loading, setLoading] = useState(true);
-  const [almanac, setAlmanac] = useState<{
-    date: string;
-    lunarDate: string;
-    ganZhi: { year: string; month: string; day: string; hour: string };
-    yi: string[];
-    ji: string[];
-    chong: string;
-    xingzuo: string;
-    weekDay: string;
-    jieQi: string;
-  } | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0); // 0=今天, 1=明天, ...6=后日
+  const [almanacs, setAlmanacs] = useState<DayAlmanac[]>([]);
 
   useEffect(() => {
     setLang(getLocale());
@@ -36,45 +88,54 @@ export default function AlmanacPage() {
     return () => window.removeEventListener('lang-change', handler);
   }, []);
 
+  // 生成未来7天的黄历数据
   useEffect(() => {
-    const today = new Date();
-    const solar = Solar.fromYmdHms(
-      today.getFullYear(),
-      today.getMonth() + 1,
-      today.getDate(),
-      today.getHours(),
-      today.getMinutes(),
-      today.getSeconds()
-    );
-    const lunar = solar.getLunar();
-
-    setAlmanac({
-      date: `${today.getFullYear()}${resolve('almanac.ganZhi.year')}${today.getMonth() + 1}${resolve('almanac.ganZhi.month')}${today.getDate()}${resolve('almanac.ganZhi.day')}`,
-      lunarDate: lunar.toString(),
-      ganZhi: {
-        year: lunar.getYearInGanZhi(),
-        month: lunar.getMonthInGanZhi(),
-        day: lunar.getDayInGanZhi(),
-        hour: lunar.getTimeInGanZhi(),
-      },
-      yi: lunar.getDayYi() || [],
-      ji: lunar.getDayJi() || [],
-      chong: lunar.getChongDesc() || '',
-      xingzuo: solar.getXingzuo(),
-      weekDay: solar.getWeekInChinese(),
-      jieQi: (lunar as any).getCurrentJieQi?.() || '',
-    });
+    const days: DayAlmanac[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      days.push(getDayAlmanac(d, lang));
+    }
+    setAlmanacs(days);
     setLoading(false);
   }, [lang]);
+
+  const current = almanacs[selectedIndex] || almanacs[0];
+
+  // 获取时辰吉凶
+  function getShichenJiXiong(key: string, hour: number): { isJi: boolean; isXiong: boolean } {
+    const info = SHICHEN_JIXIONG[key];
+    if (!info) return { isJi: false, isXiong: false };
+    // 简单映射：子时=0, 丑时=2, ... 亥时=22
+    const hourRanges: Record<string, [number, number]> = {
+      zi: [23, 1], chou: [1, 3], yin: [3, 5], mao: [5, 7],
+      chen: [7, 9], si: [9, 11], wu: [11, 13], wei: [13, 15],
+      shen: [15, 17], you: [17, 19], xu: [19, 21], hai: [21, 23],
+    };
+    const [start, end] = hourRanges[key] || [0, 2];
+    let isInRange = start <= end ? (hour >= start && hour < end) : (hour >= start || hour < end);
+    return {
+      isJi: isInRange && info.ji.length > 0,
+      isXiong: isInRange && info.xiong.length > 0,
+    };
+  }
 
   const shichenList = Object.entries(shichenLabels).map(([key, val]) => ({
     name: val[lang === 'zh-CN' ? 'zh' : 'en'],
     key,
   }));
 
+  // 日期选择 chips
+  const dateChips = useMemo(() => {
+    return almanacs.map((a, i) => {
+      const d = a.solarDateObj;
+      const label = i === 0 ? '今天' : i === 1 ? '明天' : `${d.getMonth() + 1}/${d.getDate()}`;
+      return { label, index: i };
+    });
+  }, [almanacs]);
+
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ background: '#0a0a0c' }}>
-      {/* 金色荷花艺术背景 */}
+    <div className="min-h-screen relative overflow-hidden" style={{ background: 'var(--color-xuan)' }}>
       <GoldenLotusBg />
       <FloatingParticles />
       <Header />
@@ -99,21 +160,39 @@ export default function AlmanacPage() {
             </p>
           </section>
 
+          {/* 日期切换 chips */}
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {dateChips.map(chip => (
+              <button
+                key={chip.index}
+                type="button"
+                onClick={() => setSelectedIndex(chip.index)}
+                className={`flex-shrink-0 rounded-full border px-4 py-1.5 text-sm transition-all ${
+                  selectedIndex === chip.index
+                    ? 'border-gold/60 bg-gold/10 text-gold'
+                    : 'border-gold/20 text-paper-dark/60 hover:border-gold/40 hover:text-gold'
+                }`}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+
           {loading ? (
             <div className="flex h-[60vh] items-center justify-center" style={{ color: '#dfc59f99' }}>
               {resolve('almanac.loading')}
             </div>
-          ) : almanac ? (
+          ) : current ? (
             <div className="space-y-4">
               {/* Date card */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md space-y-2 text-center">
-                <div className="text-lg font-display" style={{ color: '#f5e6b8' }}>{almanac.date}</div>
-                <div className="text-sm" style={{ color: '#dfc59f' }}>{almanac.weekDay}</div>
-                <div className="text-xs" style={{ color: '#dfc59f99' }}>{almanac.lunarDate}</div>
-                {almanac.jieQi && (
-                  <div className="text-xs mt-1" style={{ color: '#c9a05c' }}>{resolve('almanac.solarTermPrefix')}{almanac.jieQi}</div>
+                <div className="text-lg font-display" style={{ color: '#f5e6b8' }}>{current.date}</div>
+                <div className="text-sm" style={{ color: '#dfc59f' }}>{current.weekDay}</div>
+                <div className="text-xs" style={{ color: '#dfc59f99' }}>{current.lunarDate}</div>
+                {current.jieQi && (
+                  <div className="text-xs mt-1" style={{ color: '#c9a05c' }}>{resolve('almanac.solarTermPrefix')}{current.jieQi}</div>
                 )}
-                <div className="text-xs" style={{ color: '#dfc59f99' }}>{resolve('almanac.zodiac')}: {almanac.xingzuo}</div>
+                <div className="text-xs" style={{ color: '#dfc59f99' }}>{resolve('almanac.zodiac')}: {current.xingzuo}</div>
               </div>
 
               {/* GanZhi */}
@@ -123,10 +202,10 @@ export default function AlmanacPage() {
                 </div>
                 <div className="grid grid-cols-4 gap-3 text-center">
                   {[
-                    { label: resolve('almanac.ganZhi.year'), value: almanac.ganZhi.year },
-                    { label: resolve('almanac.ganZhi.month'), value: almanac.ganZhi.month },
-                    { label: resolve('almanac.ganZhi.day'), value: almanac.ganZhi.day },
-                    { label: resolve('almanac.ganZhi.hour'), value: almanac.ganZhi.hour },
+                    { label: resolve('almanac.ganZhi.year'), value: current.ganZhi.year },
+                    { label: resolve('almanac.ganZhi.month'), value: current.ganZhi.month },
+                    { label: resolve('almanac.ganZhi.day'), value: current.ganZhi.day },
+                    { label: resolve('almanac.ganZhi.hour'), value: current.ganZhi.hour },
                   ].map((g, i) => (
                     <div key={i}>
                       <div className="text-xs mb-1" style={{ color: '#dfc59f99' }}>{g.label}</div>
@@ -137,27 +216,27 @@ export default function AlmanacPage() {
               </div>
 
               {/* Yi / Ji */}
-              <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <div className="text-center mb-2">
-                      <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.yi')}</span>
-                    </div>
-                    <div className="space-y-1">
-                      {(almanac.yi.length > 0 ? almanac.yi : [resolve('almanac.neither')]).map((item, i) => (
-                        <div key={i} className="text-sm text-center" style={{ color: '#dfc59f' }}>{item}</div>
-                      ))}
-                    </div>
+              <div className="grid grid-cols-1 gap-4">
+                {/* 宜 — 绿色卡片 */}
+                <div className="rounded-2xl border border-emerald-500/30 bg-emerald-900/20 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md">
+                  <div className="text-center mb-3">
+                    <span className="text-xs tracking-wider text-emerald-400">{resolve('almanac.yi')}</span>
                   </div>
-                  <div>
-                    <div className="text-center mb-2">
-                      <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.ji')}</span>
-                    </div>
-                    <div className="space-y-1">
-                      {(almanac.ji.length > 0 ? almanac.ji : [resolve('almanac.neither')]).map((item, i) => (
-                        <div key={i} className="text-sm text-center" style={{ color: '#dfc59f' }}>{item}</div>
-                      ))}
-                    </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {(current.yi.length > 0 ? current.yi : [resolve('almanac.neither')]).map((item, i) => (
+                      <span key={i} className="rounded-full bg-emerald-500/15 px-3 py-1 text-sm text-emerald-300">{item}</span>
+                    ))}
+                  </div>
+                </div>
+                {/* 忌 — 红色卡片 */}
+                <div className="rounded-2xl border border-vermillion/30 bg-vermillion/10 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md">
+                  <div className="text-center mb-3">
+                    <span className="text-xs tracking-wider text-vermillion-light">{resolve('almanac.ji')}</span>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {(current.ji.length > 0 ? current.ji : [resolve('almanac.neither')]).map((item, i) => (
+                      <span key={i} className="rounded-full bg-vermillion/15 px-3 py-1 text-sm text-vermillion-light">{item}</span>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -165,10 +244,10 @@ export default function AlmanacPage() {
               {/* Chong */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md text-center">
                 <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.chong')}</span>
-                <div className="mt-2 text-sm" style={{ color: '#dfc59f' }}>{almanac.chong || resolve('almanac.none')}</div>
+                <div className="mt-2 text-sm" style={{ color: '#dfc59f' }}>{current.chong || resolve('almanac.none')}</div>
               </div>
 
-              {/* Twelve Hours */}
+              {/* Twelve Hours with 吉凶标注 */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md">
                 <div className="text-center mb-3">
                   <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.twelveHours')}</span>
@@ -179,17 +258,22 @@ export default function AlmanacPage() {
                     const timeMatch = shichen.name.match(/\((\d+):(\d+)-(\d+):(\d+)\)/);
                     const startHour = timeMatch ? parseInt(timeMatch[1]) : -1;
                     const isCurrent = startHour >= 0 && nowHour >= startHour && nowHour < (startHour + 2) % 24;
+                    const { isJi, isXiong } = getShichenJiXiong(shichen.key, nowHour);
                     return (
                       <div
                         key={i}
-                        className="rounded-lg border p-2 text-center text-xs transition-all"
+                        className="rounded-lg border p-2 text-center text-xs transition-all relative"
                         style={{
-                          borderColor: isCurrent ? '#c9a05c66' : '#c9a05c1a',
-                          backgroundColor: isCurrent ? 'rgba(201,160,92,0.1)' : 'rgba(45,34,22,0.6)',
-                          color: isCurrent ? '#f5e6b8' : '#dfc59fb0',
+                          borderColor: isCurrent ? '#c9a05c66' : isJi ? '#10b98166' : isXiong ? '#ef444466' : '#c9a05c1a',
+                          backgroundColor: isCurrent ? 'rgba(201,160,92,0.1)' : isJi ? 'rgba(16,185,129,0.08)' : isXiong ? 'rgba(239,68,68,0.08)' : 'rgba(45,34,22,0.6)',
+                          color: isCurrent ? '#f5e6b8' : isJi ? '#34d399' : isXiong ? '#f87171' : '#dfc59fb0',
                         }}
                       >
-                        <div className="font-display">{shichen.name}</div>
+                        <div className="font-display">{shichen.name.split('(')[0].trim()}</div>
+                        <div className="mt-0.5 flex gap-0.5 justify-center">
+                          {isJi && <span className="text-[9px] rounded bg-emerald-500/20 px-1 text-emerald-400">宜</span>}
+                          {isXiong && <span className="text-[9px] rounded bg-red-500/20 px-1 text-red-400">忌</span>}
+                        </div>
                       </div>
                     );
                   })}

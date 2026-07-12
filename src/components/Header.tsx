@@ -10,7 +10,7 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 z-50 h-[3.75rem] w-full transition-all duration-base safe-top bg-transparent">
+      <header className="fixed top-0 z-50 h-14 w-full transition-all duration-base safe-top bg-transparent">
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
           {/* Logo 区 */}
           <a className="flex items-center gap-2.5" href="/">
@@ -43,8 +43,15 @@ export function Header() {
             </span>
           </a>
 
-          {/* 桌面导航 - 精简为核心入口 */}
-          <nav className="hidden items-center gap-5 md:flex">
+          {/* 桌面导航 - xl以下只显示核心入口 */}
+          <nav className="hidden items-center gap-5 xl:flex">
+            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/qifu/">{t('nav.qifu')}</a>
+            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/almanac/">{t('nav.almanac')}</a>
+            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/lottery/">{t('nav.lottery')}</a>
+            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/">{t('nav.bazi')}</a>
+            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/dream/">{t('nav.dream')}</a>
+          </nav>
+          <nav className="hidden items-center gap-5 xl:hidden 2xl:flex">
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/qifu/">{t('nav.qifu')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/almanac/">{t('nav.almanac')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/lottery/">{t('nav.lottery')}</a>
@@ -58,23 +65,24 @@ export function Header() {
 
           {/* 右侧按钮区 */}
           <div className="flex items-center gap-2">
-            {/* Language toggle */}
-            <LanguageToggle />
             {/* 音乐控制按钮 */}
             <MusicToggle />
-            {/* 找回记录按钮 */}
-            <div className="hidden items-center gap-2 md:flex">
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-gold/30 px-3 py-1.5 text-sm text-gold transition-colors hover:bg-gold/10"
-                onClick={() => router.push('/records/')}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-key-round size-4" aria-hidden="true">
-                  <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path>
-                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+            {/* 添加到桌面 */}
+            <div className="relative">
+              <button type="button" className="flex size-8 items-center justify-center rounded-full border border-gold/30 text-gold/70 hover:bg-gold/10 hover:text-gold" aria-label="添加到桌面" title="添加到桌面">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download size-4" aria-hidden="true">
+                  <path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" />
                 </svg>
-                {t('nav.records')}
               </button>
+            </div>
+            {/* 用户信息 */}
+            <div className="hidden items-center gap-2 md:flex">
+              <a className="inline-flex items-center gap-2 rounded-full border border-gold/30 px-3 py-1.5 text-sm text-gold hover:bg-gold/10" title="吉祥号 慧悟139" href="/profile/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-round size-4" aria-hidden="true">
+                  <circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" />
+                </svg>
+                慧悟139
+              </a>
             </div>
           </div>
         </div>
@@ -86,12 +94,13 @@ export function Header() {
       {/* 浮动"赚"按钮 */}
       <button
         type="button"
-        className="fixed right-3 z-40 flex size-10 items-center justify-center rounded-full border border-gold/50 bg-gradient-to-br from-gold/35 via-gold/20 to-vermillion/20 text-gold shadow-lg shadow-gold/20 backdrop-blur-md md:right-4 md:bottom-4 md:size-14"
+        className="fixed right-3 z-40 flex size-10 items-center justify-center rounded-full border border-gold/50 bg-gradient-to-br from-gold/35 via-gold/20 to-vermillion/20 text-gold shadow-lg shadow-gold/20 backdrop-blur-md hover:from-gold/45 hover:to-vermillion/30 md:right-4 md:bottom-4 md:size-14"
         style={{ bottom: 'calc(env(safe-area-inset-bottom) + 88px)' }}
-        aria-label={t('earn.float') || '赚'}
+        aria-label="赚钱 / 开分站"
+        title="赚钱 / 开分站"
         onClick={() => router.push('/more/')}
       >
-        <span className="text-sm md:text-base font-bold">{t('earn.float') || '赚'}</span>
+        <span className="font-display text-[18px] text-gold drop-shadow-[0_0_10px_rgba(201,162,39,0.35)] md:text-[24px]">赚</span>
       </button>
     </>
   );

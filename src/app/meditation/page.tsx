@@ -15,9 +15,9 @@ function resolve(key: string): string {
 }
 
 const ZEN_MODES = [
-  { id: 'bell', nameKey: 'meditation.modes.0.name', icon: '🔔', descKey: 'meditation.modes.0.desc' },
-  { id: 'chant', nameKey: 'meditation.modes.1.name', icon: '🙏', descKey: 'meditation.modes.1.desc' },
-  { id: 'nature', nameKey: 'meditation.modes.2.name', icon: '🏔️', descKey: 'meditation.modes.2.desc' },
+  { id: 'bell', nameKey: 'meditation.modes.0.name', icon: '🔔', descKey: 'meditation.modes.0.desc', audio: '/temple/bell.mp3' },
+  { id: 'chant', nameKey: 'meditation.modes.1.name', icon: '🙏', descKey: 'meditation.modes.1.desc', audio: '/temple/chant.mp3' },
+  { id: 'nature', nameKey: 'meditation.modes.2.name', icon: '🏔️', descKey: 'meditation.modes.2.desc', audio: '/temple/stream.mp3' },
 ];
 
 export default function MeditationPage() {
@@ -25,7 +25,9 @@ export default function MeditationPage() {
   const [activeMode, setActiveMode] = useState<string | null>(null);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [audioPlaying, setAudioPlaying] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setLang(getLocale());
@@ -35,12 +37,28 @@ export default function MeditationPage() {
   }, []);
 
   const startSession = (mode: string) => {
+    // Stop previous audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     setActiveMode(mode);
     setTimer(0);
     setIsRunning(true);
+    setAudioPlaying(true);
+
+    // Start audio
+    const modeData = ZEN_MODES.find(m => m.id === mode);
+    if (modeData?.audio) {
+      const audio = new Audio(modeData.audio);
+      audio.loop = true;
+      audio.volume = 0.5;
+      audio.play().catch(() => setAudioPlaying(false));
+      audioRef.current = audio;
+    }
   };
 
-  // Simple timer
+  // Timer
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => setTimer(t => t + 1), 1000);
@@ -48,11 +66,21 @@ export default function MeditationPage() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [isRunning]);
 
+  // Pause/resume audio with timer
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isRunning) audioRef.current.play().catch(() => {});
+      else audioRef.current.pause();
+    }
+  }, [isRunning]);
+
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
     const sec = s % 60;
     return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   };
+
+  const currentMode = activeMode ? ZEN_MODES.find(m => m.id === activeMode) : null;
 
   return (
     <div className="min-h-screen bg-xuan relative overflow-hidden">
@@ -86,11 +114,12 @@ export default function MeditationPage() {
                   key={mode.id}
                   type="button"
                   onClick={() => startSession(mode.id)}
-                  className={`rounded-xl border p-4 text-center transition-all ${
+                  className={`rounded-[12.75px] border p-[12.75px] text-center transition-all ${
                     activeMode === mode.id
                       ? 'border-gold/60 bg-gold/10 shadow-gold'
-                      : 'border-gold/20 bg-xuan-surface/40 hover:border-gold/40 hover:bg-xuan-surface/70'
+                      : 'border-gold/15 bg-xuan-surface/40 hover:border-gold/30 hover:bg-xuan-surface/70'
                   }`}
+                  style={{ minHeight: '89.25px' }}
                 >
                   <span className="text-[1.875rem]">{mode.icon}</span>
                   <p className="text-sm text-gold mt-2 font-display">{resolve(mode.nameKey)}</p>
@@ -100,13 +129,39 @@ export default function MeditationPage() {
             </div>
           </div>
 
-          {/* Timer */}
+          {/* Timer + Audio Player */}
           {activeMode && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4 text-center">
               <div>
                 <span className="text-xs text-gold/80 tracking-wider">{resolve('meditation.timerTitle')}</span>
               </div>
-              <div className="text-5xl text-gold font-number tracking-wider">{formatTime(timer)}</div>
+              <div className="text-[25.5px] text-gold font-number tracking-wider">{formatTime(timer)}</div>
+
+              {/* Audio player */}
+              {currentMode && (
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (audioRef.current) {
+                        if (audioPlaying) {
+                          audioRef.current.pause();
+                          setAudioPlaying(false);
+                        } else {
+                          audioRef.current.play().catch(() => setAudioPlaying(false));
+                          setAudioPlaying(true);
+                        }
+                      }
+                    }}
+                    className="flex items-center gap-2 rounded-lg border border-gold/30 px-4 py-2 text-sm text-gold hover:bg-gold/10 transition-all"
+                  >
+                    <span className="text-lg">{audioPlaying ? '🔇' : '🔊'}</span>
+                    <span>{currentMode.icon} {resolve(currentMode.nameKey)}</span>
+                    {audioPlaying && <span className="animate-pulse">●</span>}
+                  </button>
+                </div>
+              )}
+
               <div className="flex gap-3 justify-center">
                 <button
                   type="button"

@@ -255,13 +255,13 @@ export default function DivinationPage() {
             {/* Number method */}
             {method === 'number' && (
               <div className="space-y-2">
-                <label className="text-sm text-label">{resolve('divination.numberLabel')}</label>
+                <label className="text-sm text-paper-dark/80">{resolve('divination.numberLabel')}</label>
                 <input
                   type="text"
                   value={numberInput}
                   onChange={(e) => setNumberInput(e.target.value)}
                   placeholder={resolve('divination.numberPlaceholder')}
-                  className="w-full h-12 rounded-lg border border-gold/30 bg-xuan-surface px-4 text-sm text-paper-dark focus:border-gold focus:outline-none"
+                  className="input-standard w-full"
                 />
               </div>
             )}
@@ -271,7 +271,7 @@ export default function DivinationPage() {
               type="button"
               onClick={handleSubmit}
               disabled={loading || (method === 'coins' && coinResults.length < 6)}
-              className="w-full rounded-lg bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all disabled:opacity-50"
+              className="btn-primary w-full disabled:opacity-50"
             >
               {loading ? resolve('divination.btn.casting') : resolve('divination.btn.cast')}
             </button>

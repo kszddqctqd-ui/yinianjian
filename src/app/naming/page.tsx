@@ -54,11 +54,11 @@ export default function NamingPage() {
 
     setTimeout(() => {
       let wuXingCount: Record<string, number> = {
-        [resolve('naming.wuxing.gold')]: 0,
-        [resolve('naming.wuxing.wood')]: 0,
-        [resolve('naming.wuxing.water')]: 0,
-        [resolve('naming.wuxing.fire')]: 0,
-        [resolve('naming.wuxing.earth')]: 0,
+        '金': 0,
+        '木': 0,
+        '水': 0,
+        '火': 0,
+        '土': 0,
       };
       try {
         const bazi = calculateBaZi(formData.birthYear, formData.birthMonth, formData.birthDay, 12);

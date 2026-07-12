@@ -118,7 +118,7 @@ export default function ZiweiPage() {
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-5">
             <div className="grid gap-3 md:grid-cols-3">
               <div className="space-y-2">
-                <p className="text-sm text-label">{resolve('bazi.form.year')}</p>
+                <p className="text-sm text-paper-dark/80">{resolve('bazi.form.year')}</p>
                 <div className="relative flex h-16 items-stretch overflow-visible rounded-xl border border-gold/30 bg-xuan-surface">
                   <button type="button" onClick={() => setYear(y => Math.max(1900, y - 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">−</button>
                   <button type="button" className="flex flex-1 flex-col items-center justify-center hover:bg-gold/5">
@@ -128,7 +128,7 @@ export default function ZiweiPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-sm text-label">{resolve('bazi.form.month')}</p>
+                <p className="text-sm text-paper-dark/80">{resolve('bazi.form.month')}</p>
                 <div className="relative flex h-16 items-stretch overflow-visible rounded-xl border border-gold/30 bg-xuan-surface">
                   <button type="button" onClick={() => setMonth(m => Math.max(1, m - 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">−</button>
                   <button type="button" className="flex flex-1 flex-col items-center justify-center hover:bg-gold/5">
@@ -138,7 +138,7 @@ export default function ZiweiPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-sm text-label">{resolve('bazi.form.day')}</p>
+                <p className="text-sm text-paper-dark/80">{resolve('bazi.form.day')}</p>
                 <div className="relative flex h-16 items-stretch overflow-visible rounded-xl border border-gold/30 bg-xuan-surface">
                   <button type="button" onClick={() => setDay(d => Math.max(1, d - 1))} className="flex w-12 items-center justify-center text-paper-dark hover:bg-gold/10">−</button>
                   <button type="button" className="flex flex-1 flex-col items-center justify-center hover:bg-gold/5">
@@ -150,7 +150,7 @@ export default function ZiweiPage() {
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-2">
-                <span className="text-sm text-label">{resolve('bazi.form.shichen')}</span>
+                <span className="text-sm text-paper-dark/80">{resolve('bazi.form.shichen')}</span>
                 <select value={shichen} onChange={(e) => setShichen(e.target.value)}
                   className="h-16 w-full rounded-xl border border-gold/30 bg-xuan-surface px-4 text-lg text-paper-dark focus:border-gold focus:outline-none">
                   {shichenOptions.map((opt) => (
@@ -159,7 +159,7 @@ export default function ZiweiPage() {
                 </select>
               </label>
               <div className="space-y-2">
-                <p className="text-sm text-label">{resolve('bazi.form.gender')}</p>
+                <p className="text-sm text-paper-dark/80">{resolve('bazi.form.gender')}</p>
                 <div className="flex h-16 items-stretch overflow-hidden rounded-xl border border-gold/30 bg-xuan-surface">
                   <button type="button" onClick={() => setGender('男')}
                     className={`flex flex-1 items-center justify-center text-lg transition-colors ${gender === '男' ? 'bg-gold/15 text-gold' : 'hover:bg-gold/5'}`}>{resolve('bazi.form.male')}</button>

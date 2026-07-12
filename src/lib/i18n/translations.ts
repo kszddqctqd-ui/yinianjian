@@ -421,6 +421,22 @@ export const translations: Translations = {
     zh: '选择一盏灯',
     en: 'Choose a Lamp',
   },
+  'qifu.section.period': {
+    zh: '供奉周期',
+    en: 'Offering Period',
+  },
+  'qifu.period.month.label': { zh: '一月供奉', en: 'Monthly' },
+  'qifu.period.month.desc': { zh: '30天长明', en: '30 days bright' },
+  'qifu.period.month.price': { zh: '3.9', en: '3.9' },
+  'qifu.period.hundred.label': { zh: '百日供奉', en: '100 Days' },
+  'qifu.period.hundred.desc': { zh: '100天长明', en: '100 days bright' },
+  'qifu.period.hundred.price': { zh: '5.9', en: '5.9' },
+  'qifu.period.year.label': { zh: '一年供奉', en: 'Yearly' },
+  'qifu.period.year.desc': { zh: '365天长明', en: '365 days bright' },
+  'qifu.period.year.price': { zh: '9.9', en: '9.9' },
+  'qifu.period.permanent.label': { zh: '永久长明', en: 'Permanent' },
+  'qifu.period.permanent.desc': { zh: '永不熄灭', en: 'Never extinguished' },
+  'qifu.period.permanent.price': { zh: '19.9', en: '19.9' },
   'qifu.lamp.0.label': { zh: '一盏', en: 'One Lamp' },
   'qifu.lamp.0.desc': { zh: '一心虔诚', en: 'Single-minded devotion' },
   'qifu.lamp.1.label': { zh: '三盏', en: 'Three Lamps' },
@@ -1621,6 +1637,16 @@ export const translations: Translations = {
   'common.lampUnit': {
     zh: '盏',
     en: ' lamps',
+  },
+
+  // ========== Lantern Wall (Marquee) ==========
+  'lanternWall.title': {
+    zh: '心愿灯墙 · 实时滚动',
+    en: 'Wish Lamp Wall · Live Scroll',
+  },
+  'lanternWall.merit': {
+    zh: '功德',
+    en: 'Merit',
   },
 
   // ========== Admin Dashboard ==========

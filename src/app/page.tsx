@@ -1,16 +1,81 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
-import { GoldenLotusBg } from '@/components/GoldenLotusBg';
-import { MusicToggleFloat } from '@/components/MusicToggle';
 import { IncenseSmoke } from '@/components/IncenseSmoke';
-import { t, getLocale, shichenLabels } from '@/lib/i18n';
+import { t, getLocale } from '@/lib/i18n';
 import type { SupportedLang } from '@/lib/i18n';
 
-// 菩提苑风格的9大功能卡片 (translated)
+function resolve(key: string): string {
+  return t(key);
+}
+
+// Lucide icon renderer (mirrors 菩提苑's icon definitions)
+function LucideIcon({
+  name,
+  className,
+}: {
+  name: string;
+  className?: string;
+}): React.ReactElement | null {
+  const icons: Record<string, React.ReactElement> = {
+    heart: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      </svg>
+    ),
+    calendar: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" />
+      </svg>
+    ),
+    moon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+      </svg>
+    ),
+    sparkles: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /><path d="M20 2v4" /><path d="M22 4h-4" /><circle cx="4" cy="20" r="2" />
+      </svg>
+    ),
+    compass: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+      </svg>
+    ),
+    scroll: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M15 12h-5" /><path d="M15 8h-5" /><path d="M19 17V5a2 2 0 0 0-2-2H4" /><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
+      </svg>
+    ),
+    hand: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
+      </svg>
+    ),
+    book: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
+      </svg>
+    ),
+    flame: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
+      </svg>
+    ),
+    search: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" />
+      </svg>
+    ),
+  };
+  return icons[name] || null;
+}
+
+// Nine features data (aligned with 菩提苑)
 const nineFeatures = [
   {
     name: 'feature.pray.title',
@@ -19,6 +84,7 @@ const nineFeatures = [
     iconColor: 'text-vermillion',
     desc: 'feature.pray.desc',
     tag: 'feature.pray.tag',
+    delay: 0,
   },
   {
     name: 'feature.almanac.title',
@@ -27,6 +93,7 @@ const nineFeatures = [
     iconColor: 'text-gold',
     desc: 'feature.almanac.desc',
     tag: 'feature.almanac.tag',
+    delay: 0.06,
   },
   {
     name: 'feature.dream.title',
@@ -35,14 +102,16 @@ const nineFeatures = [
     iconColor: 'text-gold',
     desc: 'feature.dream.desc',
     tag: null,
+    delay: 0.12,
   },
   {
     name: 'feature.lottery.title',
     href: '/lottery/',
-    icon: 'scroll',
+    icon: 'sparkles',
     iconColor: 'text-gold',
     desc: 'feature.lottery.desc',
     tag: 'feature.lottery.tag',
+    delay: 0.18,
   },
   {
     name: 'feature.bazi.title',
@@ -51,14 +120,16 @@ const nineFeatures = [
     iconColor: 'text-gold',
     desc: 'feature.bazi.desc',
     tag: null,
+    delay: 0.24,
   },
   {
     name: 'feature.divination.title',
     href: '/divination/',
-    icon: 'compass',
+    icon: 'scroll',
     iconColor: 'text-gold',
     desc: 'feature.divination.desc',
     tag: 'feature.divination.tag',
+    delay: 0.3,
   },
   {
     name: 'feature.palmistry.title',
@@ -67,6 +138,7 @@ const nineFeatures = [
     iconColor: 'text-gold',
     desc: 'feature.palmistry.desc',
     tag: null,
+    delay: 0.36,
   },
   {
     name: 'feature.naming.title',
@@ -75,6 +147,7 @@ const nineFeatures = [
     iconColor: 'text-gold',
     desc: 'feature.naming.desc',
     tag: null,
+    delay: 0.42,
   },
   {
     name: 'feature.meditation.title',
@@ -83,86 +156,53 @@ const nineFeatures = [
     iconColor: 'text-gold',
     desc: 'feature.meditation.desc',
     tag: null,
+    delay: 0.48,
   },
 ];
 
-function resolve(key: string): string {
-  return t(key);
+// Fade-in wrapper with staggered delay
+function FadeInSection({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), Math.round(delay * 1000));
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      className={className}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'translateY(12px)',
+        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+      }}
+    >
+      {children}
+    </div>
+  );
 }
 
-function getLangKey(lang: SupportedLang): 'zh' | 'en' {
-  return lang === 'zh-CN' ? 'zh' : 'en';
-}
-
-// Lucide 图标 SVG
-function Icon({ name, color = 'text-gold' }: { name: string; color?: string }) {
-  const icons: Record<string, React.ReactElement> = {
-    heart: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-heart size-9 ${color}`} aria-hidden="true">
-        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-      </svg>
-    ),
-    calendar: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-calendar-days size-9 ${color}`} aria-hidden="true">
-        <path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" />
-      </svg>
-    ),
-    moon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-moon size-9 ${color}`} aria-hidden="true">
-        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-      </svg>
-    ),
-    scroll: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-scroll-text size-9 ${color}`} aria-hidden="true">
-        <path d="M15 12h-5" /><path d="M15 8h-5" /><path d="M19 17V5a2 2 0 0 0-2-2H4" /><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
-      </svg>
-    ),
-    compass: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-compass size-9 ${color}`} aria-hidden="true">
-        <circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-      </svg>
-    ),
-    book: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-book-open size-9 ${color}`} aria-hidden="true">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-      </svg>
-    ),
-    hand: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-hand size-9 ${color}`} aria-hidden="true">
-        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
-      </svg>
-    ),
-    flame: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-flame size-9 ${color}`} aria-hidden="true">
-        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
-      </svg>
-    ),
-  };
-  return icons[name] || icons.compass;
-}
-
-// 标签组件
-function Tag({ textKey }: { textKey: string | null }) {
+// Tag component for feature cards
+function FeatureTag({ textKey }: { textKey: string | null }) {
   if (!textKey) return null;
   return (
-    <span
-      className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80"
-      style={{ fontFamily: 'var(--font-family-body)' }}
-    >
+    <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold/80">
       {resolve(textKey)}
     </span>
   );
 }
 
 export default function HomePage() {
-  const [lang, setLang] = useState<SupportedLang>(getLocale());
-  const [birthYear, setBirthYear] = useState(1990);
-  const [birthMonth, setBirthMonth] = useState(5);
-  const [birthDay, setBirthDay] = useState(15);
-  const [birthShichen, setBirthShichen] = useState('wei');
-  const [gender, setGender] = useState<'男' | '女'>('男');
-  const [selectedMaster, setSelectedMaster] = useState<number | null>(0);
-  const [baziLoading, setBaziLoading] = useState(false);
+  const [_lang, setLang] = useState<SupportedLang>(getLocale());
 
   useEffect(() => {
     setLang(getLocale());
@@ -171,370 +211,318 @@ export default function HomePage() {
     return () => window.removeEventListener('lang-change', handler);
   }, []);
 
-  const handleBaziSubmit = () => {
-    setBaziLoading(true);
-    setTimeout(() => {
-      setBaziLoading(false);
-      const masterNames = [
-        resolve('bazi.master.0.name'),
-        resolve('bazi.master.1.name'),
-        resolve('bazi.master.2.name'),
-      ];
-      const shichenNames = ['zi', 'chou', 'yin', 'mao', 'chen', 'si', 'wu', 'wei', 'shen', 'you', 'xu', 'hai'].map(s =>
-        shichenLabels[s]?.[getLangKey(lang)] || s
-      );
-      alert(`${resolve('bazi.form.gender')}: ${gender}\n${resolve('bazi.form.shichen')}: ${shichenNames[birthShichen === 'zi' ? 0 : birthShichen === 'chou' ? 1 : birthShichen === 'yin' ? 2 : birthShichen === 'mao' ? 3 : birthShichen === 'chen' ? 4 : birthShichen === 'si' ? 5 : birthShichen === 'wu' ? 6 : birthShichen === 'wei' ? 7 : birthShichen === 'shen' ? 8 : birthShichen === 'you' ? 9 : birthShichen === 'xu' ? 10 : 11]}\n${resolve('bazi.selectMaster')}: ${masterNames[selectedMaster ?? 0]}`);
-    }, 500);
-  };
-
   return (
-    <div className="min-h-screen bg-xuan relative overflow-hidden">
-      {/* 全局背景层 */}
-      <GoldenLotusBg />
+    <div className="relative min-h-screen bg-xuan">
+      {/* ===== 全局背景层 (菩提苑风格) ===== */}
+      {/* 层1: 渐变背景 */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan" />
+
+      {/* 层2: 寺庙山脉 SVG 纹理 */}
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.20]"
+        style={{ backgroundImage: "url('/temple/temple-mountain.svg')" }}
+      />
+
+      {/* 层3: 径向暗角 */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(10,6,4,0.55) 0%, rgba(10,6,4,0.35) 30%, transparent 60%, rgba(10,6,4,0.6) 100%)',
+        }}
+      />
+
+      {/* 层4: 顶部金色光晕 */}
+      <div className="fixed inset-x-0 top-0 z-0 h-32 bg-gradient-to-b from-gold/15 to-transparent" />
+
+      {/* 层5: 金色光点粒子 (复用 FloatingParticles 组件) */}
       <FloatingParticles />
+
+      {/* ===== 导航栏 ===== */}
       <Header />
-      <MusicToggleFloat />
 
-      <main className="relative z-10 mx-auto min-h-[calc(100svh-3.75rem)] w-full pt-[3.75rem] pb-24 md:pb-8">
-        <div className="mx-auto max-w-6xl px-4">
-          {/* ===== Hero Section ===== */}
-          <section className="flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-6 px-2 text-center">
-            {/* Logo 容器 + 光环扩散 */}
-            <div className="relative mx-auto flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/30" style={{ background: 'rgba(201,169,110,0.1)' }}>
-              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="size-[2.25rem] text-gold" style={{ filter: 'drop-shadow(0 0 8px rgba(201,160,94,0.4))' }} xmlns="http://www.w3.org/2000/svg">
-                <path d="M32 6 C 22 6, 12 12, 10 22 C 8 32, 14 44, 24 50 C 28 53, 30 56, 31 60 L 32 62 L 33 60 C 34 56, 36 53, 40 50 C 50 44, 56 32, 54 22 C 52 12, 42 6, 32 6 Z" fill="currentColor" fillOpacity="0.12" />
-                <path d="M32 8 V 60" strokeWidth="1.4" />
-                <path d="M32 16 C 26 18, 20 22, 16 28" />
-                <path d="M32 16 C 38 18, 44 22, 48 28" />
-                <path d="M32 28 C 24 30, 18 36, 16 42" />
-                <path d="M32 28 C 40 30, 46 36, 48 42" />
-                <path d="M32 42 C 28 46, 26 50, 26 54" />
-                <path d="M32 42 C 36 46, 38 50, 38 54" />
-              </svg>
-              {/* 两个扩展光环 */}
-              <div className="absolute inset-0 rounded-full border-[1.5px] border-gold/60" style={{ animation: 'ring-expand 3s ease-out infinite' }} />
-              <div className="absolute inset-0 rounded-full border-[1.5px] border-gold/60" style={{ animation: 'ring-expand 3s ease-out infinite 1.5s' }} />
-            </div>
+      {/* ===== 主体内容 ===== */}
+      <main className="relative z-10 mx-auto min-h-[calc(100svh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
+        <div className="mx-auto max-w-4xl space-y-6 px-4 pb-24">
 
-            {/* 标题 - 品牌字体金色渐变 */}
-            <h1
-              className="text-[3rem] tracking-[0.3rem] md:text-[3.5rem]"
-              style={{
-                fontFamily: "'ZhiMangXing', cursive",
-                background: 'linear-gradient(180deg, #f5e6b8 0%, #c9a05c 50%, #8b6914 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                color: 'transparent',
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))',
-              }}
-            >
-              {resolve('brand.name')}
-            </h1>
-
-            {/* 副标题 */}
-            <p className="max-w-md text-base md:text-lg leading-loose text-paper-dark-85">
-              {resolve('brand.tagline')}
-            </p>
-
-            {/* 双按钮 */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:w-auto sm:px-0">
-              <a href="/qifu/" className="btn-primary text-center">
-                {resolve('hero.btn.pray')}
-              </a>
-              <a href="/" className="btn-secondary text-center">
-                {resolve('hero.btn.bazi')}
-              </a>
-            </div>
-
-            {/* 滚动提示 */}
-            <div className="mt-4 animate-[bounce_1s_ease-in-out_infinite] text-sm text-paper-dark-65">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down mx-auto" aria-hidden="true">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </div>
-          </section>
-
-          {/* ===== 八字排盘表单 ===== */}
-          <section className="mt-8 space-y-6">
-            <div className="card-standard max-w-2xl mx-auto space-y-5">
-              {/* Title */}
-              <div className="text-center">
-                <div className="mx-auto mb-2 flex size-[3.1875rem] items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart size-[2.25rem] text-vermillion" aria-hidden="true">
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                  </svg>
-                </div>
-                <h2 className="font-display text-[1.875rem] tracking-[0.15rem]" style={{ color: '#C9A96E' }}>{resolve('bazi.title')}</h2>
-                <p className="mt-1 text-sm" style={{ color: '#D4C5A9' }}>{resolve('bazi.subtitle')}</p>
+          {/* ===== Hero 区域 ===== */}
+          <FadeInSection>
+            <section className="space-y-3 pt-6 text-center">
+              {/* 莲花图标 */}
+              <div className="mx-auto mb-2 flex size-20 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
+                <LucideIcon name="moon" className="lucide lucide-moon size-8 text-gold" aria-hidden="true" />
               </div>
 
-              {/* Master selector */}
-              <div>
-                <p className="text-center text-base font-display" style={{ color: '#C9A96E' }}>{resolve('bazi.selectMaster')}</p>
-                <div className="mt-3 grid grid-cols-3 gap-3">
-                  {[
-                    { name: 'bazi.master.0.name', role: 'bazi.master.0.role', feature: 'bazi.master.0.feature', gradient: 'from-amber-900/40 to-stone-800/40' },
-                    { name: 'bazi.master.1.name', role: 'bazi.master.1.role', feature: 'bazi.master.1.feature', gradient: 'from-rose-900/30 to-stone-800/40' },
-                    { name: 'bazi.master.2.name', role: 'bazi.master.2.role', feature: 'bazi.master.2.feature', gradient: 'from-teal-900/30 to-stone-800/40' },
-                  ].map((master, i) => (
-                    <div
-                      key={i}
-                      className={`group rounded-xl border p-4 text-left transition-all ${
-                        selectedMaster === i
-                          ? 'border-gold/60 bg-gold/10 shadow-gold'
-                          : 'border-gold/20 hover:border-gold/40 hover:bg-xuan-surface/70'
-                      }`}
-                      onClick={() => setSelectedMaster(i)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {/* Avatar placeholder */}
-                      <div className={`mx-auto mb-2 flex size-14 items-center justify-center rounded-full bg-gradient-to-br ${master.gradient} border border-gold/20`}>
-                        <span className="text-[1.25rem] font-display" style={{ color: '#C9A96E' }}>
-                          {resolve(master.name).charAt(0)}
-                        </span>
-                      </div>
-                      <div className="text-center text-sm font-display" style={{ color: '#D4C5A9' }}>{resolve(master.name)}</div>
-                      <div className="text-center text-[10px]" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve(master.role)}</div>
-                      <div className="mt-1 text-center text-xs" style={{ color: 'rgba(201,169,110,0.85)' }}>{resolve(master.feature)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Birth form */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block space-y-1">
-                  <span className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('bazi.form.year')}</span>
-                  <select value={birthYear} onChange={(e) => setBirthYear(parseInt(e.target.value))} className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface/40 px-3 text-base text-paper-dark focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all">
-                    {Array.from({ length: 100 }, (_, i) => 2025 - i).map(y => (
-                      <option key={y} value={y}>{y}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block space-y-1">
-                  <span className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('bazi.form.month')}</span>
-                  <select value={birthMonth} onChange={(e) => setBirthMonth(parseInt(e.target.value))} className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface/40 px-3 text-base text-paper-dark focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all">
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block space-y-1">
-                  <span className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('bazi.form.day')}</span>
-                  <select value={birthDay} onChange={(e) => setBirthDay(parseInt(e.target.value))} className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface/40 px-3 text-base text-paper-dark focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all">
-                    {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
-                      <option key={d} value={d}>{d}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block space-y-1">
-                  <span className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('bazi.form.shichen')}</span>
-                  <select value={birthShichen} onChange={(e) => setBirthShichen(e.target.value)} className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface/40 px-3 text-base text-paper-dark focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-all">
-                    <option value="zi">{shichenLabels.zi?.[getLangKey(lang)] || '子时 (23:00-01:00)'}</option>
-                    <option value="chou">{shichenLabels.chou?.[getLangKey(lang)] || '丑时 (01:00-03:00)'}</option>
-                    <option value="yin">{shichenLabels.yin?.[getLangKey(lang)] || '寅时 (03:00-05:00)'}</option>
-                    <option value="mao">{shichenLabels.mao?.[getLangKey(lang)] || '卯时 (05:00-07:00)'}</option>
-                    <option value="chen">{shichenLabels.chen?.[getLangKey(lang)] || '辰时 (07:00-09:00)'}</option>
-                    <option value="si">{shichenLabels.si?.[getLangKey(lang)] || '巳时 (09:00-11:00)'}</option>
-                    <option value="wu">{shichenLabels.wu?.[getLangKey(lang)] || '午时 (11:00-13:00)'}</option>
-                    <option value="wei">{shichenLabels.wei?.[getLangKey(lang)] || '未时 (13:00-15:00)'}</option>
-                    <option value="shen">{shichenLabels.shen?.[getLangKey(lang)] || '申时 (15:00-17:00)'}</option>
-                    <option value="you">{shichenLabels.you?.[getLangKey(lang)] || '酉时 (17:00-19:00)'}</option>
-                    <option value="xu">{shichenLabels.xu?.[getLangKey(lang)] || '戌时 (19:00-21:00)'}</option>
-                    <option value="hai">{shichenLabels.hai?.[getLangKey(lang)] || '亥时 (21:00-23:00)'}</option>
-                  </select>
-                </label>
-              </div>
-
-              {/* Gender toggle */}
-              <div className="flex items-center gap-4">
-                <span className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('bazi.form.gender')}：</span>
-                <button type="button" onClick={() => setGender('男')} className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${gender === '男' ? 'border-gold/60 bg-gold/10 text-gold font-medium' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                  {resolve('bazi.form.male')}
-                </button>
-                <button type="button" onClick={() => setGender('女')} className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${gender === '女' ? 'border-gold/60 bg-gold/10 text-gold font-medium' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                  {resolve('bazi.form.female')}
-                </button>
-              </div>
-
-              {/* Submit */}
-              <button type="button" className="btn-primary w-full disabled:opacity-50" onClick={handleBaziSubmit} disabled={baziLoading}>
-                {baziLoading ? resolve('bazi.form.loading') : resolve('bazi.form.submit')}
-              </button>
-
-              <p className="text-xs leading-loose text-center" style={{ color: 'rgba(212,197,169,0.65)' }}>
-                {resolve('bazi.form.disclaimer')}
-              </p>
-            </div>
-          </section>
-
-          {/* ===== 九大功能卡片 ===== */}
-          <section className="mt-16 space-y-8 pb-section">
-            <h2
-              className="text-center text-[1.875rem] tracking-[0.15rem]"
-              style={{
-                color: '#C9A96E',
-                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
-              }}
-            >
-              {resolve('feature.nine.title')}
-            </h2>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {nineFeatures.map((feature, index) => (
-                <a
-                  key={feature.name}
-                  href={feature.href}
-                  className="card-standard hover-lift"
-                  style={{ animationDelay: `${index * 60}ms` }}
-                >
-                  {/* 图标区 */}
-                  <div className="flex items-center justify-between">
-                    <Icon name={feature.icon} color={feature.iconColor} />
-                    <Tag textKey={feature.tag} />
-                  </div>
-
-                  {/* 标题 */}
-                  <h3 className="mt-3 text-[1.5rem] font-display" style={{ color: '#D4C5A9' }}>
-                    {resolve(feature.name)}
-                  </h3>
-
-                  {/* 描述 */}
-                  <p className="mt-1 text-base text-paper-dark-80" style={{ color: '#D4C5A9' }}>
-                    {resolve(feature.desc)}
-                  </p>
-                </a>
-              ))}
-            </div>
-          </section>
-
-          {/* ===== 为何选本站 (真排盘特色介绍) ===== */}
-          <section className="mt-16 space-y-6 pb-section">
-            <h2
-              className="text-center text-[1.5875rem] tracking-[0.1rem]"
-              style={{
-                color: '#C9A96E',
-                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
-              }}
-            >
-              {resolve('why.title')}
-            </h2>
-
-            <div className="mx-auto max-w-2xl space-y-6">
-              {[
-                { title: 'why.feature1.title', desc: 'why.feature1.desc', icon: 'compass' },
-                { title: 'why.feature2.title', desc: 'why.feature2.desc', icon: 'book' },
-                { title: 'why.feature3.title', desc: 'why.feature3.desc', icon: 'flame' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4 rounded-xl border border-gold/20 bg-xuan-card/95 p-5 backdrop-blur-sm transition-all hover:border-gold/40 hover:shadow-gold">
-                  <div className="flex size-[2.6875rem] shrink-0 items-center justify-center rounded-full border border-gold/30 bg-gold/10">
-                    <Icon name={item.icon} color="text-gold" />
-                  </div>
-                  <div>
-                    <h3 className="text-[1.25rem] font-display" style={{ color: '#D4C5A9' }}>{resolve(item.title)}</h3>
-                    <p className="mt-1 text-base text-paper-dark-80" style={{ color: '#D4C5A9' }}>{resolve(item.desc)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA 按钮 */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:px-0">
-              <a href="/qifu/" className="w-full sm:w-auto">
-                <button className="btn-primary w-full text-center">
-                  {resolve('why.cta.pray')}
-                </button>
-              </a>
-              <a href="/" className="w-full sm:w-auto">
-                <button className="btn-primary w-full text-center">
-                  {resolve('why.cta.bazi')}
-                </button>
-              </a>
-            </div>
-          </section>
-
-          {/* ===== 线上烧香 ===== */}
-          <section className="mt-16 space-y-6 pb-section">
-            <h2
-              className="text-center text-[1.5875rem] tracking-[0.1rem]"
-              style={{
-                color: '#C9A96E',
-                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
-              }}
-            >
-              {resolve('incense.title')}
-            </h2>
-            <p className="text-center text-sm leading-loose" style={{ color: 'rgba(212,197,169,0.7)' }}>
-              {resolve('incense.subtitle')}
-            </p>
-
-            {/* 香炉动画 */}
-            <div className="flex justify-center py-8">
-              <IncenseSmoke />
-            </div>
-
-            <div className="flex justify-center">
-              <a href="/qifu/">
-                <button className="btn-primary">
-                  {resolve('incense.btn.offer')}
-                </button>
-              </a>
-            </div>
-          </section>
-
-          {/* ===== 分享返佣 ===== */}
-          <section className="mt-16 space-y-6 pb-section">
-            <h2
-              className="text-center text-[1.5875rem] tracking-[0.1rem]"
-              style={{
-                color: '#C9A96E',
-                fontFamily: "'STKaiti', 'KaiTi', 楷体, 'Noto Serif CJK SC', 'Source Han Serif SC', serif",
-              }}
-            >
-              {resolve('share.title')}
-            </h2>
-            <p className="mx-auto max-w-md text-center text-sm leading-loose" style={{ color: 'rgba(212,197,169,0.7)' }}>
-              {resolve('share.desc')}
-            </p>
-            <div className="flex justify-center">
-              <button className="btn-primary">
-                {resolve('share.btn.share')}
-              </button>
-            </div>
-          </section>
-
-          {/* ===== 页脚 ===== */}
-          <footer className="mt-16 space-y-4 pb-8">
-            <div className="gold-divider" />
-
-            <div className="mx-auto max-w-md space-y-2 text-center">
-              <div className="flex justify-center gap-4 text-sm">
-                <a href="/terms/" className="text-paper-dark-65 hover:text-gold transition-colors">{resolve('footer.terms')}</a>
-                <span className="text-paper-dark-65">·</span>
-                <a href="/privacy/" className="text-paper-dark-65 hover:text-gold transition-colors">{resolve('footer.privacy')}</a>
-                <span className="text-paper-dark-65">·</span>
-                <a href="/ai-notice/" className="text-paper-dark-65 hover:text-gold transition-colors">{resolve('footer.aiNotice')}</a>
-              </div>
-
-              <p className="text-xs leading-6" style={{ color: 'rgba(212,197,169,0.62)' }}>
-                {resolve('footer.disclaimer')}
-              </p>
-
-              <p
-                className="text-base leading-loose"
+              {/* 标题 */}
+              <h1
+                className="text-5xl tracking-widest text-gold md:text-6xl"
                 style={{
-                  color: 'rgba(201,169,110,0.80)',
                   fontFamily: "'ZhiMangXing', cursive",
+                  background: 'linear-gradient(180deg, #f5e6b8 0%, #c9a05c 50%, #8b6914 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))',
                 }}
               >
-                {resolve('footer.poem').replace('\n', '<br />')}
+                {resolve('brand.name')}
+              </h1>
+
+              {/* 副标题 */}
+              <p className="mx-auto max-w-md text-base leading-loose text-paper-dark/85 md:text-lg">
+                {resolve('brand.tagline')}
               </p>
-            </div>
-          </footer>
+
+              {/* 双按钮 */}
+              <div className="flex flex-col gap-3 px-4 sm:w-auto sm:flex-row sm:px-0">
+                <a href="/qifu/" className="w-full sm:w-auto">
+                  <button className="btn-primary w-full text-lg sm:w-auto tracking-wider">
+                    {resolve('hero.btn.pray')}
+                  </button>
+                </a>
+                <a href="/" className="w-full sm:w-auto">
+                  <button className="btn-secondary w-full text-lg sm:w-auto">
+                    {resolve('hero.btn.bazi')}
+                  </button>
+                </a>
+              </div>
+
+              {/* 滚动提示 */}
+              <FadeInSection delay={0.3}>
+                <p className="animate-bounce text-sm text-paper-dark/65">
+                  {resolve('hero.scrollHint') || '向下滚动 · 看更多功德'}
+                </p>
+              </FadeInSection>
+            </section>
+          </FadeInSection>
+
+          {/* ===== 九大善门 ===== */}
+          <FadeInSection>
+            <section className="space-y-6 pb-section">
+              <h2
+                className="text-center text-3xl tracking-widest text-gold"
+                style={{ fontFamily: "'ZhiMangXing', cursive" }}
+              >
+                {resolve('feature.nine.title')}
+              </h2>
+
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {nineFeatures.map((feature) => (
+                  <FadeInSection key={feature.name} delay={feature.delay}>
+                    <a href={feature.href}>
+                      <div className="card-standard h-full space-y-3 hover-lift">
+                        {/* 图标 + 标签 */}
+                        <div className="flex items-center justify-between">
+                          <LucideIcon
+                            name={feature.icon}
+                            className={`lucide lucide-${feature.icon} size-9 ${feature.iconColor}`}
+                          />
+                          <FeatureTag textKey={feature.tag} />
+                        </div>
+
+                        {/* 标题 */}
+                        <h3 className="text-2xl text-paper-dark font-display">{resolve(feature.name)}</h3>
+
+                        {/* 描述 */}
+                        <p className="text-base text-paper-dark/80">{resolve(feature.desc)}</p>
+                      </div>
+                    </a>
+                  </FadeInSection>
+                ))}
+              </div>
+            </section>
+          </FadeInSection>
+
+          {/* ===== 为何选本站 ===== */}
+          <FadeInSection>
+            <section className="space-y-6 pb-section">
+              <div className="card-standard space-y-5 text-center">
+                {/* 标签 */}
+                <span className="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium border-gold/30 bg-gradient-to-r from-gold/20 to-gold/5 text-gold-dark">
+                  {resolve('philosophy.title')}
+                </span>
+
+                {/* 标题 */}
+                <h2
+                  className="text-2xl tracking-widest text-gold md:text-3xl"
+                  style={{ fontFamily: "'ZhiMangXing', cursive" }}
+                >
+                  {resolve('why.title')}
+                </h2>
+
+                {/* 三列特性 */}
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="rounded-lg border border-gold/15 bg-xuan-surface/40 p-4 text-left">
+                    <p className="font-display text-lg text-gold">{resolve('why.feature1.title')}</p>
+                    <p className="mt-2 text-sm text-paper-dark/80">{resolve('why.feature1.desc')}</p>
+                  </div>
+                  <div className="rounded-lg border border-gold/15 bg-xuan-surface/40 p-4 text-left">
+                    <p className="font-display text-lg text-gold">{resolve('why.feature2.title')}</p>
+                    <p className="mt-2 text-sm text-paper-dark/80">{resolve('why.feature2.desc')}</p>
+                  </div>
+                  <div className="rounded-lg border border-gold/15 bg-xuan-surface/40 p-4 text-left">
+                    <p className="font-display text-lg text-gold">{resolve('why.feature3.title')}</p>
+                    <p className="mt-2 text-sm text-paper-dark/80">{resolve('why.feature3.desc')}</p>
+                  </div>
+                </div>
+
+                {/* 古籍书封图片 */}
+                <div className="pt-1 md:pt-2">
+                  <figure className="mx-auto w-full">
+                    <picture>
+                      <source srcSet="/books/classics-strip-matted.webp?v=20260613-matted" type="image/webp" />
+                      <img
+                        src="/books/classics-strip-matted.png?v=20260613-matted"
+                        alt="命理经典古籍书封展示"
+                        width={2015}
+                        height={388}
+                        loading="lazy"
+                        decoding="async"
+                        className="block h-auto w-full select-none"
+                        draggable="false"
+                      />
+                    </picture>
+                    <figcaption className="sr-only">命理经典古籍书封展示</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </section>
+          </FadeInSection>
+
+          {/* ===== 在线上香 ===== */}
+          <FadeInSection>
+            <section className="space-y-6 pb-section">
+              <div className="rounded-t-xl rounded-b-xl border-x-4 border-gold/40 bg-paper-warm px-8 py-6 text-ink shadow-card">
+                <div className="gold-divider mb-4" />
+
+                {/* 火焰图标 */}
+                <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
+                  <LucideIcon name="flame" className="lucide-flame size-7 text-vermillion" />
+                </div>
+
+                {/* 副标题 */}
+                <p className="text-sm text-ink-light tracking-widest">
+                  {resolve('incense.subtitle')}
+                </p>
+
+                {/* 标题 */}
+                <h2
+                  className="text-2xl tracking-widest md:text-3xl"
+                  style={{ fontFamily: "'ZhiMangXing', cursive" }}
+                >
+                  {resolve('incense.title')}
+                </h2>
+
+                {/* 描述 */}
+                <p className="mx-auto max-w-md text-base leading-loose text-ink">
+                  {resolve('incense.subtitle')}
+                </p>
+
+                {/* 按钮 */}
+                <div className="flex justify-center">
+                  <a href="/qifu/">
+                    <button className="btn-primary">
+                      {resolve('incense.btn.offer')}
+                    </button>
+                  </a>
+                </div>
+
+                <div className="gold-divider mt-4" />
+              </div>
+            </section>
+          </FadeInSection>
+
+          {/* ===== 分享返佣 ===== */}
+          <FadeInSection>
+            <section className="space-y-6 pb-section">
+              <div className="rounded-t-xl rounded-b-xl border-x-4 border-gold/40 bg-paper-warm px-8 py-6 text-ink shadow-card">
+                <div className="gold-divider mb-4" />
+
+                {/* 火花图标 */}
+                <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-vermillion/30 bg-vermillion/10">
+                  <LucideIcon name="sparkles" className="lucide-sparkles size-7 text-vermillion" />
+                </div>
+
+                {/* 副标题 */}
+                <p className="text-sm text-ink-light tracking-widest">
+                  {resolve('share.desc') || '一灯传万灯'}
+                </p>
+
+                {/* 标题 */}
+                <h2
+                  className="text-2xl tracking-widest md:text-3xl"
+                  style={{ fontFamily: "'ZhiMangXing', cursive" }}
+                >
+                  {resolve('share.title')}
+                </h2>
+
+                {/* 描述 */}
+                <p className="mx-auto max-w-md text-base leading-loose text-ink">
+                  {resolve('share.desc')}
+                </p>
+
+                {/* 分享按钮 */}
+                <div className="flex justify-center">
+                  <button className="btn-primary">
+                    {resolve('share.btn.share')}
+                  </button>
+                </div>
+
+                <div className="gold-divider mt-4" />
+              </div>
+            </section>
+          </FadeInSection>
         </div>
       </main>
 
+      {/* ===== 页脚 ===== */}
+      <footer className="space-y-5 border-t border-gold/10 px-4 pt-10 text-center text-sm">
+        {/* 三段诗句 */}
+        <div className="space-y-3">
+          <p className="leading-loose text-gold/80">
+            {resolve('footer.poem') || '善念起于心，福缘自然生。一念清净，万物皆宁。'}
+          </p>
+          <p className="leading-loose text-paper-dark/70">
+            {resolve('footer.poem') || '若人顺心意，则万事皆顺。'}
+          </p>
+          <p className="leading-loose text-paper-dark/65">
+            {resolve('footer.poem') || '命我自立，福我自求。诸恶莫作，众善奉行。'}
+          </p>
+        </div>
+
+        {/* 链接 */}
+        <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gold/80">
+          <a href="/terms/" className="transition-colors hover:text-gold-light">
+            {resolve('footer.terms')}
+          </a>
+          <a href="/privacy/" className="transition-colors hover:text-gold-light">
+            {resolve('footer.privacy')}
+          </a>
+          <a href="/ai-notice/" className="transition-colors hover:text-gold-light">
+            {resolve('footer.aiNotice')}
+          </a>
+        </div>
+
+        {/* 金色分割线 */}
+        <div className="mx-auto w-12 border-t border-gold/15" />
+
+        {/* 免责声明 */}
+        <p className="mx-auto max-w-2xl text-xs leading-6 text-paper-dark/65">
+          {resolve('footer.disclaimer')}
+        </p>
+
+        {/* 版权声明 */}
+        <p className="mx-auto max-w-2xl text-xs leading-6 text-paper-dark/62">
+          {resolve('footer.disclaimer') || '继续使用本站即表示您已阅读《用户协议》《隐私说明》《AI生成说明》。'}
+        </p>
+
+        {/* 品牌署名 */}
+        <p className="text-xs text-paper-dark/60" style={{ fontFamily: "'ZhiMangXing', cursive" }}>
+          {resolve('brand.name')} · 一念悠悠，一灯长明
+        </p>
+      </footer>
+
+      {/* ===== 底部导航 ===== */}
       <BottomNav active="home" />
     </div>
   );

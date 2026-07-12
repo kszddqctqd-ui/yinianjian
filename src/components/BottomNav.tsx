@@ -32,7 +32,7 @@ export function BottomNav({ active = 'home' }: { active?: string }) {
   const isActive = (name: string) => active === name;
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-gold/20 bg-xuan-card/97 backdrop-blur-md md:hidden" style={{ height: '60px' }}>
+    <nav className="fixed inset-x-0 bottom-0 z-40 bg-transparent backdrop-blur-md md:hidden" style={{ height: '75px' }}>
       <div className="grid grid-cols-6 px-1" style={{ paddingBottom: 'max(env(safe-area-inset-bottom),0.5rem)', paddingTop: '8px' }}>
         <a className={`flex flex-col items-center gap-0.5 rounded-md px-0 py-2 text-xs transition-colors duration-fast ${isActive('home') ? 'text-gold' : 'text-on-dark-muted'}`} href="/">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-house size-5" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>

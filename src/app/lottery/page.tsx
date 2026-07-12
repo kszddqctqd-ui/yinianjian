@@ -8,25 +8,13 @@ import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
+import { LOTTERIES } from '@/lib/lotteries';
 import { saveRecord } from '@/lib/records';
 import { calculateBaZi, type BaZiResult } from '@/lib/bazi';
 
 function resolve(key: string): string {
   return t(key);
 }
-
-const LOTTERIES = [
-  { num: 1, title: '上上签', text: '春风得意马蹄疾，一日看尽长安花。', desc: '万事如意，心想事成。', fortune: '大吉' },
-  { num: 2, title: '上上签', text: '大鹏一日同风起，扶摇直上九万里。', desc: '事业腾飞，前程似锦。', fortune: '大吉' },
-  { num: 3, title: '上签', text: '山重水复疑无路，柳暗花明又一村。', desc: '绝处逢生，另有转机。', fortune: '吉' },
-  { num: 4, title: '上签', text: '长风破浪会有时，直挂云帆济沧海。', desc: '坚持信念，终能成功。', fortune: '吉' },
-  { num: 5, title: '中签', text: '行到水穷处，坐看云起时。', desc: '顺其自然，随缘自在。', fortune: '平' },
-  { num: 6, title: '中签', text: '沉舟侧畔千帆过，病树前头万木春。', desc: '新旧交替，未来可期。', fortune: '平' },
-  { num: 7, title: '中签', text: '欲穷千里目，更上一层楼。', desc: '继续努力，步步高升。', fortune: '平' },
-  { num: 8, title: '下签', text: '夕阳无限好，只是近黄昏。', desc: '盛极而衰，宜守不宜进。', fortune: '凶' },
-  { num: 9, title: '下签', text: '抽刀断水水更流，举杯消愁愁更愁。', desc: '烦恼缠身，静心化解。', fortune: '凶' },
-  { num: 10, title: '下下签', text: '山雨欲来风满楼。', desc: '危机将至，谨慎应对。', fortune: '大凶' },
-];
 
 const masters = [
   { icon: '🧘', nameKey: 'bazi.master.0.name', roleKey: 'bazi.master.0.role', featureKey: 'bazi.master.0.feature' },
@@ -62,7 +50,7 @@ export default function LotteryPage() {
       setLottery(lot);
       setShowLottery(true);
       setLoading(false);
-      saveRecord('lottery', { num: lot.num, title: lot.title, text: lot.text, desc: lot.desc, fortune: lot.fortune }, `${resolve('lottery.signNumber').replace('{num}', lot.num.toString())}`);
+      saveRecord('lottery', { num: lot.num, title: lot.title, poem: lot.poem, desc: lot.desc, fortune: lot.fortune }, `${resolve('lottery.signNumber').replace('{num}', lot.num.toString())}`);
     }, 1500);
   }, [selectedMaster]);
 
@@ -137,7 +125,7 @@ export default function LotteryPage() {
                 type="button"
                 onClick={shakeLottery}
                 disabled={loading}
-                className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/40 disabled:cursor-not-allowed disabled:opacity-50 min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg"
+                className="btn-primary w-full disabled:opacity-50"
               >
                 {loading ? resolve('lottery.loading') : resolve('lottery.btn.shake')}
               </button>
@@ -149,19 +137,23 @@ export default function LotteryPage() {
 
           {/* Result */}
           {showLottery && lottery && (
-            <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4 animate-slide-up">
+            <div className="rounded-[17px] border border-gold/30 bg-xuan-card/95 p-6 shadow-paper backdrop-blur-sm space-y-4 animate-slide-up">
               <div className="text-center">
                 <span className="text-xs text-gold/80 tracking-wider">{resolve('lottery.signNumber').replace('{num}', lottery.num.toString())}</span>
               </div>
               <div className="text-center space-y-2">
                 <p className="text-[1.875rem] text-gold font-display">{lottery.title}</p>
-                <p className="text-[1.25rem] text-paper-dark/85 italic">{lottery.text}</p>
-                <p className="text-sm text-label">{lottery.desc}</p>
+                {lottery.poem.map((line, i) => (
+                  <p key={i} className="text-[1.25rem] text-paper-dark/85 italic">{line}</p>
+                ))}
+                <p className="text-sm text-paper-dark/80">{lottery.desc}</p>
                 <div className={`inline-block rounded-full px-4 py-1 text-sm font-medium ${
                   lottery.fortune === '大吉' ? 'bg-gold/20 text-gold' :
-                  lottery.fortune === '吉' ? 'bg-gold/10 text-gold/80' :
-                  lottery.fortune === '平' ? 'bg-paper-dark/10 text-on-dark-muted' :
-                  lottery.fortune === '凶' ? 'bg-vermillion/10 text-vermillion' :
+                  lottery.fortune === '上吉' ? 'bg-gold/10 text-gold/80' :
+                  lottery.fortune === '中吉' ? 'bg-gold/10 text-gold/80' :
+                  lottery.fortune === '中平' ? 'bg-paper-dark/10 text-on-dark-muted' :
+                  lottery.fortune === '下吉' ? 'bg-paper-dark/10 text-on-dark-muted' :
+                  lottery.fortune === '中凶' ? 'bg-vermillion/10 text-vermillion' :
                   'bg-vermillion/20 text-vermillion-light'
                 }`}>
                   {lottery.fortune}

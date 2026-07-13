@@ -38,10 +38,17 @@ interface DayAlmanac {
   yi: string[];
   ji: string[];
   chong: string;
+  chongGanZhi: string;
   xingzuo: string;
   weekDay: string;
   jieQi: string;
   solarDateObj: Date;
+  jiXiongLevel: string; // 吉凶等级
+  jiShen: string[]; // 吉神宜趋
+  xiongShen: string[]; // 凶神宜避
+  taiShen: string; // 胎神
+  twentyEightXiu: string; // 28宿
+  twelveJianChu: string; // 12建除
 }
 
 // 获取某日的黄历数据
@@ -67,11 +74,27 @@ function getDayAlmanac(date: Date, lang: SupportedLang): DayAlmanac {
     },
     yi: lunar.getDayYi() || [],
     ji: lunar.getDayJi() || [],
-    chong: lunar.getChongDesc() || '',
+    chong: lunar.getChongGan() + lunar.getChongBranch() + lunar.getChongAnimal() || '',
+    chongGanZhi: lunar.getChongGan() + lunar.getChongBranch() || '',
     xingzuo: solar.getXingzuo(),
     weekDay: lang === 'en' ? ['周日','周一','周二','周三','周四','周五','周六'][date.getDay()] : solar.getWeekInChinese(),
     jieQi: (lunar as any).getCurrentJieQi?.() || '',
     solarDateObj: date,
+    jiXiongLevel: (() => {
+      const yiLen = (lunar.getDayYi() || []).length;
+      const jiLen = (lunar.getDayJi() || []).length;
+      if (yiLen >= 10) return '上上';
+      if (yiLen >= 6) return '上吉';
+      if (yiLen >= 3) return '中吉';
+      if (jiLen >= 8) return '下下';
+      if (jiLen >= 5) return '下吉';
+      return '中平';
+    })(),
+    jiShen: ((lunar as any).getYearJiShen?.() || []) as string[],
+    xiongShen: ((lunar as any).getYearXiongShen?.() || []) as string[],
+    taiShen: ((lunar as any).getTaiShen?.() as string) || '',
+    twentyEightXiu: ((lunar as any).getDay28Xiu?.() as string) || '',
+    twelveJianChu: lunar.get12DayOfficer() || '',
   };
 }
 
@@ -186,6 +209,15 @@ export default function AlmanacPage() {
             <div className="space-y-4">
               {/* Date card */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md space-y-2 text-center">
+                {/* 吉凶等级 */}
+                <div className="mb-2">
+                  <span className="inline-block rounded-full border-2 px-4 py-1 text-sm font-display tracking-wider" style={{
+                    borderColor: current.jiXiongLevel.includes('上') ? '#10b981' : current.jiXiongLevel.includes('下') ? '#ef4444' : '#c9a05c',
+                    color: current.jiXiongLevel.includes('上') ? '#34d399' : current.jiXiongLevel.includes('下') ? '#f87171' : '#c9a05c',
+                  }}>
+                    今日 · {current.jiXiongLevel}
+                  </span>
+                </div>
                 <div className="text-lg font-display" style={{ color: '#f5e6b8' }}>{current.date}</div>
                 <div className="text-sm" style={{ color: '#dfc59f' }}>{current.weekDay}</div>
                 <div className="text-xs" style={{ color: '#dfc59f99' }}>{current.lunarDate}</div>
@@ -193,7 +225,50 @@ export default function AlmanacPage() {
                   <div className="text-xs mt-1" style={{ color: '#c9a05c' }}>{resolve('almanac.solarTermPrefix')}{current.jieQi}</div>
                 )}
                 <div className="text-xs" style={{ color: '#dfc59f99' }}>{resolve('almanac.zodiac')}: {current.xingzuo}</div>
+                {/* 12建除 + 28宿 */}
+                <div className="flex justify-center gap-4 text-xs mt-2">
+                  {current.twelveJianChu && (
+                    <span style={{ color: '#c9a05c' }}>{resolve('almanac.jianChu')}: {current.twelveJianChu}</span>
+                  )}
+                  {current.twentyEightXiu && (
+                    <span style={{ color: '#c9a05c' }}>{resolve('almanac.twentyEightXiu')}: {current.twentyEightXiu}</span>
+                  )}
+                </div>
               </div>
+
+              {/* 吉神宜趋 / 凶神宜避 */}
+              {(current.jiShen?.length > 0 || current.xiongShen?.length > 0) && (
+                <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md space-y-3">
+                  {current.jiShen?.length > 0 && (
+                    <div>
+                      <div className="text-xs tracking-wider mb-2 text-center" style={{ color: '#c9a05c' }}>{resolve('almanac.jiShen')}</div>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {current.jiShen.map((s, i) => (
+                          <span key={i} className="rounded-full bg-gold/10 px-3 py-1 text-xs text-gold">{s}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {current.xiongShen?.length > 0 && (
+                    <div>
+                      <div className="text-xs tracking-wider mb-2 text-center" style={{ color: '#ef4444' }}>{resolve('almanac.xiongShen')}</div>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {current.xiongShen.map((s, i) => (
+                          <span key={i} className="rounded-full bg-red-500/10 px-3 py-1 text-xs text-red-400">{s}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 胎神 */}
+              {current.taiShen && (
+                <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md text-center">
+                  <span className="text-xs tracking-wider" style={{ color: '#c9a05c' }}>{resolve('almanac.taiShen')}</span>
+                  <div className="mt-1 text-sm" style={{ color: '#dfc59f' }}>{current.taiShen}</div>
+                </div>
+              )}
 
               {/* GanZhi */}
               <div className="rounded-2xl border border-[#c9a05c]/20 bg-[#1a1510]/80 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-md">

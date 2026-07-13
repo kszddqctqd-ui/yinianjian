@@ -16,6 +16,21 @@ function resolve(key: string): string {
   return t(key);
 }
 
+const SHICHEN_LABELS = [
+  { label: '子时', time: '23:00-01:00', hour: 0 },
+  { label: '丑时', time: '01:00-03:00', hour: 1 },
+  { label: '寅时', time: '03:00-05:00', hour: 2 },
+  { label: '卯时', time: '05:00-07:00', hour: 3 },
+  { label: '辰时', time: '07:00-09:00', hour: 4 },
+  { label: '巳时', time: '09:00-11:00', hour: 5 },
+  { label: '午时', time: '11:00-13:00', hour: 6 },
+  { label: '未时', time: '13:00-15:00', hour: 7 },
+  { label: '申时', time: '15:00-17:00', hour: 8 },
+  { label: '酉时', time: '17:00-19:00', hour: 9 },
+  { label: '戌时', time: '19:00-21:00', hour: 10 },
+  { label: '亥时', time: '21:00-23:00', hour: 11 },
+];
+
 export default function NamingPage() {
   const [lang, setLang] = useState<SupportedLang>(getLocale());
 
@@ -26,26 +41,24 @@ export default function NamingPage() {
     return () => window.removeEventListener('lang-change', handler);
   }, []);
 
-  const [formData, setFormData] = useState({
-    surname: '',
-    gender: '男' as '男' | '女',
-    birthYear: 2024,
-    birthMonth: 7,
-    birthDay: 1,
-    nameLength: 2,
-    style: resolve('naming.styles.0'),
-    generation: '',
-    taboo: '',
-  });
+  const [surname, setSurname] = useState('');
+  const [gender, setGender] = useState<'男' | '女'>('男');
+  const [birthYear, setBirthYear] = useState(2024);
+  const [birthMonth, setBirthMonth] = useState(7);
+  const [birthDay, setBirthDay] = useState(1);
+  const [birthHour, setBirthHour] = useState(7); // 未时 default
+  const [nameTotalLen, setNameTotalLen] = useState(3); // 3=双字名(姓+2), 2=单字名(姓+1)
+  const [style, setStyle] = useState('诗意');
+  const [generation, setGeneration] = useState('');
+  const [taboo, setTaboo] = useState('');
   const [results, setResults] = useState<NameSuggestion[]>([]);
   const [generating, setGenerating] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
-  const styleKeys = ['naming.styles.0', 'naming.styles.1', 'naming.styles.2', 'naming.styles.3', 'naming.styles.4', 'naming.styles.5'];
-  const styles = styleKeys.map(s => resolve(s));
+  const styles = ['诗意', '刚毅', '儒雅', '清逸', '典雅', '温润'];
 
   const handleSubmit = () => {
-    if (!formData.surname.trim()) {
+    if (!surname.trim()) {
       alert(resolve('naming.alert.enterSurname'));
       return;
     }
@@ -53,38 +66,26 @@ export default function NamingPage() {
     setShowResult(false);
 
     setTimeout(() => {
-      let wuXingCount: Record<string, number> = {
-        '金': 0,
-        '木': 0,
-        '水': 0,
-        '火': 0,
-        '土': 0,
-      };
+      let wuXingCount: Record<string, number> = { '金': 0, '木': 0, '水': 0, '火': 0, '土': 0 };
       try {
-        const bazi = calculateBaZi(formData.birthYear, formData.birthMonth, formData.birthDay, 12);
+        const bazi = calculateBaZi(birthYear, birthMonth, birthDay, birthHour);
         wuXingCount = bazi.wuXingCount;
-      } catch {
-        // Use default if calculation fails
-      }
+      } catch { /* ignore */ }
 
-      const suggestions = generateNames(
-        formData.surname,
-        wuXingCount,
-        formData.style,
-        formData.nameLength,
-      );
+      const nameLen = nameTotalLen === 2 ? 1 : 2; // 2字=单字名, 3字=双字名
+      const suggestions = generateNames(surname, wuXingCount, style, nameLen);
       setResults(suggestions);
       setGenerating(false);
       setShowResult(true);
 
       if (suggestions.length > 0) {
         saveRecord('naming', {
-          surname: formData.surname,
-          gender: formData.gender,
-          birth: `${formData.birthYear}-${formData.birthMonth}-${formData.birthDay}`,
-          style: formData.style,
+          surname, gender,
+          birth: `${birthYear}-${birthMonth}-${birthDay}`,
+          hour: SHICHEN_LABELS[birthHour]?.label || '',
+          style,
           suggestions,
-        }, `为${formData.surname}宝宝起名 (${formData.style})`);
+        }, `为${surname}宝宝起名 (${style})`);
       }
     }, 800);
   };
@@ -120,8 +121,8 @@ export default function NamingPage() {
                 <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.surname')}</span>
                 <input
                   type="text"
-                  value={formData.surname}
-                  onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
+                  value={surname}
+                  onChange={(e) => setSurname(e.target.value)}
                   placeholder={resolve('naming.form.surname.placeholder')}
                   maxLength={4}
                   className="input-standard h-12 w-full px-3 text-base"
@@ -135,9 +136,9 @@ export default function NamingPage() {
                 <div className="flex gap-3">
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, gender: '男' })}
+                    onClick={() => setGender('男')}
                     className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
-                      formData.gender === '男'
+                      gender === '男'
                         ? 'border-gold/60 bg-gold/10 text-gold'
                         : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
                     }`}
@@ -146,9 +147,9 @@ export default function NamingPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, gender: '女' })}
+                    onClick={() => setGender('女')}
                     className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
-                      formData.gender === '女'
+                      gender === '女'
                         ? 'border-gold/60 bg-gold/10 text-gold'
                         : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
                     }`}
@@ -159,13 +160,13 @@ export default function NamingPage() {
               </label>
 
               {/* Birth info */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 <label className="block space-y-1">
                   <span className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('naming.form.year')}</span>
                   <input
                     type="number"
-                    value={formData.birthYear}
-                    onChange={(e) => setFormData({ ...formData, birthYear: parseInt(e.target.value) || 2024 })}
+                    value={birthYear}
+                    onChange={(e) => setBirthYear(parseInt(e.target.value) || 2024)}
                     min={1900} max={2100}
                     className="input-standard h-12 w-full px-3 text-base"
                     style={{ color: '#D4C5A9' }}
@@ -175,8 +176,8 @@ export default function NamingPage() {
                   <span className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('naming.form.month')}</span>
                   <input
                     type="number"
-                    value={formData.birthMonth}
-                    onChange={(e) => setFormData({ ...formData, birthMonth: Math.min(12, Math.max(1, parseInt(e.target.value) || 5)) })}
+                    value={birthMonth}
+                    onChange={(e) => setBirthMonth(Math.min(12, Math.max(1, parseInt(e.target.value) || 7)))}
                     min={1} max={12}
                     className="input-standard h-12 w-full px-3 text-base"
                     style={{ color: '#D4C5A9' }}
@@ -186,40 +187,53 @@ export default function NamingPage() {
                   <span className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('naming.form.day')}</span>
                   <input
                     type="number"
-                    value={formData.birthDay}
-                    onChange={(e) => setFormData({ ...formData, birthDay: Math.min(31, Math.max(1, parseInt(e.target.value) || 15)) })}
+                    value={birthDay}
+                    onChange={(e) => setBirthDay(Math.min(31, Math.max(1, parseInt(e.target.value) || 1)))}
                     min={1} max={31}
                     className="input-standard h-12 w-full px-3 text-base"
                     style={{ color: '#D4C5A9' }}
                   />
                 </label>
+                <label className="block space-y-1">
+                  <span className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('naming.form.hour')}</span>
+                  <select
+                    value={birthHour}
+                    onChange={(e) => setBirthHour(parseInt(e.target.value))}
+                    className="input-standard h-12 w-full px-3 text-base appearance-none"
+                    style={{ color: '#D4C5A9' }}
+                  >
+                    {SHICHEN_LABELS.map((s, i) => (
+                      <option key={i} value={i}>{s.label} ({s.time})</option>
+                    ))}
+                  </select>
+                </label>
               </div>
 
-              {/* Name length */}
+              {/* Name length — 对齐菩提苑: 2字=单字名, 3字=双字名 */}
               <label className="block space-y-2">
                 <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.nameLength')}</span>
                 <div className="flex gap-3">
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, nameLength: 1 })}
+                    onClick={() => setNameTotalLen(2)}
                     className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
-                      formData.nameLength === 1
+                      nameTotalLen === 2
                         ? 'border-gold/60 bg-gold/10 text-gold'
                         : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
                     }`}
                   >
-                    {resolve('naming.form.singleChar')}
+                    {resolve('naming.form.twoChars')}
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, nameLength: 2 })}
+                    onClick={() => setNameTotalLen(3)}
                     className={`flex-1 h-12 rounded-md border px-3 text-base transition-all ${
-                      formData.nameLength === 2
+                      nameTotalLen === 3
                         ? 'border-gold/60 bg-gold/10 text-gold'
                         : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
                     }`}
                   >
-                    {resolve('naming.form.doubleChar')}
+                    {resolve('naming.form.threeChars')}
                   </button>
                 </div>
               </label>
@@ -228,13 +242,13 @@ export default function NamingPage() {
               <label className="block space-y-2">
                 <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.style')}</span>
                 <div className="grid grid-cols-3 gap-2">
-                  {styles.map((s, idx) => (
+                  {styles.map((s) => (
                     <button
-                      key={styleKeys[idx]}
+                      key={s}
                       type="button"
-                      onClick={() => setFormData({ ...formData, style: s })}
+                      onClick={() => setStyle(s)}
                       className={`rounded-md border p-2 text-xs transition-all ${
-                        formData.style === s
+                        style === s
                           ? 'border-gold/60 bg-gold/10 text-gold'
                           : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
                       }`}
@@ -250,8 +264,8 @@ export default function NamingPage() {
                 <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.generation')}</span>
                 <input
                   type="text"
-                  value={formData.generation}
-                  onChange={(e) => setFormData({ ...formData, generation: e.target.value })}
+                  value={generation}
+                  onChange={(e) => setGeneration(e.target.value)}
                   placeholder={resolve('naming.form.generation.placeholder')}
                   maxLength={2}
                   className="input-standard h-12 w-full px-3 text-base"
@@ -264,8 +278,8 @@ export default function NamingPage() {
                 <span className="text-base" style={{ color: '#D4C5A9' }}>{resolve('naming.form.taboo')}</span>
                 <input
                   type="text"
-                  value={formData.taboo}
-                  onChange={(e) => setFormData({ ...formData, taboo: e.target.value })}
+                  value={taboo}
+                  onChange={(e) => setTaboo(e.target.value)}
                   placeholder={resolve('naming.form.taboo.placeholder')}
                   maxLength={50}
                   className="input-standard h-12 w-full px-3 text-base"
@@ -277,7 +291,7 @@ export default function NamingPage() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={generating || !formData.surname.trim()}
+                disabled={generating || !surname.trim()}
                 className="btn-primary w-full"
               >
                 {generating ? resolve('naming.generating') : resolve('naming.btn.generate')}
@@ -299,7 +313,7 @@ export default function NamingPage() {
                       <div className="flex gap-2 flex-wrap">
                         <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80">{r.element}{resolve('naming.elementSuffix')}</span>
                         <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80">{r.style}</span>
-                        {formData.generation && <span className="rounded-full border border-vermillion/25 px-2 py-0.5 text-xs text-vermillion">{resolve('naming.generationChar')}{formData.generation}</span>}
+                        {generation && <span className="rounded-full border border-vermillion/25 px-2 py-0.5 text-xs text-vermillion">{resolve('naming.generationChar')}{generation}</span>}
                       </div>
                       <p className="text-sm" style={{ color: '#D4C5A9' }}>{r.meaning}</p>
                       {r.source && <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('naming.sourceLabel')}{r.source}</p>}
@@ -316,6 +330,13 @@ export default function NamingPage() {
               <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('naming.noResult')}</p>
             </div>
           )}
+
+          {/* Footer links */}
+          <div className="flex justify-center gap-3 text-xs mt-8" style={{ color: 'rgba(212,197,169,0.5)' }}>
+            <a href="/terms/" className="hover:text-gold">{resolve('footer.terms')}</a>
+            <a href="/privacy/" className="hover:text-gold">{resolve('footer.privacy')}</a>
+            <a href="/ai-notice/" className="hover:text-gold">{resolve('footer.aiNotice')}</a>
+          </div>
         </div>
       </main>
 

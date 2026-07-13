@@ -136,8 +136,8 @@ export function generateNames(
   const favorable = getFavorableElements(wuXingCount);
   const suggestions: NameSuggestion[] = [];
 
-  // style 可能是翻译后的值（如 '诗词典故' 或 'Poetry'），统一用索引判断
-  const styleIndex = ['诗词典故', '五行互补', '音韵优美', '寓意吉祥', '国学经典', '现代简约']
+  // style 可能是翻译后的值（如 '诗意' 或 'Poetic'），统一用索引判断
+  const styleIndex = ['诗意', '刚毅', '儒雅', '清逸', '典雅', '温润']
     .indexOf(style);
   const isPoetry = styleIndex === 0;
 

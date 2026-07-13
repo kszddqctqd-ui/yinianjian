@@ -62,7 +62,22 @@ export function Header() {
             <MusicToggle />
             {/* 添加到桌面 */}
             <div className="relative">
-              <button type="button" className="flex size-8 items-center justify-center rounded-full border border-gold/30 text-gold/70 hover:bg-gold/10 hover:text-gold" aria-label="添加到桌面" title="添加到桌面">
+              <button type="button" className="flex size-8 items-center justify-center rounded-full border border-gold/30 text-gold/70 hover:bg-gold/10 hover:text-gold" aria-label="添加到桌面" title="添加到桌面" onClick={() => {
+                if ('serviceWorker' in navigator) {
+                  const deferredPrompt = (window as any).__pwaDeferredPrompt;
+                  if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
+                      if (choiceResult.outcome === 'accepted') {
+                        console.log('用户接受了 PWA 安装');
+                      }
+                      (window as any).__pwaDeferredPrompt = null;
+                    });
+                  } else {
+                    alert('请将浏览器书签栏拖动到桌面，或从菜单选择"安装"');
+                  }
+                }
+              }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download size-4" aria-hidden="true">
                   <path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" />
                 </svg>

@@ -71,11 +71,11 @@ export const translations: Translations = {
     en: '',
   },
   'hero.btn.pray': {
-    zh: '为家人祈福',
+    zh: '心愿供灯',
     en: 'Pray for Family',
   },
   'hero.btn.bazi': {
-    zh: '看八字',
+    zh: '大师八字精批',
     en: 'View BaZi',
   },
 
@@ -231,8 +231,8 @@ export const translations: Translations = {
     en: 'Light a lamp, write a wish',
   },
   'feature.pray.tag': {
-    zh: '祈福',
-    en: 'Prayer',
+    zh: '心愿寄托',
+    en: 'Heart Wish',
   },
   'feature.almanac.title': {
     zh: '今日黄历',
@@ -243,8 +243,8 @@ export const translations: Translations = {
     en: 'Stems-branches, auspicious activities and taboos',
   },
   'feature.almanac.tag': {
-    zh: '日常',
-    en: 'Daily',
+    zh: '每日打卡',
+    en: 'Daily Check-in',
   },
   'feature.dream.title': {
     zh: '周公解梦',
@@ -263,8 +263,8 @@ export const translations: Translations = {
     en: 'One stick, one question. 100 fortune poems',
   },
   'feature.lottery.tag': {
-    zh: '灵验',
-    en: 'Accurate',
+    zh: '传统签谱',
+    en: 'Traditional Lot谱',
   },
   'feature.bazi.title': {
     zh: '八字精批',
@@ -283,8 +283,8 @@ export const translations: Translations = {
     en: 'Three coins cast: primary, mutual, and transformed hexagrams',
   },
   'feature.divination.tag': {
-    zh: '新',
-    en: 'New',
+    zh: '周易卦象',
+    en: 'I Ching Hexagram',
   },
   'feature.palmistry.title': {
     zh: '图解手相/面相',
@@ -595,6 +595,26 @@ export const translations: Translations = {
   'almanac.zodiac': {
     zh: '星座',
     en: 'Zodiac',
+  },
+  'almanac.jianChu': {
+    zh: '建除',
+    en: '12 Day Officer',
+  },
+  'almanac.twentyEightXiu': {
+    zh: '二十八宿',
+    en: '28 Mansions',
+  },
+  'almanac.jiShen': {
+    zh: '吉神宜趋',
+    en: 'Auspicious Gods',
+  },
+  'almanac.xiongShen': {
+    zh: '凶神宜避',
+    en: 'Inauspicious Gods',
+  },
+  'almanac.taiShen': {
+    zh: '胎神',
+    en: 'Fetus God',
   },
 
   // ========== Lottery Page ==========
@@ -973,13 +993,17 @@ export const translations: Translations = {
     zh: '名字长度',
     en: 'Name Length',
   },
-  'naming.form.singleChar': {
-    zh: '单字（一字名）',
-    en: 'Single Character',
+  'naming.form.twoChars': {
+    zh: '2字（如 李安）',
+    en: '2 chars (e.g. Li An)',
   },
-  'naming.form.doubleChar': {
-    zh: '双字（二字名）',
-    en: 'Double Characters',
+  'naming.form.threeChars': {
+    zh: '3字（如 李思远）',
+    en: '3 chars (e.g. Li Siyuan)',
+  },
+  'naming.form.hour': {
+    zh: '出生时辰',
+    en: 'Birth Hour',
   },
   'naming.form.style': {
     zh: '风格偏好',
@@ -1029,12 +1053,12 @@ export const translations: Translations = {
     zh: '辈分字：',
     en: 'Gen. char: ',
   },
-  'naming.styles.0': { zh: '诗词典故', en: 'Poetry' },
-  'naming.styles.1': { zh: '五行互补', en: 'Five Elements' },
-  'naming.styles.2': { zh: '音韵优美', en: 'Melodious' },
-  'naming.styles.3': { zh: '寓意吉祥', en: 'Auspicious' },
-  'naming.styles.4': { zh: '国学经典', en: 'Classics' },
-  'naming.styles.5': { zh: '现代简约', en: 'Modern' },
+  'naming.styles.0': { zh: '诗意', en: 'Poetic' },
+  'naming.styles.1': { zh: '刚毅', en: 'Strong' },
+  'naming.styles.2': { zh: '儒雅', en: 'Elegant' },
+  'naming.styles.3': { zh: '清逸', en: 'Fresh' },
+  'naming.styles.4': { zh: '典雅', en: 'Classic' },
+  'naming.styles.5': { zh: '温润', en: 'Gentle' },
 
   // ========== Meditation Page ==========
   'meditation.title': {
@@ -1350,6 +1374,10 @@ export const translations: Translations = {
   'incense.subtitle': {
     zh: '每日三礼，每礼三炷，心诚则灵',
     en: 'Three offerings daily, three incense sticks each -- sincerity makes it spiritual',
+  },
+  'incense.desc': {
+    zh: '一炷清香寄心愿，万家灯火共平安。',
+    en: 'An incense stick for your wishes, peace for all families.',
   },
   'incense.btn.offer': {
     zh: '敬上一炷清香',

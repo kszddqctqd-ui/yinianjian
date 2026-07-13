@@ -337,10 +337,10 @@ export default function HomePage() {
           <FadeInSection>
             <section className="space-y-6 pb-section">
               <div className="card-standard space-y-5 text-center">
-                {/* 标签 */}
-                <span className="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium border-gold/30 bg-gradient-to-r from-gold/20 to-gold/5 text-gold-dark">
+                {/* 标语 */}
+                <p className="text-sm tracking-wider text-gold/80">
                   {resolve('philosophy.title')}
-                </span>
+                </p>
 
                 {/* 标题 */}
                 <h2
@@ -415,7 +415,7 @@ export default function HomePage() {
 
                 {/* 描述 */}
                 <p className="mx-auto max-w-md text-base leading-loose text-ink">
-                  {resolve('incense.subtitle')}
+                  {resolve('incense.desc') || resolve('incense.subtitle')}
                 </p>
 
                 {/* 按钮 */}
@@ -477,7 +477,7 @@ export default function HomePage() {
 
                 {/* 分享按钮 */}
                 <div className="flex justify-center">
-                  <button className="btn-primary">
+                  <button className="btn-primary" onClick={() => window.location.href = '/invite/'}>
                     {resolve('share.btn.share')}
                   </button>
                 </div>

@@ -42,7 +42,7 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <meta name="format-detection" content="telephone=no, email=no, address=no" />
         <meta name="mobile-web-app-capable" content="yes" />
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="x5-page-mode" content="app" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {/* Hydrate lang attribute from localStorage on client */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var l=localStorage.getItem('yinianjian_lang');if(l&&(l==='en'||l==='zh-CN'))document.documentElement.lang=l==='zh-CN'?'zh-CN':'en'}catch(e){}})()` }} />
+        <template dangerouslySetInnerHTML={{ __html: `(function(){try{var l=localStorage.getItem('yinianjian_lang');if(l&&(l==='en'||l==='zh-CN'))document.documentElement.lang=l==='zh-CN'?'zh-CN':'en'}catch(e){}})()` }} />
       </head>
       <body className="antialiased">{children}</body>
     </html>

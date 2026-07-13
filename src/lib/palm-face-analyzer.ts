@@ -155,19 +155,23 @@ function analyzePalmFromImageData(imageData: ImageData, width: number, height: n
 
   // 计算图像的平均亮度和对比度
   let totalBrightness = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    totalBrightness += (data[i] + data[i + 1] + data[i + 2]) / 3;
+  }
+  const avgBrightness = totalBrightness / totalPixels;
+
+  // 计算对比度
   let totalContrast = 0;
   for (let i = 0; i < data.length; i += 4) {
     const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-    totalBrightness += brightness;
-    totalContrast += Math.abs(brightness - totalBrightness / (i / 4 + 1));
+    totalContrast += Math.abs(brightness - avgBrightness);
   }
-  const avgBrightness = totalBrightness / totalPixels;
   const avgContrast = totalContrast / totalPixels;
 
   // 基于图像特征生成手相解读
-  const lifeLine = getLifeLineReading(avgBrightness, avgContrast, width, height);
+  const lifeLine = getLifeLineReading(avgBrightness, avgContrast);
   const wisdomLine = getWisdomLineReading(avgBrightness, avgContrast);
-  const heartLine = getHeartLineReading(avgContrast, width, height);
+  const heartLine = getHeartLineReading(avgContrast);
   const fateLine = getFateLineReading(avgBrightness, avgContrast);
 
   const overall = `手相分析完成。${lifeLine}<br/>${wisdomLine}<br/>${heartLine}<br/>${fateLine}`;
@@ -264,7 +268,7 @@ function generateFaceReading(
 
 // ==================== 手相分析辅助函数 ====================
 
-function getLifeLineReading(brightness: number, contrast: number, width: number, height: number): string {
+function getLifeLineReading(brightness: number, contrast: number): string {
   if (brightness > 150 && contrast > 50) return '生命线深长且无明显中断，代表生命力旺盛，体质强健。';
   if (brightness > 120) return '生命线清晰，代表健康状况良好。';
   return '生命线较浅淡，需注意日常养生，通过规律作息可以改善。';
@@ -276,7 +280,7 @@ function getWisdomLineReading(brightness: number, contrast: number): string {
   return '智慧线不够清晰，建议培养专注力。';
 }
 
-function getHeartLineReading(contrast: number, width: number, height: number): string {
+function getHeartLineReading(contrast: number): string {
   if (contrast > 50) return '感情线深长，代表情感丰富，富有同情心。';
   if (contrast > 30) return '感情线平直，感情态度理性稳重。';
   return '感情线上有波折，说明感情路上曾经历挫折。';

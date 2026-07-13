@@ -115,7 +115,7 @@ const nineFeatures = [
   },
   {
     name: 'feature.bazi.title',
-    href: '/',
+    href: '/bazi',
     icon: 'compass',
     iconColor: 'text-gold',
     desc: 'feature.bazi.desc',
@@ -420,11 +420,25 @@ export default function HomePage() {
 
                 {/* 按钮 */}
                 <div className="flex justify-center">
-                  <a href="/qifu/">
-                    <button className="btn-primary">
-                      {resolve('incense.btn.offer')}
-                    </button>
-                  </a>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => {
+                      const today = new Date().toISOString().slice(0, 10);
+                      const todayKey = `yinianjian_incense_${today}`;
+                      const count = parseInt(localStorage.getItem(todayKey) || '0', 10);
+                      if (count < 3) {
+                        localStorage.setItem(todayKey, String(count + 1));
+                        // 增加功德
+                        const meritKey = 'yinianjian_total_merit';
+                        const total = parseInt(localStorage.getItem(meritKey) || '0', 10);
+                        localStorage.setItem(meritKey, String(total + 1));
+                      }
+                      window.location.href = '/qifu/';
+                    }}
+                  >
+                    {resolve('incense.btn.offer')}
+                  </button>
                 </div>
 
                 <div className="gold-divider mt-4" />

@@ -156,7 +156,7 @@ export default function RecordsPage() {
         </div>
       </main>
 
-      <BottomNav active="profile" />
+      <BottomNav active="more" />
     </div>
   );
 }

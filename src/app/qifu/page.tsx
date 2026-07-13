@@ -62,9 +62,9 @@ function injectLanternAnimations() {
 }
 
 // 单个灯笼组件
-function WallLantern({ name, merit, index, lanternType }: { name: string; merit: number; index: number; lanternType?: string }) {
+function WallLantern({ giver, receiver, index, lanternType }: { giver: string; receiver: string; index: number; lanternType?: string }) {
   const delay = (index * 0.5) % 3;
-  const displayName = name.length > 2 ? name.slice(0, 2) : name;
+  const displayName = receiver.length > 2 ? receiver.slice(0, 2) : receiver;
   const color = LANTERN_COLORS[index % 5];
   const colorName = color.name;
 
@@ -110,36 +110,15 @@ function WallLantern({ name, merit, index, lanternType }: { name: string; merit:
       </svg>
       <div className="text-center">
         <div className="text-[14.875px]" style={{ color: 'rgba(212,197,169,0.65)' }}>
-          {resolve('qifu.wall.lantern.offering')} {name} 的 {lanternType}
-        </div>
-        <div className="text-[11px]" style={{ color: 'rgba(212,197,169,0.4)' }}>
-          功德 6.6
+          {giver} 为 {receiver} 敬奉
         </div>
       </div>
     </div>
   );
 }
 
-// 六种灯品种（菩提苑源码）
-const LAMP_TYPES = [
-  { name: '清心灯', desc: '祈愿身心安宁、烦恼消解', flameColor: 'rgb(122, 106, 74)' },
-  { name: '智慧灯', desc: '祈愿学业精进、心智明朗', flameColor: 'rgb(122, 106, 74)' },
-  { name: '长寿灯', desc: '祈愿身体康健、福寿绵长', flameColor: 'rgb(122, 106, 74)' },
-  { name: '平安灯', desc: '祈愿出入平安、家宅安宁', flameColor: 'rgb(196, 61, 61)' },
-  { name: '姻缘灯', desc: '祈愿良缘早至、感情和顺', flameColor: 'rgb(122, 106, 74)' },
-  { name: '财福灯', desc: '祈愿财源广进、生意顺遂', flameColor: 'rgb(122, 106, 74)' },
-];
-
-// 供奉时长选项（菩提苑源码）
-const PERIODS = [
-  { id: 'month', label: '一月供奉', price: 3.9 },
-  { id: 'hundred', label: '百日供奉', price: 5.9 },
-  { id: 'year', label: '一年供奉', price: 9.9 },
-  { id: 'permanent', label: '永久长明', price: 19.9 },
-];
-
 // 关系选项（菩提苑源码顺序）
-const RELATION_OPTIONS = ['父亲', '母亲', '爱人', '孩子', '孙辈', '朋友', '自己'];
+const RELATION_KEYS = ['qifu.relation.0', 'qifu.relation.1', 'qifu.relation.2', 'qifu.relation.3', 'qifu.relation.4', 'qifu.relation.5', 'qifu.relation.6'];
 
 // 五种灯笼颜色
 const LANTERN_COLORS = [
@@ -158,32 +137,41 @@ const COLOR_NAME_MAP: Record<string, { body: string; glow: string; flame: string
   '金色': LANTERN_COLORS[4],
 };
 
-// 灯墙滚动数据
-const WALL_LANTERNS = [
-  { name: '张*', type: '平安灯' },
-  { name: '李*', type: '姻缘灯' },
-  { name: '王*', type: '智慧灯' },
-  { name: '赵*', type: '长寿灯' },
-  { name: '陈*', type: '财福灯' },
-  { name: '刘*', type: '平安灯' },
-  { name: '杨*', type: '清心灯' },
-  { name: '周*', type: '姻缘灯' },
-  { name: '吴*', type: '平安灯' },
-  { name: '郑*', type: '长寿灯' },
-  { name: '孙*', type: '财福灯' },
-  { name: '马*', type: '平安灯' },
+// 灯墙数据（24个，对标菩提苑 6行×4列）
+const WALL_LANTERN_KEYS = [
+  { giver: '善**', receiver: '周*', type: 'qifu.lamp.2.name' },
+  { giver: '善**', receiver: '朴*', type: 'qifu.lamp.3.name' },
+  { giver: '善**', receiver: '董*', type: 'qifu.lamp.4.name' },
+  { giver: '善**', receiver: '吉', type: 'qifu.lamp.3.name' },
+  { giver: '善**', receiver: '武*', type: 'qifu.lamp.3.name' },
+  { giver: '1**', receiver: 'w*', type: 'qifu.lamp.1.name' },
+  { giver: '善**', receiver: '赵*', type: 'qifu.lamp.2.name' },
+  { giver: '善**', receiver: '杜*', type: 'qifu.lamp.3.name' },
+  { giver: '善**', receiver: '刘*', type: 'qifu.lamp.4.name' },
+  { giver: '善**', receiver: '林*', type: 'qifu.lamp.1.name' },
+  { giver: '善**', receiver: '周*', type: 'qifu.lamp.2.name' },
+  { giver: '善**', receiver: '朴*', type: 'qifu.lamp.3.name' },
+  { giver: '善**', receiver: '董*', type: 'qifu.lamp.4.name' },
+  { giver: '善**', receiver: '吉', type: 'qifu.lamp.3.name' },
+  { giver: '善**', receiver: '武*', type: 'qifu.lamp.3.name' },
+  { giver: '1**', receiver: 'w*', type: 'qifu.lamp.1.name' },
+  { giver: '善**', receiver: '赵*', type: 'qifu.lamp.2.name' },
+  { giver: '善**', receiver: '杜*', type: 'qifu.lamp.3.name' },
+  { giver: '善**', receiver: '刘*', type: 'qifu.lamp.4.name' },
+  { giver: '善**', receiver: '林*', type: 'qifu.lamp.1.name' },
+  { giver: '周**', receiver: '周*', type: 'qifu.lamp.2.name' },
+  { giver: '善**', receiver: '何*', type: 'qifu.lamp.0.name' },
+  { giver: '善**', receiver: '童*', type: 'qifu.lamp.3.name' },
+  { giver: '善**', receiver: '孙*', type: 'qifu.lamp.5.name' },
 ];
 
 export default function QifuPage() {
-  const [selectedLamp, setSelectedLamp] = useState(3); // 默认选中平安灯
-  const [selectedPeriod, setSelectedPeriod] = useState(0);
   const [familyName, setFamilyName] = useState('');
   const [relation, setRelation] = useState('');
   const [wish, setWish] = useState('');
   const [yourName, setYourName] = useState('');
-  const [showPayment, setShowPayment] = useState(false);
   const [totalLights, setTotalLights] = useState(51);
-  const [wallScroll, setWallScroll] = useState(WALL_LANTERNS);
+  const [wallScroll, setWallScroll] = useState(WALL_LANTERN_KEYS);
   const [lang, setLang] = useState<SupportedLang>(getLocale());
 
   useEffect(() => {
@@ -197,24 +185,23 @@ export default function QifuPage() {
 
   // 灯墙实时更新
   useEffect(() => {
-    const surnames = ['黄*', '林*', '何*', '高*', '罗*', '梁*', '谢*', '宋*', '唐*', '许*'];
-    const lampTypes = ['平安灯', '姻缘灯', '智慧灯', '长寿灯', '财福灯', '清心灯'];
+    const givers = ['善*', '黄*', '林*', '何*', '高*', '罗*', '梁*', '谢*', '宋*', '唐*'];
+    const receivers = ['周*', '朴*', '董*', '吉*', '武*', '赵*', '杜*', '刘*', '林*', '何*'];
+    const lampTypeKeys = ['qifu.lamp.3.name', 'qifu.lamp.4.name', 'qifu.lamp.1.name', 'qifu.lamp.2.name', 'qifu.lamp.5.name', 'qifu.lamp.0.name'];
     const timer = setInterval(() => {
       const newEntry = {
-        name: surnames[Math.floor(Math.random() * surnames.length)],
-        type: lampTypes[Math.floor(Math.random() * lampTypes.length)],
+        giver: givers[Math.floor(Math.random() * givers.length)],
+        receiver: receivers[Math.floor(Math.random() * receivers.length)],
+        type: lampTypeKeys[Math.floor(Math.random() * lampTypeKeys.length)],
       };
       setWallScroll(prev => [newEntry, ...prev.slice(0, 15)]);
     }, 8000);
     return () => clearInterval(timer);
   }, []);
 
-  const currentPrice = PERIODS[selectedPeriod]?.price || 3.9;
-
   const handleLight = () => {
     if (!familyName.trim()) return;
     setTotalLights(l => l + 1);
-    setShowPayment(true);
   };
 
   return (
@@ -263,18 +250,18 @@ export default function QifuPage() {
                 <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
               </svg>
             </div>
-            <h1 className="text-4xl tracking-widest text-gold">心愿供灯</h1>
+            <h1 className="text-4xl tracking-widest text-gold">{resolve('qifu.title')}</h1>
             <p className="mx-auto max-w-md text-base text-paper-dark/85">
-              点一盏灯，写下一份祝愿，留给家人、自己或重要时刻一份温和的仪式感。
+              {resolve('qifu.subtitle')}
             </p>
           </section>
 
           {/* 灯墙统计 + 滚动条 */}
           <div className="flex justify-center">
             <div className="mx-auto inline-flex items-center gap-4 rounded-full border border-gold/30 bg-xuan-card/70 px-6 py-2 text-sm text-paper-dark/85">
-              <span>已点亮 <span className="font-display text-lg text-gold">{totalLights}</span> 盏</span>
+              <span>{resolve('qifu.stats.lit')} <span className="font-display text-lg text-gold">{totalLights}</span> {resolve('qifu.stats.unit')}</span>
               <span className="h-4 w-px bg-gold/30" />
-              <span>今日新增 <span className="font-display text-lg text-vermillion">0</span> 盏</span>
+              <span>{resolve('qifu.stats.today')} <span className="font-display text-lg text-vermillion">0</span> {resolve('qifu.stats.unit')}</span>
             </div>
           </div>
           <div className="relative mx-auto mt-3 max-w-lg overflow-hidden rounded-full border border-gold/20 bg-xuan-card/50 px-4 py-2">
@@ -284,14 +271,18 @@ export default function QifuPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame size-3 text-vermillion/70" aria-hidden="true">
                     <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
                   </svg>
-                  <span className="text-gold/85">{wl.name}</span>
-                  <span>为</span>
-                  <span className="text-gold/85">客**</span>
-                  <span>点亮{wl.type}</span>
+                  <span className="text-gold/85">{wl.giver}</span>
+                  <span>{resolve('qifu.wall.marquee.offering')}</span>
+                  <span className="text-gold/85">{resolve('qifu.wall.marquee.guest')}</span>
+                  <span>{resolve('qifu.wall.marquee.lit')}</span>
+                  <span className="text-gold/85">{resolve(wl.type)}</span>
                 </span>
               ))}
             </div>
           </div>
+
+          {/* 表单标题 */}
+          <h2 className="font-display text-2xl text-gold">为谁点灯</h2>
 
           {/* Form */}
           <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-4">
@@ -316,56 +307,9 @@ export default function QifuPage() {
                   className="h-12 w-full rounded-md border border-gold/20 bg-xuan-surface px-3 text-lg text-paper-dark focus:border-gold focus:outline-none"
                 >
                   <option value="">请选择</option>
-                  {RELATION_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                  {RELATION_KEYS.map(r => <option key={r} value={r}>{resolve(r)}</option>)}
                 </select>
               </label>
-            </div>
-
-            {/* 选一盏灯 */}
-            <div>
-              <p className="text-base text-paper-dark/85">选一盏灯</p>
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                {LAMP_TYPES.map((lamp, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setSelectedLamp(i)}
-                    className={`group relative rounded-xl border p-4 text-left transition-all ${
-                      selectedLamp === i
-                        ? 'border-gold/60 bg-gold/10 shadow-gold'
-                        : 'border-gold/20 bg-xuan-surface/40 hover:border-gold/40'
-                    }`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flame mb-2 size-7" aria-hidden="true" style={{ color: selectedLamp === i ? lamp.flameColor : 'rgb(122, 106, 74)' }}>
-                      <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
-                    </svg>
-                    <p className={`font-display text-lg ${selectedLamp === i ? 'text-gold' : 'text-paper-dark'}`}>{lamp.name}</p>
-                    <p className="mt-1 text-sm text-paper-dark/65">{lamp.desc}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 供奉时长 */}
-            <div>
-              <p className="text-base text-paper-dark/85">供奉时长</p>
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                {PERIODS.map((period, i) => (
-                  <button
-                    key={period.id}
-                    type="button"
-                    onClick={() => setSelectedPeriod(i)}
-                    className={`rounded-xl border p-4 text-center transition-all ${
-                      selectedPeriod === i
-                        ? 'border-gold/60 bg-gold/10 shadow-gold'
-                        : 'border-gold/20 bg-xuan-surface/40 hover:border-gold/40'
-                    }`}
-                  >
-                    <p className="font-display text-lg text-paper-dark">{period.label}</p>
-                    <p className="mt-1 font-number text-2xl text-vermillion">¥{period.price}</p>
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* 心愿 */}
@@ -395,18 +339,14 @@ export default function QifuPage() {
             </label>
           </div>
 
-          {/* 底部价格 + 按钮 */}
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-sm text-paper-dark/65">需供奉</p>
-              <p className="font-display text-3xl text-gold">¥{currentPrice}</p>
-            </div>
+          {/* 底部按钮 */}
+          <div className="flex justify-center">
             <button
               type="button"
               className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg"
               onClick={handleLight}
             >
-              点亮心愿灯
+              点亮此灯
             </button>
           </div>
 
@@ -414,15 +354,12 @@ export default function QifuPage() {
           <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-4">
             <h2 className="font-display text-2xl text-gold">心愿灯墙</h2>
             <p className="text-sm" style={{ color: 'rgba(212,197,169,0.65)' }}>
-              姓名已脱敏处理 · 仅作心愿展示
+              {resolve('qifu.wall.note')}
             </p>
-            <div className="relative overflow-hidden" style={{ maxHeight: '400px' }}>
-              <div
-                className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                style={{ animation: 'marquee-lanterns 40s linear infinite' }}
-              >
-                {WALL_LANTERNS.concat(WALL_LANTERNS).map((wl, i) => (
-                  <WallLantern key={i} name={wl.name} merit={6.6} index={i} lanternType={wl.type} />
+            <div className="relative overflow-hidden" style={{ maxHeight: '1100px' }}>
+              <div className="grid grid-cols-4 gap-3">
+                {WALL_LANTERN_KEYS.map((wl, i) => (
+                  <WallLantern key={i} giver={wl.giver} receiver={wl.receiver} index={i} lanternType={wl.type} />
                 ))}
               </div>
             </div>
@@ -431,23 +368,6 @@ export default function QifuPage() {
       </main>
 
       <BottomNav active="qifu" />
-      {showPayment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
-          <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 animate-slide-up" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-[1.25rem] text-gold font-display">心愿供灯</h3>
-            <p className="text-sm" style={{ color: '#D4C5A9' }}>请扫描下方二维码完成供灯</p>
-            <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
-            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>供灯完成后请截图发送给我们确认</p>
-            <button
-              type="button"
-              onClick={() => setShowPayment(false)}
-              className="w-full rounded-lg border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors"
-            >
-              关闭
-            </button>
-          </div>
-        </div>
-      )}
       </div>
     </>
   );

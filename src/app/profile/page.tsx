@@ -6,17 +6,17 @@ import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
-import { getRecords, getTotalRecordCount, formatRelativeTime, type RecordEntry } from '@/lib/records';
+import { getRecords, formatRelativeTime, type RecordEntry } from '@/lib/records';
 import { t, getLocale, useLocale } from '@/lib/i18n';
 import type { SupportedLang } from '@/lib/i18n';
 
-// 记录类型配置
+// 记录类型配置（对标菩提苑 6 个模块）
 const RECORD_TYPES = [
   { nameKey: 'more.features.0.title', key: 'bazi', icon: 'compass', emptyBtn: 'profile.emptyBtn.bazi', href: '/' },
   { nameKey: 'more.features.3.title', key: 'lottery', icon: 'scroll', emptyBtn: 'profile.emptyBtn.lottery', href: '/lottery/' },
   { nameKey: 'more.features.7.title', key: 'divination', icon: 'compass', emptyBtn: 'profile.emptyBtn.divination', href: '/divination/' },
-  { nameKey: 'feature.palmistry.title', key: 'palmistry_hand', icon: 'hand', emptyBtn: 'profile.emptyBtn.palmistryHand', href: '/palmistry/' },
-  { nameKey: 'feature.palmistry.title', key: 'palmistry_face', icon: 'user', emptyBtn: 'profile.emptyBtn.palmistryFace', href: '/palmistry/' },
+  { nameKey: 'feature.palmistry.hand', key: 'palmistry_hand', icon: 'hand', emptyBtn: 'profile.emptyBtn.palmistryHand', href: '/palmistry/' },
+  { nameKey: 'feature.palmistry.face', key: 'palmistry_face', icon: 'user', emptyBtn: 'profile.emptyBtn.palmistryFace', href: '/palmistry/' },
   { nameKey: 'more.features.6.title', key: 'naming', icon: 'book', emptyBtn: 'profile.emptyBtn.naming', href: '/naming/' },
 ];
 
@@ -47,11 +47,6 @@ function Icon({ name, color = 'text-gold' }: { name: string; color?: string }): 
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
       </svg>
     ),
-    heart: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-heart size-5 ${color}`} aria-hidden="true">
-        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-      </svg>
-    ),
     lamp: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-lamp size-5 ${color}`} aria-hidden="true">
         <path d="M8 2h8" /><path d="M12 2v4" /><path d="M12 6a6 6 0 0 0-6 6c0 2.21 1.15 3.54 3 4.5V18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.5c1.85-1 3-2.29 3-4.5a6 6 0 0 0-6-6Z" /><path d="M9 18v1" /><path d="M15 18v1" />
@@ -70,6 +65,17 @@ function Icon({ name, color = 'text-gold' }: { name: string; color?: string }): 
     arrow: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-arrow-right size-4 ${color}`} aria-hidden="true">
         <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+      </svg>
+    ),
+    phone: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-phone size-5 ${color}`} aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+      </svg>
+    ),
+    key: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-key-round size-5 ${color}`} aria-hidden="true">
+        <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path>
+        <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
       </svg>
     ),
   };
@@ -105,7 +111,6 @@ export default function ProfilePage() {
   const divinationCount = records.filter(r => r.type === 'divination').length;
   const palmistryCount = records.filter(r => r.type === 'palmistry').length;
   const namingCount = records.filter(r => r.type === 'naming').length;
-  const dreamCount = records.filter(r => r.type === 'dream').length;
 
   return (
     <div className="min-h-screen bg-xuan relative overflow-hidden">
@@ -116,21 +121,18 @@ export default function ProfilePage() {
 
       <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
         <div className="mx-auto max-w-4xl space-y-section px-4 pb-24">
-          {/* ===== 区块1: 用户信息卡 ===== */}
+          {/* ===== 区块1: 我的吉祥号 ===== */}
           <section>
-            <div className="card-standard space-y-5">
+            <div className="card-standard space-y-4">
               {/* 吉祥号 */}
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-key-round size-5 text-gold" aria-hidden="true">
-                    <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path>
-                    <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
-                  </svg>
+                  <Icon name="key" color="text-gold" />
                   <span className="font-display text-lg" style={{ color: '#C9A96E' }}>{resolve('profile.myAuspiciousId')}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-[1.875rem] tracking-[0.08em] font-display" style={{ color: '#C9A96E' }}>
-                    ——
+                    玄真7791
                   </span>
                   <button type="button" className="rounded-md border border-gold/20 bg-xuan-surface/40 px-2 py-1 text-xs text-paper-dark/60 hover:text-gold hover:border-gold/40 transition-all">
                     {resolve('profile.copy')}
@@ -139,6 +141,9 @@ export default function ProfilePage() {
                 <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.65)' }}>
                   {resolve('profile.idNote')}
                 </p>
+                <a href="/records/" className="mt-2 inline-block text-xs text-gold hover:underline">
+                  {resolve('profile.haveId')} → {resolve('profile.findId')}
+                </a>
               </div>
 
               {/* 用户信息 */}
@@ -149,8 +154,9 @@ export default function ProfilePage() {
                     <Icon name="user" color="text-gold" />
                   </div>
                   <div>
-                    <div className="font-display text-lg" style={{ color: '#D4C5A9' }}>{resolve('profile.userTitle')}</div>
-                    <div className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.userSub')}</div>
+                    <div className="font-display text-lg" style={{ color: '#D4C5A9' }}>善信玄真7791</div>
+                    <div className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.notBoundPhone')}</div>
+                    <div className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.registerDate')}</div>
                   </div>
                 </div>
 
@@ -166,36 +172,39 @@ export default function ProfilePage() {
 
               {/* 统计栏 */}
               <div className="text-xs" style={{ color: 'rgba(212,197,169,0.65)' }}>
-                {resolve('profile.historyCount').replace('{count}', totalReadings.toString())} · {resolve('profile.dailyIncense')} · {resolve('profile.notSignedIn')}
+                {resolve('profile.historyCount').replace('{count}', totalReadings.toString())} · {resolve('profile.notIncense')} · {resolve('profile.notSignedIn')}
               </div>
             </div>
           </section>
 
-          {/* ===== 区块2: 我的祈福灯 ===== */}
+          {/* ===== 区块2: 绑定手机号 ===== */}
           <section>
-            <div className="card-standard space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Icon name="lamp" color="text-vermillion" />
-                  <span className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.myPrayerLamps')}</span>
-                  <span className="rounded-full border border-gold/25 px-2 py-0.5 text-xs text-gold-80">0</span>
-                </div>
+            <div className="card-standard space-y-3">
+              <div className="flex items-center gap-2">
+                <Icon name="phone" color="text-vermillion" />
+                <span className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.bindPhone')}</span>
               </div>
+              <p className="text-sm" style={{ color: 'rgba(212,197,169,0.65)' }}>
+                {resolve('profile.bindPhoneDesc')}
+              </p>
+              <button type="button" className="inline-flex items-center gap-2 rounded-md bg-vermillion px-4 py-2 text-sm text-white hover:bg-vermillion-light transition-colors">
+                <Icon name="phone" color="text-white" />
+                {resolve('profile.bindPhoneNow')}
+              </button>
+            </div>
+          </section>
 
-              {/* 空状态 */}
-              <div className="rounded-lg border border-gold/20 bg-xuan-surface/40 p-6 text-center">
-                <div className="mx-auto mb-2 flex size-[3rem] items-center justify-center rounded-full border border-gold/20 bg-vermillion/10">
-                  <Icon name="lamp" color="text-vermillion" />
-                </div>
-                <p className="text-sm" style={{ color: 'rgba(212,197,169,0.65)' }}>{resolve('profile.noPrayerLamp')}</p>
-                <a href="/qifu/" className="mt-2 inline-block rounded-md border border-gold/30 px-4 py-1.5 text-sm text-gold hover:bg-gold/10 transition-colors">
-                  {resolve('profile.lightForFamily')}
-                </a>
+          {/* ===== 区块3: 切换吉祥号 ===== */}
+          <section>
+            <div className="card-standard space-y-3">
+              <div className="flex items-center gap-2">
+                <Icon name="key" color="text-gold" />
+                <span className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.switchId')}</span>
               </div>
             </div>
           </section>
 
-          {/* ===== 区块3: 六类记录卡片 ===== */}
+          {/* ===== 区块4: 六大服务记录卡片 ===== */}
           <section>
             <h2 className="font-display text-[1.25rem] tracking-wider" style={{ color: '#C9A96E', paddingBottom: '1rem' }}>
               {resolve('profile.myRecords')}
@@ -242,105 +251,15 @@ export default function ProfilePage() {
                         </a>
                       </div>
                     )}
-
-                    {count > 0 && (
-                      <button type="button" className="flex items-center gap-1 text-xs text-paper-dark/50 hover:text-vermillion transition-colors">
-                        <Icon name="trash" color="text-current" />
-                        <span>{resolve('profile.clear')}</span>
-                      </button>
-                    )}
                   </div>
                 );
               })}
             </div>
           </section>
-
-          {/* ===== 区块4: 最近功德 ===== */}
-          <section>
-            <div className="card-standard space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Icon name="refresh" color="text-gold" />
-                  <span className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.meritRecords')}</span>
-                </div>
-              </div>
-
-              {records.length > 0 ? (
-                <div className="space-y-2">
-                  {records.slice(-5).reverse().map((r, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-md bg-xuan-surface/40 p-3">
-                      <div>
-                        <div className="text-sm" style={{ color: '#D4C5A9' }}>{r.summary}</div>
-                        <div className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{formatRelativeTime(r.timestamp)}</div>
-                      </div>
-                      <span className="font-number text-sm" style={{ color: '#C9A96E' }}>+1</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <p className="text-sm" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.noMerit')}</p>
-                  <a href="/qifu/" className="mt-2 inline-block text-sm text-gold hover:underline">
-                    {resolve('profile.goOffer')}
-                  </a>
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* ===== 区块5: 设置 ===== */}
-          <section>
-            <div className="card-standard space-y-4">
-              <h3 className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.settings')}</h3>
-              <div className="space-y-3">
-                <button
-                  onClick={() => window.location.href = '/records'}
-                  className="w-full flex items-center justify-between rounded-md border border-gold/20 bg-xuan-surface/40 px-4 py-3 text-sm text-paper-dark/80 hover:text-gold hover:border-gold/30 transition-all"
-                >
-                  <span>{resolve('profile.viewRecords')}</span>
-                  <Icon name="arrow" color="text-current" />
-                </button>
-                <button
-                  type="button"
-                  className="w-full flex items-center justify-between rounded-md border border-gold/20 bg-xuan-surface/40 px-4 py-3 text-sm text-paper-dark/80 hover:text-vermillion hover:border-vermillion/30 transition-all"
-                  onClick={() => {
-                    if (confirm(resolve('profile.clearConfirm'))) {
-                      localStorage.clear();
-                      window.location.reload();
-                    }
-                  }}
-                >
-                  <span>{resolve('profile.clearCache')}</span>
-                  <Icon name="trash" color="text-current" />
-                </button>
-              </div>
-            </div>
-          </section>
-
-          {/* ===== 区块6: 关于 ===== */}
-          <section>
-            <div className="card-standard space-y-3">
-              <h3 className="font-display text-[1.25rem]" style={{ color: '#C9A96E' }}>{resolve('profile.about')}</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span style={{ color: '#D4C5A9' }}>{resolve('profile.version')}</span>
-                  <span style={{ color: 'rgba(212,197,169,0.5)' }}>4.0.0</span>
-                </div>
-                <div className="flex justify-between">
-                  <span style={{ color: '#D4C5A9' }}>{resolve('profile.copyright')}</span>
-                  <span style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.copyrightFull')}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span style={{ color: '#D4C5A9' }}>{resolve('profile.philosophy')}</span>
-                  <span style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('profile.userSub')}</span>
-                </div>
-              </div>
-            </div>
-          </section>
         </div>
       </main>
 
-      <BottomNav active="profile" />
+      <BottomNav active="more" />
     </div>
   );
 }

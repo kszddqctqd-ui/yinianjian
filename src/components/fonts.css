@@ -5,3 +5,8 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* Fallback: use a system cursive font if ZhiMangXing is not available */
+.font-display {
+  font-family: 'ZhiMangXing', 'Comic Sans MS', cursive;
+}

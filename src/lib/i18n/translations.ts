@@ -469,6 +469,51 @@ export const translations: Translations = {
     zh: '点亮心愿灯',
     en: 'Light the Wish Lamp',
   },
+  // Lamp types
+  'qifu.lamp.0.name': { zh: '清心灯', en: 'Clarity Lamp' },
+  'qifu.lamp.0.desc': { zh: '祈愿身心安宁、烦恼消解', en: 'Pray for peace of mind and body' },
+  'qifu.lamp.1.name': { zh: '智慧灯', en: 'Wisdom Lamp' },
+  'qifu.lamp.1.desc': { zh: '祈愿学业精进、心智明朗', en: 'Pray for academic progress and mental clarity' },
+  'qifu.lamp.2.name': { zh: '长寿灯', en: 'Longevity Lamp' },
+  'qifu.lamp.2.desc': { zh: '祈愿身体康健、福寿绵长', en: 'Pray for health and long life' },
+  'qifu.lamp.3.name': { zh: '平安灯', en: 'Safety Lamp' },
+  'qifu.lamp.3.desc': { zh: '祈愿出入平安、家宅安宁', en: 'Pray for safety and home peace' },
+  'qifu.lamp.4.name': { zh: '姻缘灯', en: 'Love Lamp' },
+  'qifu.lamp.4.desc': { zh: '祈愿良缘早至、感情和顺', en: 'Pray for love and harmony' },
+  'qifu.lamp.5.name': { zh: '财福灯', en: 'Prosperity Lamp' },
+  'qifu.lamp.5.desc': { zh: '祈愿财源广进、生意顺遂', en: 'Pray for wealth and business success' },
+  // Relation options
+  'qifu.relation.0': { zh: '父亲', en: 'Father' },
+  'qifu.relation.1': { zh: '母亲', en: 'Mother' },
+  'qifu.relation.2': { zh: '爱人', en: 'Spouse' },
+  'qifu.relation.3': { zh: '孩子', en: 'Children' },
+  'qifu.relation.4': { zh: '孙辈', en: 'Grandchildren' },
+  'qifu.relation.5': { zh: '朋友', en: 'Friends' },
+  'qifu.relation.6': { zh: '自己', en: 'Myself' },
+  // UI text
+  'qifu.title': { zh: '心愿供灯', en: 'Wish Lamp' },
+  'qifu.subtitle': { zh: '点一盏灯，写下一份祝愿，留给家人、自己或重要时刻一份温和的仪式感。', en: 'Light a lamp, write a wish, and leave a gentle ritual for your family, yourself, or an important moment.' },
+  'qifu.stats.lit': { zh: '已点亮', en: 'Lit' },
+  'qifu.stats.unit': { zh: '盏', en: 'lamps' },
+  'qifu.stats.today': { zh: '今日新增', en: 'Added Today' },
+  'qifu.wall.marquee.offering': { zh: '为', en: 'Offering for' },
+  'qifu.wall.marquee.guest': { zh: '客**', en: 'Guest **' },
+  'qifu.wall.marquee.lit': { zh: '点亮', en: 'lit' },
+  'qifu.form.familyName': { zh: '家人姓名', en: 'Family Name' },
+  'qifu.form.familyName.placeholder': { zh: '例如：王秀英', en: 'e.g. Wang Xiuying' },
+  'qifu.form.relation': { zh: '与您的关系', en: 'Relationship' },
+  'qifu.form.relation.placeholder': { zh: '请选择', en: 'Select' },
+  'qifu.form.selectLamp': { zh: '选一盏灯', en: 'Choose a Lamp' },
+  'qifu.form.duration': { zh: '供奉时长', en: 'Duration' },
+  'qifu.form.wish': { zh: '心愿（可选，最多 80 字）', en: 'Wish (optional, max 80 chars)' },
+  'qifu.form.wish.placeholder': { zh: '例如：愿父亲身体康健、烦恼消解', en: 'e.g. May father be healthy and free from worries' },
+  'qifu.form.yourName': { zh: '您的称呼（可选，会显示在灯墙）', en: 'Your Name (optional, shown on lamp wall)' },
+  'qifu.form.yourName.placeholder': { zh: '例如：李小华', en: 'e.g. Li Xiaohua' },
+  'qifu.form.payFor': { zh: '需供奉', en: 'Offer for' },
+  'qifu.payment.title': { zh: '心愿供灯', en: 'Wish Lamp' },
+  'qifu.payment.scan': { zh: '请扫描下方二维码完成供灯', en: 'Scan the QR code below to complete your offering' },
+  'qifu.payment.confirm': { zh: '供灯完成后请截图发送给我们确认', en: 'Please send a screenshot after completing the offering' },
+  'qifu.payment.close': { zh: '关闭', en: 'Close' },
   'qifu.section.wall': {
     zh: '心愿灯墙',
     en: 'Wish Lamp Wall',
@@ -1207,6 +1252,17 @@ export const translations: Translations = {
   'profile.emptyBtn.palmistryHand': { zh: '拍手相', en: 'Read Palm' },
   'profile.emptyBtn.palmistryFace': { zh: '看面相', en: 'Read Face' },
   'profile.emptyBtn.naming': { zh: '去起名', en: 'Name Baby' },
+  'profile.haveId': { zh: '已有吉祥号', en: 'Have Auspicious ID' },
+  'profile.findId': { zh: '立即找回', en: 'Recover Now' },
+  'profile.notBoundPhone': { zh: '未绑定手机号（付费时可一键绑定，便于多设备找回）', en: 'Phone not bound' },
+  'profile.registerDate': { zh: '注册于 2026/7/13', en: 'Registered 2026/7/13' },
+  'profile.notIncense': { zh: '今日尚未上香', en: 'Not offered incense today' },
+  'profile.bindPhone': { zh: '绑定手机号 · 永久找回您的功德', en: 'Bind Phone Number' },
+  'profile.bindPhoneDesc': { zh: '您所有的祈福、排盘、求签、解梦等记录与功德值，都关联在吉祥号 玄真7791 上。绑定手机号后，换设备/换浏览器都能用手机号一键找回所有记录（不发短信）。', en: 'All records are tied to your auspicious number. Bind phone for easy recovery.' },
+  'profile.bindPhoneNow': { zh: '立即绑定手机号', en: 'Bind Phone Now' },
+  'profile.switchId': { zh: '切换吉祥号', en: 'Switch Auspicious ID' },
+  'feature.palmistry.hand': { zh: '图解手相', en: 'Palm Reading' },
+  'feature.palmistry.face': { zh: '面相解读', en: 'Face Reading' },
 
   // ========== Records Page ==========
   'records.title': {
@@ -1318,6 +1374,22 @@ export const translations: Translations = {
   'earn.float': {
     zh: '赚',
     en: 'Earn',
+  },
+
+  // ========== Dream ==========
+  'dream.categoryTitle': {
+    zh: '按类查梦',
+    en: 'Browse by Category',
+  },
+  'dream.hotDreams': {
+    zh: '热门梦境',
+    en: 'Popular Dreams',
+  },
+
+  // ========== Admin ==========
+  'admin.loading': {
+    zh: '加载中...',
+    en: 'Loading...',
   },
 
   // ========== Common ==========

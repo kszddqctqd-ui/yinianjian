@@ -131,13 +131,18 @@ export function generateNames(
   surname: string,
   wuXingCount: Record<string, number>,
   style: string,
-  count: number = 3,
+  nameLength: number, // 1=单字名, 2=双字名
 ): NameSuggestion[] {
   const favorable = getFavorableElements(wuXingCount);
   const suggestions: NameSuggestion[] = [];
 
+  // style 可能是翻译后的值（如 '诗词典故' 或 'Poetry'），统一用索引判断
+  const styleIndex = ['诗词典故', '五行互补', '音韵优美', '寓意吉祥', '国学经典', '现代简约']
+    .indexOf(style);
+  const isPoetry = styleIndex === 0;
+
   let charPool: NameChar[] = [];
-  if (style === '诗词典故') {
+  if (isPoetry) {
     charPool = POETRY_CHARS;
   } else {
     // 按喜用神五行筛选字符
@@ -157,30 +162,31 @@ export function generateNames(
     return true;
   });
 
-  const picked = pickRandom(charPool, Math.min(count * 4, charPool.length));
-
-  // 生成名字组合（单字名和双字名）
-  for (let i = 0; i < Math.min(count, picked.length); i++) {
-    const char = picked[i];
-    suggestions.push({
-      fullName: surname + char.char,
-      pinyin: surname + char.pinyin,
-      element: char.element,
-      meaning: char.meaning,
-      source: char.source || '',
-      style,
-    });
-  }
-
-  // 尝试生成双字名
-  if (suggestions.length < count && picked.length >= 2) {
-    for (let i = 0; i < Math.min(count - suggestions.length, picked.length - 1); i++) {
+  // 按用户选择的字数生成名字
+  if (nameLength === 1) {
+    // 单字名
+    const picked = pickRandom(charPool, 10);
+    for (const char of picked) {
+      suggestions.push({
+        fullName: surname + char.char,
+        pinyin: surname + char.pinyin,
+        element: char.element,
+        meaning: char.meaning,
+        source: char.source || '',
+        style,
+      });
+    }
+  } else {
+    // 双字名：从池中取两个不同的字组合
+    const picked = pickRandom(charPool, 20);
+    for (let i = 0; i < Math.min(10, picked.length - 1); i++) {
       const c1 = picked[i];
       const c2 = picked[i + 1];
+      if (c1.char === c2.char) continue;
       suggestions.push({
         fullName: surname + c1.char + c2.char,
         pinyin: surname + c1.pinyin + c2.pinyin,
-        element: c1.element,
+        element: c1.element + '+' + c2.element,
         meaning: `${c1.meaning}，${c2.meaning}`,
         source: `${c1.source || ''} ${c2.source || ''}`.trim(),
         style,
@@ -188,5 +194,5 @@ export function generateNames(
     }
   }
 
-  return suggestions.slice(0, count);
+  return suggestions.slice(0, nameLength === 1 ? 10 : 10);
 }

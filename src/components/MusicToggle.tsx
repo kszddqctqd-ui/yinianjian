@@ -67,7 +67,7 @@ function toggleMusic(): boolean {
 }
 
 export function MusicToggle() {
-  const [playing, setPlaying] = useState(isPlaying);
+  const [playing, setPlaying] = useState(false);
   const toggle = () => {
     const next = toggleMusic();
     setPlaying(next);
@@ -85,7 +85,7 @@ export function MusicToggle() {
 }
 
 export function MusicToggleFloat() {
-  const [playing, setPlaying] = useState(isPlaying);
+  const [playing, setPlaying] = useState(false);
   const toggle = () => {
     const next = toggleMusic();
     setPlaying(next);

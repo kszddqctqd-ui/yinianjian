@@ -43,15 +43,8 @@ export function Header() {
             </span>
           </a>
 
-          {/* 桌面导航 - xl以下只显示核心入口 */}
-          <nav className="hidden items-center gap-5 xl:flex">
-            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/qifu/">{t('nav.qifu')}</a>
-            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/almanac/">{t('nav.almanac')}</a>
-            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/lottery/">{t('nav.lottery')}</a>
-            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/">{t('nav.bazi')}</a>
-            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/dream/">{t('nav.dream')}</a>
-          </nav>
-          <nav className="hidden items-center gap-5 xl:hidden 2xl:flex">
+          {/* 桌面导航 - 全部9项固定显示 */}
+          <nav className="flex items-center gap-5">
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/qifu/">{t('nav.qifu')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/almanac/">{t('nav.almanac')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/lottery/">{t('nav.lottery')}</a>

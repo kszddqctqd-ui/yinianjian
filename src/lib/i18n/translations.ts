@@ -227,8 +227,8 @@ export const translations: Translations = {
     en: 'Wish Lamp',
   },
   'feature.pray.desc': {
-    zh: '点一盏灯，写下一份祝愿',
-    en: 'Light a lamp, write a wish',
+    zh: '点一盏灯，写下一份祝愿。适合生日纪念、平安祝福、学业心愿与日常仪式感表达。',
+    en: 'Light a lamp, write a wish. Suitable for birthdays, peace blessings, academic wishes and daily ritual expression.',
   },
   'feature.pray.tag': {
     zh: '心愿寄托',
@@ -239,8 +239,8 @@ export const translations: Translations = {
     en: 'Daily Almanac',
   },
   'feature.almanac.desc': {
-    zh: '干支宜忌、神煞冲煞',
-    en: 'Stems-branches, auspicious activities and taboos',
+    zh: '干支宜忌、神煞冲煞、十二时辰，传统择吉一目了然。',
+    en: 'Stems-branches, auspicious activities and taboos, twelve double-hours, traditional almanac at a glance.',
   },
   'feature.almanac.tag': {
     zh: '每日打卡',
@@ -251,16 +251,16 @@ export const translations: Translations = {
     en: 'Dream Interpretation',
   },
   'feature.dream.desc': {
-    zh: '百梦皆有意，古今相参证。80余条经典梦境',
-    en: 'Every dream carries meaning. 80+ classic dream interpretations',
+    zh: '百梦皆有意，古今相参证。80 余条经典梦境，直接告诉您吉凶。',
+    en: 'Every dream carries meaning. 80+ classic dream interpretations, telling you luck directly.',
   },
   'feature.lottery.title': {
     zh: '传统签谱',
     en: 'Fortune Sticks',
   },
   'feature.lottery.desc': {
-    zh: '一签一事，100支签文',
-    en: 'One stick, one question. 100 fortune poems',
+    zh: '一签一事，100 支签文整理自传统签谱，为当前事项提供一版文化参考。',
+    en: 'One stick, one question. 100 fortune poems from traditional collections, a cultural reference for your concern.',
   },
   'feature.lottery.tag': {
     zh: '传统签谱',
@@ -271,16 +271,16 @@ export const translations: Translations = {
     en: 'BaZi Reading',
   },
   'feature.bazi.desc': {
-    zh: '立春节气真排盘，看命格根骨',
-    en: 'Authentic chart by Li Chun, read destiny foundation',
+    zh: '立春节气真排盘，看命格根骨与一生气运起伏。',
+    en: 'Authentic chart by Li Chun, read destiny foundation and lifelong fortune waves.',
   },
   'feature.divination.title': {
     zh: '周易卦例',
     en: 'I Ching Hexagrams',
   },
   'feature.divination.desc': {
-    zh: '三铜起卦，本卦互卦变卦',
-    en: 'Three coins cast: primary, mutual, and transformed hexagrams',
+    zh: '心起一念，三铜起卦，再看本卦、互卦、变卦，为当前事项补一版卦象参考。',
+    en: 'One thought arises, three coins cast: primary, mutual, and transformed hexagrams as reference.',
   },
   'feature.divination.tag': {
     zh: '周易卦象',
@@ -291,24 +291,24 @@ export const translations: Translations = {
     en: 'Palm & Face Reading',
   },
   'feature.palmistry.desc': {
-    zh: '上传掌心照或正脸照',
-    en: 'Upload a palm or face photo',
+    zh: '上传掌心照或正脸照，围绕图上可见特征逐段分析，先预览再解锁完整详批。',
+    en: 'Upload a palm or face photo, analyze features step by step, preview then unlock full reading.',
   },
   'feature.naming.title': {
     zh: '宝宝起名',
     en: 'Baby Naming',
   },
   'feature.naming.desc': {
-    zh: '结合八字喜忌、音韵笔画',
-    en: 'Based on BaZi preferences, phonetics and strokes',
+    zh: '结合八字喜忌、音韵笔画、典故诗词，给孩子一个耐看的名字。',
+    en: 'Based on BaZi preferences, phonetics, strokes, classical poetry — a name that lasts.',
   },
   'feature.meditation.title': {
     zh: '静心禅坐',
     en: 'Zen Meditation',
   },
   'feature.meditation.desc': {
-    zh: '钟磬古乐、佛号梵音',
-    en: 'Temple bells, ancient music and chanting',
+    zh: '钟磬古乐、佛号梵音、深山溪水。日日一坐，让自己慢下来。',
+    en: 'Temple bells, ancient music, chanting, mountain streams. Sit daily, slow down.',
   },
 
   // ========== Philosophy Section ==========
@@ -335,7 +335,7 @@ export const translations: Translations = {
     en: 'Privacy Policy',
   },
   'footer.aiNotice': {
-    zh: 'AI生成说明',
+    zh: 'AI 生成说明',
     en: 'AI Notice',
   },
   'footer.disclaimer': {

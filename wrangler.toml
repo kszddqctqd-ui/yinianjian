@@ -1,0 +1,4 @@
+# Cloudflare Pages 构建配置
+[build]
+command = "npx next build"
+outputDir = ".next"

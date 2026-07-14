@@ -1,1 +1,17 @@
-{"name":"一念间","short_name":"一念间","start_url":"/","display":"standalone","background_color":"#1a1410","theme_color":"#1a1410","icons":[{"src":"./favicon.svg","sizes":"any","type":"image/svg+xml"}]}
+{
+  "name": "一念间",
+  "short_name": "一念间",
+  "description": "心诚则灵。为家人点一盏祈福灯，求一支关帝灵签，看一卦命理八字。一念慈悲，福报自来。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1410",
+  "theme_color": "#1a1410",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -12,21 +12,19 @@ export function Header() {
     <>
       <header className="fixed top-0 z-50 h-14 w-full transition-all duration-base safe-top bg-transparent">
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
-          {/* Logo 区 */}
+          {/* Logo 区 - 纯SVG（对齐菩提苑） */}
           <a className="flex items-center gap-2.5" href="/">
-            {/* 莲叶图标 */}
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-gold/30 text-gold shadow-[0_0_8px_rgba(201,160,94,0.4)]" style={{ background: 'rgba(201,169,110,0.1)' }}>
-              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="size-8 text-gold" xmlns="http://www.w3.org/2000/svg">
-                <path d="M32 6 C 22 6, 12 12, 10 22 C 8 32, 14 44, 24 50 C 28 53, 30 56, 31 60 L 32 62 L 33 60 C 34 56, 36 53, 40 50 C 50 44, 56 32, 54 22 C 52 12, 42 6, 32 6 Z" fill="currentColor" fillOpacity="0.12" />
-                <path d="M32 8 V 60" strokeWidth="1.4" />
-                <path d="M32 16 C 26 18, 20 22, 16 28" />
-                <path d="M32 16 C 38 18, 44 22, 48 28" />
-                <path d="M32 28 C 24 30, 18 36, 16 42" />
-                <path d="M32 28 C 40 30, 46 36, 48 42" />
-                <path d="M32 42 C 28 46, 26 50, 26 54" />
-                <path d="M32 42 C 36 46, 38 50, 38 54" />
-              </svg>
-            </div>
+            {/* 菩提叶 SVG logo（对齐菩提苑） */}
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="size-9 shrink-0 rounded-full text-gold drop-shadow-[0_0_8px_rgba(201,160,94,0.4)]" xmlns="http://www.w3.org/2000/svg" style={{ background: 'rgba(201,169,110,0.1)' }}>
+              <path d="M32 6 C 22 6, 12 12, 10 22 C 8 32, 14 44, 24 50 C 28 53, 30 56, 31 60 L 32 62 L 33 60 C 34 56, 36 53, 40 50 C 50 44, 56 32, 54 22 C 52 12, 42 6, 32 6 Z" fill="currentColor" fillOpacity="0.12" />
+              <path d="M32 8 V 60" strokeWidth="1.4" />
+              <path d="M32 16 C 26 18, 20 22, 16 28" />
+              <path d="M32 16 C 38 18, 44 22, 48 28" />
+              <path d="M32 28 C 24 30, 18 36, 16 42" />
+              <path d="M32 28 C 40 30, 46 36, 48 42" />
+              <path d="M32 42 C 28 46, 26 50, 26 54" />
+              <path d="M32 42 C 36 46, 38 50, 38 54" />
+            </svg>
             {/* 品牌名 - 金色渐变文字 */}
             <span
               className="font-brand text-[1.4rem] md:text-[1.65rem] tracking-[0.12em]"
@@ -82,15 +80,6 @@ export function Header() {
                   <path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" />
                 </svg>
               </button>
-            </div>
-            {/* 用户信息 */}
-            <div className="hidden items-center gap-2 md:flex">
-              <a className="inline-flex items-center gap-2 rounded-full border border-gold/30 px-3 py-1.5 text-sm text-gold hover:bg-gold/10" title="吉祥号 慧悟139" href="/profile/">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-round size-4" aria-hidden="true">
-                  <circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" />
-                </svg>
-                慧悟139
-              </a>
             </div>
           </div>
         </div>

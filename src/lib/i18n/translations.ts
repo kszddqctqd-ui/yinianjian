@@ -2186,6 +2186,156 @@ export const translations: Translations = {
     zh: '返回网站',
     en: 'Back to Site',
   },
+
+  // ========== Payment / Monetization ==========
+  'payment.title': {
+    zh: '解锁专业服务',
+    en: 'Unlock Premium Service',
+  },
+  'payment.desc': {
+    zh: '请选择以下套餐完成支付，扫码后点击"我已支付"',
+    en: 'Please select a plan and complete payment. Click "Paid" after scanning.',
+  },
+  'payment.confirm': {
+    zh: '扫码后请等待几分钟，客服确认后将自动解锁',
+    en: 'Please wait a few minutes after scanning. Unlock will be automatic.',
+  },
+  'payment.close': {
+    zh: '关闭',
+    en: 'Close',
+  },
+  'payment.monthly': {
+    zh: '月度供奉',
+    en: 'Monthly Offering',
+  },
+  'payment.quarterly': {
+    zh: '百日供奉',
+    en: 'Quarterly Offering',
+  },
+  'payment.yearly': {
+    zh: '年度供奉',
+    en: 'Yearly Offering',
+  },
+  'payment.perpetual': {
+    zh: '永久长明',
+    en: 'Perpetual Light',
+  },
+  'payment.freeTrial': {
+    zh: '今日剩余免费次数',
+    en: 'Free trials remaining today',
+  },
+  'payment.outOfTrials': {
+    zh: '今日免费次数已用完，解锁更多专业解读',
+    en: 'Free trials exhausted. Unlock more readings.',
+  },
+  'payment.unlock': {
+    zh: '解锁专业解读',
+    en: 'Unlock Professional Reading',
+  },
+  'payment.unlockPrice': {
+    zh: '解锁 ¥9.9',
+    en: 'Unlock ¥9.9',
+  },
+  'payment.unlockDivination': {
+    zh: '解锁大师解读',
+    en: 'Unlock Master Reading',
+  },
+  'payment.unlockDivinationPrice': {
+    zh: '大师解读 ¥6.6/次',
+    en: 'Master Reading ¥6.6/time',
+  },
+  'payment.unlockBazi': {
+    zh: '解锁八字精批',
+    en: 'Unlock BaZi Analysis',
+  },
+  'payment.unlockBaziPrice': {
+    zh: '八字精批 ¥19.9',
+    en: 'BaZi Analysis ¥19.9',
+  },
+  'payment.unlockNaming': {
+    zh: '解锁专业起名',
+    en: 'Unlock Professional Naming',
+  },
+  'payment.unlockNamingPrice': {
+    zh: '专业起名 ¥19.9',
+    en: 'Professional Naming ¥19.9',
+  },
+  'payment.unlockDream': {
+    zh: '解锁梦境解读',
+    en: 'Unlock Dream Interpretation',
+  },
+  'payment.unlockDreamPrice': {
+    zh: '梦境解读 ¥6.6',
+    en: 'Dream Reading ¥6.6',
+  },
+  'payment.unlockPalmistry': {
+    zh: '解锁完整详批',
+    en: 'Unlock Full Analysis',
+  },
+  'payment.unlockPalmistryPrice': {
+    zh: '完整详批 ¥9.9',
+    en: 'Full Analysis ¥9.9',
+  },
+  'payment.unlockMeditation': {
+    zh: '解锁专属禅音',
+    en: 'Unlock Exclusive Zen Music',
+  },
+  'payment.unlockMeditationPrice': {
+    zh: 'VIP 禅音 ¥3.9/月',
+    en: 'VIP Zen Music ¥3.9/month',
+  },
+  'payment.lanternTypes': {
+    zh: '灯型选择',
+    en: 'Lantern Type',
+  },
+  'payment.lantern.qingxin': {
+    zh: '清心灯',
+    en: 'Clarity Lamp',
+  },
+  'payment.lantern.zhihui': {
+    zh: '智慧灯',
+    en: 'Wisdom Lamp',
+  },
+  'payment.lantern.shoushou': {
+    zh: '长寿灯',
+    en: 'Longevity Lamp',
+  },
+  'payment.lantern.pingan': {
+    zh: '平安灯',
+    en: 'Peace Lamp',
+  },
+  'payment.lantern.yinyuan': {
+    zh: '姻缘灯',
+    en: 'Love Lamp',
+  },
+  'payment.lantern.caifu': {
+    zh: '财福灯',
+    en: 'Wealth Lamp',
+  },
+  'payment.master.huiming': {
+    zh: '慧明长老',
+    en: 'Elder Huiming',
+  },
+  'payment.master.mingxin': {
+    zh: '明心师父',
+    en: 'Master Mingxin',
+  },
+  'payment.master.xuanzhen': {
+    zh: '玄真道长',
+    en: 'Daoist Xuanzhen',
+  },
+  'payment.success': {
+    zh: '支付成功！感谢您的诚心',
+    en: 'Payment successful! Thank you for your sincerity.',
+  },
+  'payment.pending': {
+    zh: '等待确认中，请稍候...',
+    en: 'Pending confirmation, please wait...',
+  },
+  'payment.free': {
+    zh: '免费',
+    en: 'Free',
+  },
 };
 
 // Shichen display mapping (used in form selects)

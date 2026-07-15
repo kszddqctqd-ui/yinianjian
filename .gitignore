@@ -11,3 +11,14 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+# Vercel
+.vercel/
+# Build cache
+tsconfig.tsbuildinfo
+# Reference files (对标用，不应上传)
+*.orig.html
+*.mobile.html
+putiyuan-*.html
+py-*.html
+our-*.html
+home-*.png

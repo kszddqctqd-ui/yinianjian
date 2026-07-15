@@ -170,6 +170,9 @@ export default function QifuPage() {
   const [relation, setRelation] = useState('');
   const [wish, setWish] = useState('');
   const [yourName, setYourName] = useState('');
+  const [lanternType, setLanternType] = useState('pingan');
+  const [plan, setPlan] = useState('monthly');
+  const [showPayment, setShowPayment] = useState(false);
   const [totalLights, setTotalLights] = useState(51);
   const [wallScroll, setWallScroll] = useState(WALL_LANTERN_KEYS);
   const [lang, setLang] = useState<SupportedLang>(getLocale());
@@ -339,16 +342,104 @@ export default function QifuPage() {
             </label>
           </div>
 
+          {/* 灯型选择 */}
+          <h2 className="font-display text-2xl text-gold">{resolve('payment.lanternTypes')}</h2>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { key: 'qingxin', label: resolve('payment.lantern.qingxin'), desc: resolve('qifu.lantern.qingxinDesc') },
+              { key: 'zhihui', label: resolve('payment.lantern.zhihui'), desc: resolve('qifu.lantern.zhihuiDesc') },
+              { key: 'shoushou', label: resolve('payment.lantern.shoushou'), desc: resolve('qifu.lantern.shoushouDesc') },
+              { key: 'pingan', label: resolve('payment.lantern.pingan'), desc: resolve('qifu.lantern.pinganDesc') },
+              { key: 'yinyuan', label: resolve('payment.lantern.yinyuan'), desc: resolve('qifu.lantern.yinyuanDesc') },
+              { key: 'caifu', label: resolve('payment.lantern.caifu'), desc: resolve('qifu.lantern.caifuDesc') },
+            ].map(l => (
+              <button
+                key={l.key}
+                type="button"
+                onClick={() => setLanternType(l.key)}
+                className={`rounded-lg border-2 p-3 text-center transition-all ${
+                  lanternType === l.key
+                    ? 'border-gold bg-gold/10 shadow-lg shadow-gold/10'
+                    : 'border-gold/20 bg-xuan-card hover:border-gold/40'
+                }`}
+              >
+                <div className="text-sm font-display text-gold">{l.label}</div>
+                <div className="mt-1 text-xs" style={{ color: 'rgba(212,197,169,0.6)' }}>{l.desc}</div>
+              </button>
+            ))}
+          </div>
+
+          {/* 供奉套餐 */}
+          <h2 className="font-display text-2xl text-gold">供奉套餐</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { key: 'monthly', label: resolve('payment.monthly'), price: '¥3.9', period: '/月' },
+              { key: 'quarterly', label: resolve('payment.quarterly'), price: '¥5.9', period: '/百日' },
+              { key: 'yearly', label: resolve('payment.yearly'), price: '¥9.9', period: '/年' },
+              { key: 'perpetual', label: resolve('payment.perpetual'), price: '¥19.9', period: '永久' },
+            ].map(p => (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => setPlan(p.key)}
+                className={`rounded-lg border-2 p-4 text-center transition-all ${
+                  plan === p.key
+                    ? 'border-gold bg-gold/10 shadow-lg shadow-gold/10'
+                    : 'border-gold/20 bg-xuan-card hover:border-gold/40'
+                }`}
+              >
+                <div className="text-sm font-display text-gold">{p.label}</div>
+                <div className="mt-1 text-2xl font-display text-vermillion">{p.price}</div>
+                <div className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{p.period}</div>
+              </button>
+            ))}
+          </div>
+
           {/* 底部按钮 */}
           <div className="flex justify-center">
             <button
               type="button"
               className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg"
-              onClick={handleLight}
+              onClick={() => setShowPayment(true)}
             >
               点亮此灯
             </button>
           </div>
+
+          {/* 支付弹窗 */}
+          {showPayment && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
+              <div className="rounded-2xl border-2 border-gold/40 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-xl text-gold font-display">{resolve('payment.title')}</h3>
+                <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('payment.desc')}</p>
+                <div className="rounded-lg border border-gold/20 bg-xuan-surface p-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span style={{ color: 'rgba(212,197,169,0.7)' }}>灯型</span>
+                    <span className="text-gold">{resolve(`payment.lantern.${lanternType}`)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span style={{ color: 'rgba(212,197,169,0.7)' }}>套餐</span>
+                    <span className="text-gold">{resolve(`payment.${plan}`)}</span>
+                  </div>
+                  <div className="flex justify-between text-base font-display">
+                    <span style={{ color: 'rgba(212,197,169,0.7)' }}>金额</span>
+                    <span className="text-vermillion text-2xl">
+                      {plan === 'monthly' ? '¥3.9' : plan === 'quarterly' ? '¥5.9' : plan === 'yearly' ? '¥9.9' : '¥19.9'}
+                    </span>
+                  </div>
+                </div>
+                <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30 w-48 h-48 object-cover" />
+                <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.confirm')}</p>
+                <button
+                  type="button"
+                  onClick={() => setShowPayment(false)}
+                  className="w-full rounded-md border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors"
+                >
+                  {resolve('payment.close')}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* 心愿灯墙 */}
           <div className="transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm hover:border-gold/30 hover:shadow-card space-y-4">

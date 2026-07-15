@@ -69,6 +69,7 @@ export default function DreamPage() {
   const [loading, setLoading] = useState(false);
   const [lang, setLang] = useState<SupportedLang>(getLocale());
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
 
   useEffect(() => {
     setLang(getLocale());
@@ -81,15 +82,8 @@ export default function DreamPage() {
     if (!keyword.trim()) return;
     setLoading(true);
     setTimeout(() => {
-      // 精确匹配
-      const exact = DREAMS.find(d => d.keyword === keyword);
-      // 模糊匹配
-      const fuzzy = DREAMS.find(d => keyword.includes(d.keyword) || d.keyword.includes(keyword));
-      const found = exact || fuzzy;
-      const res = found || { keyword, title: keyword, result: `暂无"${keyword}"的直接解释，但梦见此物通常反映您近期的心理状态。建议静心思考此梦与您生活的关联。`, luck: '中平' as const };
-      setResult(res);
+      setShowPayment(true);
       setLoading(false);
-      saveRecord('dream', { keyword, result: res.result }, `${resolve('dream.resultTitle')}：${keyword}`);
     }, 500);
   };
 
@@ -223,6 +217,23 @@ export default function DreamPage() {
       </main>
 
       <BottomNav active="dream" />
+
+      {/* 支付弹窗 */}
+      {showPayment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
+          <div className="rounded-2xl border-2 border-gold/40 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl text-gold font-display">{resolve('payment.title')}</h3>
+            <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('payment.desc')}</p>
+            <div className="rounded-lg border border-gold/20 bg-xuan-surface p-4">
+              <p className="text-vermillion text-2xl font-display">¥6.6</p>
+              <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.unlockDreamPrice')}</p>
+            </div>
+            <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30 w-48 h-48 object-cover" />
+            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.confirm')}</p>
+            <button type="button" onClick={() => setShowPayment(false)} className="w-full rounded-md border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors">{resolve('payment.close')}</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -108,6 +108,17 @@ export default function DivinationPage() {
   const [loading, setLoading] = useState(false);
   const [coinResults, setCoinResults] = useState<number[]>([]);
   const [numberInput, setNumberInput] = useState('');
+  const [showPayment, setShowPayment] = useState(false);
+  const [todayCount, setTodayCount] = useState(() => {
+    try {
+      const s = localStorage.getItem('yinianjian_div_today');
+      const d = localStorage.getItem('yinianjian_div_date');
+      const today = new Date().toDateString();
+      if (d === today && s) return parseInt(s) || 0;
+      return 0;
+    } catch { return 0; }
+  });
+  const FREE_LIMIT = 1;
 
   // Coin toss: 3 coins, 6 or 7, 8 or 9
   const tossCoins = () => {
@@ -119,11 +130,20 @@ export default function DivinationPage() {
 
   const castFromCoins = useCallback(() => {
     if (coinResults.length < 6) return;
+    if (todayCount >= FREE_LIMIT) {
+      setShowPayment(true);
+      return;
+    }
     const lines = coinResults;
     const hex = castHexagram(lines);
     setResult({ ben: hex.ben ?? null, hu: hex.hu, bian: hex.bian ?? null, movingLines: hex.movingLines, lines });
+    try {
+      localStorage.setItem('yinianjian_div_today', (todayCount + 1).toString());
+      localStorage.setItem('yinianjian_div_date', new Date().toDateString());
+      setTodayCount(c => c + 1);
+    } catch {}
     saveRecord('divination', { method: resolve('divination.method.coins'), lines, result: hex.ben?.name ?? '未知' }, `${resolve('divination.title')}${hex.ben?.name ? `：${hex.ben.name}` : ''}`);
-  }, [coinResults]);
+  }, [coinResults, todayCount]);
 
   // Time divination: use current hour/minute
   const castFromTime = useCallback(() => {
@@ -200,8 +220,14 @@ export default function DivinationPage() {
 
           {/* Method selection */}
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
+            {/* 免费次数提示 */}
             <div className="text-center">
               <span className="text-xs text-gold/80 tracking-wider">{resolve('divination.methodTitle')}</span>
+              <p className="text-sm mt-2" style={{ color: todayCount >= FREE_LIMIT ? '#EF4444' : '#D4C5A9' }}>
+                {todayCount >= FREE_LIMIT
+                  ? resolve('payment.outOfTrials')
+                  : `${resolve('payment.freeTrial')}：${FREE_LIMIT - todayCount}/${FREE_LIMIT}`}
+              </p>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {[
@@ -316,6 +342,23 @@ export default function DivinationPage() {
           <p className="text-center text-xs text-on-dark-muted">{resolve('common.disclaimer')}</p>
         </div>
       </main>
+
+      {/* 支付弹窗 */}
+      {showPayment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
+          <div className="rounded-2xl border-2 border-gold/40 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl text-gold font-display">{resolve('payment.title')}</h3>
+            <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('payment.desc')}</p>
+            <div className="rounded-lg border border-gold/20 bg-xuan-surface p-4">
+              <p className="text-vermillion text-2xl font-display">¥6.6</p>
+              <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.unlockDivinationPrice')}</p>
+            </div>
+            <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30 w-48 h-48 object-cover" />
+            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.confirm')}</p>
+            <button type="button" onClick={() => setShowPayment(false)} className="w-full rounded-md border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors">{resolve('payment.close')}</button>
+          </div>
+        </div>
+      )}
 
       <BottomNav active="divination" />
     </div>

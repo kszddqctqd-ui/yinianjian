@@ -54,6 +54,7 @@ export default function NamingPage() {
   const [results, setResults] = useState<NameSuggestion[]>([]);
   const [generating, setGenerating] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   const styles = ['诗意', '刚毅', '儒雅', '清逸', '典雅', '温润'];
 
@@ -66,27 +67,8 @@ export default function NamingPage() {
     setShowResult(false);
 
     setTimeout(() => {
-      let wuXingCount: Record<string, number> = { '金': 0, '木': 0, '水': 0, '火': 0, '土': 0 };
-      try {
-        const bazi = calculateBaZi(birthYear, birthMonth, birthDay, birthHour);
-        wuXingCount = bazi.wuXingCount;
-      } catch { /* ignore */ }
-
-      const nameLen = nameTotalLen === 2 ? 1 : 2; // 2字=单字名, 3字=双字名
-      const suggestions = generateNames(surname, wuXingCount, style, nameLen);
-      setResults(suggestions);
+      setShowPayment(true);
       setGenerating(false);
-      setShowResult(true);
-
-      if (suggestions.length > 0) {
-        saveRecord('naming', {
-          surname, gender,
-          birth: `${birthYear}-${birthMonth}-${birthDay}`,
-          hour: SHICHEN_LABELS[birthHour]?.label || '',
-          style,
-          suggestions,
-        }, `为${surname}宝宝起名 (${style})`);
-      }
     }, 800);
   };
 
@@ -341,6 +323,23 @@ export default function NamingPage() {
       </main>
 
       <BottomNav active="naming" />
+
+      {/* 支付弹窗 */}
+      {showPayment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
+          <div className="rounded-2xl border-2 border-gold/40 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl text-gold font-display">{resolve('payment.title')}</h3>
+            <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('payment.desc')}</p>
+            <div className="rounded-lg border border-gold/20 bg-xuan-surface p-4">
+              <p className="text-vermillion text-2xl font-display">¥19.9</p>
+              <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.unlockNamingPrice')}</p>
+            </div>
+            <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30 w-48 h-48 object-cover" />
+            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.confirm')}</p>
+            <button type="button" onClick={() => setShowPayment(false)} className="w-full rounded-md border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors">{resolve('payment.close')}</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

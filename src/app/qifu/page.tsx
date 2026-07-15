@@ -346,12 +346,12 @@ export default function QifuPage() {
           <h2 className="font-display text-2xl text-gold">{resolve('payment.lanternTypes')}</h2>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { key: 'qingxin', label: resolve('payment.lantern.qingxin'), desc: resolve('qifu.lantern.qingxinDesc') },
-              { key: 'zhihui', label: resolve('payment.lantern.zhihui'), desc: resolve('qifu.lantern.zhihuiDesc') },
-              { key: 'shoushou', label: resolve('payment.lantern.shoushou'), desc: resolve('qifu.lantern.shoushouDesc') },
               { key: 'pingan', label: resolve('payment.lantern.pingan'), desc: resolve('qifu.lantern.pinganDesc') },
-              { key: 'yinyuan', label: resolve('payment.lantern.yinyuan'), desc: resolve('qifu.lantern.yinyuanDesc') },
-              { key: 'caifu', label: resolve('payment.lantern.caifu'), desc: resolve('qifu.lantern.caifuDesc') },
+              { key: 'caiyun', label: resolve('payment.lantern.caiyun'), desc: resolve('qifu.lantern.caiyunDesc') },
+              { key: 'shiye', label: resolve('payment.lantern.shiye'), desc: resolve('qifu.lantern.shiyeDesc') },
+              { key: 'xueye', label: resolve('payment.lantern.xueye'), desc: resolve('qifu.lantern.xueyeDesc') },
+              { key: 'jiankang', label: resolve('payment.lantern.jiankang'), desc: resolve('qifu.lantern.jiankangDesc') },
+              { key: 'fenyuan', label: resolve('payment.lantern.fenyuan'), desc: resolve('qifu.lantern.fenyuanDesc') },
             ].map(l => (
               <button
                 key={l.key}
@@ -370,13 +370,13 @@ export default function QifuPage() {
           </div>
 
           {/* 供奉套餐 */}
-          <h2 className="font-display text-2xl text-gold">供奉套餐</h2>
+          <h2 className="font-display text-2xl text-gold">{resolve('payment.packages')}</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { key: 'monthly', label: resolve('payment.monthly'), price: '¥3.9', period: '/月' },
-              { key: 'quarterly', label: resolve('payment.quarterly'), price: '¥5.9', period: '/百日' },
-              { key: 'yearly', label: resolve('payment.yearly'), price: '¥9.9', period: '/年' },
-              { key: 'perpetual', label: resolve('payment.perpetual'), price: '¥19.9', period: '永久' },
+              { key: 'monthly', label: resolve('payment.plan.monthly'), price: '¥3.9', period: '/月' },
+              { key: 'quarterly', label: resolve('payment.plan.quarterly'), price: '¥5.9', period: '/百日' },
+              { key: 'yearly', label: resolve('payment.plan.yearly'), price: '¥9.9', period: '/年' },
+              { key: 'permanent', label: resolve('payment.plan.permanent'), price: '¥19.9', period: '永久' },
             ].map(p => (
               <button
                 key={p.key}
@@ -419,7 +419,7 @@ export default function QifuPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span style={{ color: 'rgba(212,197,169,0.7)' }}>套餐</span>
-                    <span className="text-gold">{resolve(`payment.${plan}`)}</span>
+                    <span className="text-gold">{resolve(`payment.plan.${plan}`)}</span>
                   </div>
                   <div className="flex justify-between text-base font-display">
                     <span style={{ color: 'rgba(212,197,169,0.7)' }}>金额</span>

@@ -14,7 +14,7 @@ function resolve(key: string): string {
 }
 
 const FEATURES = [
-  { icon: '☯', nameKey: 'more.features.0.title', descKey: 'more.features.0.desc', href: '/' },
+  { icon: '☯', nameKey: 'more.features.0.title', descKey: 'more.features.0.desc', href: '/ziwei/' },
   { icon: '🪷', nameKey: 'more.features.1.title', descKey: 'more.features.1.desc', href: '/qifu/' },
   { icon: '📅', nameKey: 'more.features.2.title', descKey: 'more.features.2.desc', href: '/almanac/' },
   { icon: '🏮', nameKey: 'more.features.3.title', descKey: 'more.features.3.desc', href: '/lottery/' },

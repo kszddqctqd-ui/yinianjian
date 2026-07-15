@@ -46,7 +46,7 @@ export function Header({ lang, setLang }: { lang?: string; setLang?: (v: string)
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/qifu/">{t('nav.qifu')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/almanac/">{t('nav.almanac')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/lottery/">{t('nav.lottery')}</a>
-            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/">{t('nav.bazi')}</a>
+            <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/ziwei/">{t('nav.bazi')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/dream/">{t('nav.dream')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/palmistry/">{t('nav.palmistry')}</a>
             <a className="font-body text-sm text-paper-dark-85 transition-colors duration-fast hover:text-gold" href="/naming/">{t('nav.naming')}</a>

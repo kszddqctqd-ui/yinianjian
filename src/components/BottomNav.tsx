@@ -1,35 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { t, getLocale, type SupportedLang } from '@/lib/i18n';
+import { t } from '@/lib/i18n';
 
 export function BottomNav({ active = 'home' }: { active?: string }) {
-  const [clickCount, setClickCount] = useState(0);
-  const [lang, setLang] = useState<SupportedLang>(getLocale());
-
-  useEffect(() => {
-    if (clickCount === 0) return;
-    const timer = setTimeout(() => setClickCount(0), 2000);
-    return () => clearTimeout(timer);
-  }, [clickCount]);
-
-  useEffect(() => {
-    setLang(getLocale());
-    const handler = () => setLang(getLocale());
-    window.addEventListener('lang-change', handler);
-    return () => window.removeEventListener('lang-change', handler);
-  }, []);
-
-  const handleLogoClick = () => {
-    const newCount = clickCount + 1;
-    setClickCount(newCount);
-    if (newCount >= 6) {
-      setClickCount(0);
-      window.location.href = '/admin';
-    }
-  };
-
-  // 6个Tab完全对标菩提苑
   const tabs = [
     { name: 'home', label: t('bottomnav.home'), href: '/', icon: 'house' },
     { name: 'qifu', label: t('bottomnav.qifu'), href: '/qifu/', icon: 'heart' },
@@ -39,10 +12,8 @@ export function BottomNav({ active = 'home' }: { active?: string }) {
     { name: 'more', label: t('bottomnav.more'), href: '/more/', icon: 'layout-grid' },
   ];
 
-  // 激活态判断
   const isActive = (name: string) => name === active;
 
-  // SVG图标映射
   const icons: Record<string, React.ReactNode> = {
     house: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-house size-5" aria-hidden="true">

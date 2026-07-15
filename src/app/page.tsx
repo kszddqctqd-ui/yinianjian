@@ -176,12 +176,12 @@ export default function Home() {
 
             {/* 祈福按钮 */}
             <div className="flex justify-center gap-4 pt-2">
-              <button className="btn-pray-gold rounded-full px-8 py-3 text-sm tracking-wider shadow-lg transition-transform hover:scale-105">
+              <a href="/qifu/" className="inline-flex items-center justify-center gap-2 btn-pray-gold rounded-full px-8 py-3 text-sm tracking-wider shadow-lg transition-transform hover:scale-105">
                 心愿供灯
-              </button>
-              <button className="btn-pray-gold rounded-full px-8 py-3 text-sm tracking-wider shadow-lg transition-transform hover:scale-105">
+              </a>
+              <a href="/ziwei/" className="inline-flex items-center justify-center gap-2 btn-pray-gold rounded-full px-8 py-3 text-sm tracking-wider shadow-lg transition-transform hover:scale-105">
                 大师八字精批
-              </button>
+              </a>
             </div>
 
             {/* 滚动提示 */}
@@ -206,19 +206,19 @@ export default function Home() {
               {/* 3x3 宫格 */}
               <div className="feature-grid-3x3">
                 {[
-                  { key: 'feature.pray', tag: 'feature.pray.tag' },
-                  { key: 'feature.almanac', tag: 'feature.almanac.tag' },
-                  { key: 'feature.dream', tag: '' },
-                  { key: 'feature.lottery', tag: 'feature.lottery.tag' },
-                  { key: 'feature.bazi', tag: '' },
-                  { key: 'feature.divination', tag: 'feature.divination.tag' },
-                  { key: 'feature.palmistry', tag: '' },
-                  { key: 'feature.naming', tag: '' },
-                  { key: 'feature.meditation', tag: '' },
+                  { key: 'feature.pray', tag: 'feature.pray.tag', href: '/qifu/' },
+                  { key: 'feature.almanac', tag: 'feature.almanac.tag', href: '/almanac/' },
+                  { key: 'feature.dream', tag: '', href: '/dream/' },
+                  { key: 'feature.lottery', tag: 'feature.lottery.tag', href: '/lottery/' },
+                  { key: 'feature.bazi', tag: '', href: '/ziwei/' },
+                  { key: 'feature.divination', tag: 'feature.divination.tag', href: '/divination/' },
+                  { key: 'feature.palmistry', tag: '', href: '/palmistry/' },
+                  { key: 'feature.naming', tag: '', href: '/naming/' },
+                  { key: 'feature.meditation', tag: '', href: '/meditation/' },
                 ].map((item, i) => (
                   <a
                     key={i}
-                    href={`/${item.key.split('.')[1]}/`}
+                    href={item.href}
                     className="glass-card flex flex-col items-center p-4 text-center"
                   >
                     <div className="feature-card-icon">{featureIcons[i]}</div>
@@ -371,7 +371,7 @@ export default function Home() {
 
               {/* 按钮 */}
               <div className="flex justify-center pt-2">
-                <button className="btn-pray-gold rounded-full px-8 py-3 text-sm tracking-wider shadow-lg transition-transform hover:scale-105" onClick={() => window.location.href = '/invite/'}>
+                <button className="btn-pray-gold rounded-full px-8 py-3 text-sm tracking-wider shadow-lg transition-transform hover:scale-105" onClick={() => window.location.href = '/passive-income/'}>
                   {resolve('share.btn.share')}
                 </button>
               </div>

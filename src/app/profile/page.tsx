@@ -12,7 +12,7 @@ import type { SupportedLang } from '@/lib/i18n';
 
 // 记录类型配置（对标菩提苑 6 个模块）
 const RECORD_TYPES = [
-  { nameKey: 'more.features.0.title', key: 'bazi', icon: 'compass', emptyBtn: 'profile.emptyBtn.bazi', href: '/' },
+  { nameKey: 'more.features.0.title', key: 'bazi', icon: 'compass', emptyBtn: 'profile.emptyBtn.bazi', href: '/ziwei/' },
   { nameKey: 'more.features.3.title', key: 'lottery', icon: 'scroll', emptyBtn: 'profile.emptyBtn.lottery', href: '/lottery/' },
   { nameKey: 'more.features.7.title', key: 'divination', icon: 'compass', emptyBtn: 'profile.emptyBtn.divination', href: '/divination/' },
   { nameKey: 'feature.palmistry.hand', key: 'palmistry_hand', icon: 'hand', emptyBtn: 'profile.emptyBtn.palmistryHand', href: '/palmistry/' },

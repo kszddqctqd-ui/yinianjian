@@ -351,7 +351,7 @@ export default function DivinationPage() {
             <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('payment.desc')}</p>
             <div className="rounded-lg border border-gold/20 bg-xuan-surface p-4">
               <p className="text-vermillion text-2xl font-display">¥6.6</p>
-              <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.unlockDivinationPrice')}</p>
+              <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.unlockPrice')}</p>
             </div>
             <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30 w-48 h-48 object-cover" />
             <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.confirm')}</p>

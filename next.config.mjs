@@ -4,6 +4,10 @@ const nextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
+  output: 'export',
+  trailingSlash: true,
+  skipMiddlewareUrlNormalize: true,
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;

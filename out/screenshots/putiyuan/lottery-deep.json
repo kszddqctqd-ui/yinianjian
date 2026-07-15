@@ -1,0 +1,476 @@
+{
+  "textColors": [
+    "rgb(110, 231, 183)",
+    "rgb(176, 168, 152)",
+    "rgb(201, 169, 110)",
+    "rgb(212, 197, 169)",
+    "rgb(245, 240, 232)",
+    "rgb(255, 255, 255)",
+    "rgba(201, 169, 110, 0.7)",
+    "rgba(201, 169, 110, 0.85)",
+    "rgba(212, 198, 170, 0.65)",
+    "rgba(212, 198, 170, 0.8)"
+  ],
+  "bgColors": [
+    "rgb(196, 61, 61)",
+    "rgb(26, 20, 16)",
+    "rgb(61, 52, 40)",
+    "rgba(201, 169, 110, 0.05)",
+    "rgba(201, 169, 110, 0.1)",
+    "rgba(201, 169, 110, 0.4)",
+    "rgba(44, 36, 24, 0.95)",
+    "rgba(6, 78, 59, 0.2)",
+    "rgba(61, 52, 40, 0.4)"
+  ],
+  "borderColors": [
+    "rgba(16, 185, 129, 0.3)",
+    "rgba(201, 169, 110, 0.2)",
+    "rgba(201, 169, 110, 0.25)",
+    "rgba(201, 169, 110, 0.3)",
+    "rgba(201, 169, 110, 0.5)",
+    "rgba(201, 169, 110, 0.6)"
+  ],
+  "fontFamilies": [
+    "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", 微软雅黑, \"Noto Sans CJK SC\", \"Source Han Sans SC\", sans-serif",
+    "ZhiMangXing, cursive",
+    "STKaiti, KaiTi, 楷体, 华文楷体, \"Noto Serif CJK SC\", \"Source Han Serif SC\", serif"
+  ],
+  "fontWeights": [
+    "400",
+    "500"
+  ],
+  "cards": [
+    {
+      "class": "fixed inset-0 z-0 bg-gradient-to-b from-xuan via-xuan-card to-xuan",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "0px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "absolute size-1.5 rounded-full bg-gold/40 animate-glow-rise",
+      "bg": "rgba(201, 169, 110, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "0.23859"
+    },
+    {
+      "class": "absolute size-1.5 rounded-full bg-gold/40 animate-glow-rise",
+      "bg": "rgba(201, 169, 110, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "0.587917"
+    },
+    {
+      "class": "absolute size-1.5 rounded-full bg-gold/40 animate-glow-rise",
+      "bg": "rgba(201, 169, 110, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "0.983049"
+    },
+    {
+      "class": "absolute size-1.5 rounded-full bg-gold/40 animate-glow-rise",
+      "bg": "rgba(201, 169, 110, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "0.459393"
+    },
+    {
+      "class": "absolute size-1.5 rounded-full bg-gold/40 animate-glow-rise",
+      "bg": "rgba(201, 169, 110, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "0.3087"
+    },
+    {
+      "class": "absolute size-1.5 rounded-full bg-gold/40 animate-glow-rise",
+      "bg": "rgba(201, 169, 110, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "0.878096"
+    },
+    {
+      "class": "[object SVGAnimatedString]",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(201, 169, 110)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "relative inline-flex size-9 items-center justify-center rounded-full border tran",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(212, 197, 169)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(201, 169, 110, 0.25)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "flex size-8 items-center justify-center rounded-full border border-gold/30 text-",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(201, 169, 110, 0.7)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(201, 169, 110, 0.3)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "inline-flex items-center gap-2 rounded-full border border-gold/30 px-3 py-1.5 te",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(201, 169, 110)",
+      "fontSize": "14.875px",
+      "fontWeight": "400",
+      "padding": "6.375px 12.75px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(201, 169, 110, 0.3)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "mx-auto max-w-3xl space-y-section px-4 pb-24",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px 17px 102px",
+      "borderRadius": "0px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "mx-auto mb-3 flex size-16 items-center justify-center rounded-full border border",
+      "bg": "rgba(201, 169, 110, 0.05)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "inline-flex items-center gap-1 rounded-full px-3 py-1.5 border border-emerald-50",
+      "bg": "rgba(6, 78, 59, 0.2)",
+      "color": "rgb(110, 231, 183)",
+      "fontSize": "12.75px",
+      "fontWeight": "400",
+      "padding": "6.375px 12.75px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(16, 185, 129, 0.3)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-",
+      "bg": "rgba(44, 36, 24, 0.95)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "25.5px",
+      "borderRadius": "12.75px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(245, 240, 232) 0px 2px 12px 0px",
+      "opacity": "1"
+    },
+    {
+      "class": "group rounded-xl border p-4 text-left transition-all duration-200 border-gold/60",
+      "bg": "rgba(201, 169, 110, 0.1)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "17px",
+      "borderRadius": "17px",
+      "border": "1px solid rgba(201, 169, 110, 0.6)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(201, 169, 110) 0px 0px 20px 0px",
+      "opacity": "1"
+    },
+    {
+      "class": "group rounded-xl border p-4 text-left transition-all duration-200 border-gold/20",
+      "bg": "rgba(61, 52, 40, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "17px",
+      "borderRadius": "17px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "group rounded-xl border p-4 text-left transition-all duration-200 border-gold/20",
+      "bg": "rgba(61, 52, 40, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "17px",
+      "borderRadius": "17px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "1"
+    },
+    {
+      "class": "transition-all duration-base rounded-lg border border-gold/20 bg-xuan-card/95 p-",
+      "bg": "rgba(44, 36, 24, 0.95)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "25.5px",
+      "borderRadius": "12.75px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(245, 240, 232) 0px 2px 12px 0px",
+      "opacity": "1"
+    },
+    {
+      "class": "rounded-md border border-gold/20 bg-xuan-surface px-3 text-paper-dark placeholde",
+      "bg": "rgb(61, 52, 40)",
+      "color": "rgb(212, 197, 169)",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "padding": "0px 12.75px",
+      "borderRadius": "8.5px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "boxShadow": "none",
+      "opacity": "1"
+    }
+  ],
+  "headings": [
+    {
+      "tag": "H1",
+      "text": "关帝灵签",
+      "fontSize": "38.25px",
+      "color": "rgb(201, 169, 110)",
+      "fontWeight": "400",
+      "fontFamily": "STKaiti, KaiTi, 楷体, 华文楷体, \"Noto Serif CJK SC\", \"Source Han Serif SC\", serif",
+      "letterSpacing": "3.825px",
+      "textAlign": "center",
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "padding": "0px"
+    }
+  ],
+  "navs": [
+    {
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "padding": "8.5px 0px 0px",
+      "height": 60,
+      "position": "fixed",
+      "zIndex": "50",
+      "borderBottom": "0px solid rgba(201, 169, 110, 0.2)",
+      "backdropFilter": "none"
+    },
+    {
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "padding": "0px",
+      "height": 0,
+      "position": "static",
+      "zIndex": "auto",
+      "borderBottom": "0px solid rgba(201, 169, 110, 0.2)",
+      "backdropFilter": "none"
+    },
+    {
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "padding": "0px",
+      "height": 75,
+      "position": "fixed",
+      "zIndex": "40",
+      "borderBottom": "0px solid rgba(201, 169, 110, 0.2)",
+      "backdropFilter": "blur(12px)"
+    }
+  ],
+  "buttons": [
+    {
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(212, 197, 169)",
+      "fontSize": "17px",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(201, 169, 110, 0.25)",
+      "height": "38.25px",
+      "minHeight": "auto",
+      "fontWeight": "400",
+      "letterSpacing": "normal",
+      "boxShadow": "none"
+    },
+    {
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(201, 169, 110, 0.7)",
+      "fontSize": "17px",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(201, 169, 110, 0.3)",
+      "height": "34px",
+      "minHeight": "0px",
+      "fontWeight": "400",
+      "letterSpacing": "normal",
+      "boxShadow": "none"
+    },
+    {
+      "bg": "rgba(201, 169, 110, 0.1)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "padding": "17px",
+      "borderRadius": "17px",
+      "border": "1px solid rgba(201, 169, 110, 0.6)",
+      "height": "150.75px",
+      "minHeight": "auto",
+      "fontWeight": "400",
+      "letterSpacing": "normal",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(201, 169, 110) 0px 0px 20px 0px"
+    },
+    {
+      "bg": "rgba(61, 52, 40, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "padding": "17px",
+      "borderRadius": "17px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "height": "150.75px",
+      "minHeight": "auto",
+      "fontWeight": "400",
+      "letterSpacing": "normal",
+      "boxShadow": "none"
+    },
+    {
+      "bg": "rgba(61, 52, 40, 0.4)",
+      "color": "rgb(245, 240, 232)",
+      "fontSize": "17px",
+      "padding": "17px",
+      "borderRadius": "17px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "height": "150.75px",
+      "minHeight": "auto",
+      "fontWeight": "400",
+      "letterSpacing": "normal",
+      "boxShadow": "none"
+    },
+    {
+      "bg": "rgb(196, 61, 61)",
+      "color": "rgb(255, 255, 255)",
+      "fontSize": "19.125px",
+      "padding": "0px 34px",
+      "borderRadius": "12.75px",
+      "border": "0px solid rgba(201, 169, 110, 0.2)",
+      "height": "51px",
+      "minHeight": "0px",
+      "fontWeight": "500",
+      "letterSpacing": "0.95625px",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(196, 61, 61, 0.2) 0px 10px 15px -3px, rgba(196, 61, 61, 0.2) 0px 4px 6px -4px"
+    },
+    {
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(201, 169, 110)",
+      "fontSize": "17px",
+      "padding": "0px",
+      "borderRadius": "9999px",
+      "border": "1px solid rgba(201, 169, 110, 0.5)",
+      "height": "42.5px",
+      "minHeight": "0px",
+      "fontWeight": "400",
+      "letterSpacing": "normal",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(201, 169, 110, 0.2) 0px 10px 15px -3px, rgba(201, 169, 110, 0.2) 0px 4px 6px -4px"
+    }
+  ],
+  "inputs": [
+    {
+      "bg": "rgb(61, 52, 40)",
+      "color": "rgb(212, 197, 169)",
+      "fontSize": "17px",
+      "padding": "0px 12.75px",
+      "borderRadius": "8.5px",
+      "border": "1px solid rgba(201, 169, 110, 0.2)",
+      "height": "59.5px",
+      "width": "199.5px"
+    }
+  ],
+  "iconSizes": [
+    {
+      "w": 38,
+      "h": 38
+    },
+    {
+      "w": 17,
+      "h": 17
+    },
+    {
+      "w": 34,
+      "h": 34
+    },
+    {
+      "w": 15,
+      "h": 15
+    },
+    {
+      "w": 21,
+      "h": 21
+    }
+  ],
+  "containerDetails": [],
+  "sectionSpacing": [
+    {
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "paddingTop": "0px",
+      "paddingBottom": "102px"
+    },
+    {
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "paddingTop": "34px",
+      "paddingBottom": "0px"
+    }
+  ]
+}

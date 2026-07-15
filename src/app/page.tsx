@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
-import MusicToggle from '@/components/MusicToggle';
+import { MusicToggle } from '@/components/MusicToggle';
 import { t } from '@/lib/i18n';
 
 // 翻译函数

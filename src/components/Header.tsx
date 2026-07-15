@@ -5,7 +5,7 @@ import { MusicToggle } from './MusicToggle';
 import { LanguageToggle } from './LanguageToggle';
 import { t } from '@/lib/i18n';
 
-export function Header() {
+export function Header({ lang, setLang }: { lang?: string; setLang?: (v: string) => void }) {
   const router = useRouter();
 
   return (

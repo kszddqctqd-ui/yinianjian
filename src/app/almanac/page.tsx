@@ -74,8 +74,8 @@ function getDayAlmanac(date: Date, lang: SupportedLang): DayAlmanac {
     },
     yi: lunar.getDayYi() || [],
     ji: lunar.getDayJi() || [],
-    chong: lunar.getChongGan() + lunar.getChongBranch() + lunar.getChongAnimal() || '',
-    chongGanZhi: lunar.getChongGan() + lunar.getChongBranch() || '',
+    chong: (lunar as any).getChongGan?.() + (lunar as any).getChongBranch?.() + (lunar as any).getChongAnimal?.() || '',
+    chongGanZhi: (lunar as any).getChongGan?.() + (lunar as any).getChongBranch?.() || '',
     xingzuo: solar.getXingzuo(),
     weekDay: lang === 'en' ? ['周日','周一','周二','周三','周四','周五','周六'][date.getDay()] : solar.getWeekInChinese(),
     jieQi: (lunar as any).getCurrentJieQi?.() || '',
@@ -94,7 +94,7 @@ function getDayAlmanac(date: Date, lang: SupportedLang): DayAlmanac {
     xiongShen: ((lunar as any).getYearXiongShen?.() || []) as string[],
     taiShen: ((lunar as any).getTaiShen?.() as string) || '',
     twentyEightXiu: ((lunar as any).getDay28Xiu?.() as string) || '',
-    twelveJianChu: lunar.get12DayOfficer() || '',
+    twelveJianChu: (lunar as any).get12DayOfficer?.() || '',
   };
 }
 

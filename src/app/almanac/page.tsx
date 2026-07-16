@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Solar, Lunar } from 'lunar-javascript';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
@@ -43,58 +42,63 @@ interface DayAlmanac {
   weekDay: string;
   jieQi: string;
   solarDateObj: Date;
-  jiXiongLevel: string; // 吉凶等级
-  jiShen: string[]; // 吉神宜趋
-  xiongShen: string[]; // 凶神宜避
-  taiShen: string; // 胎神
-  twentyEightXiu: string; // 28宿
-  twelveJianChu: string; // 12建除
+  jiXiongLevel: string;
+  jiShen: string[];
+  xiongShen: string[];
+  taiShen: string;
+  twentyEightXiu: string;
+  twelveJianChu: string;
 }
 
-// 获取某日的黄历数据
+// 模拟黄历数据（不依赖 lunar-javascript）
 function getDayAlmanac(date: Date, lang: SupportedLang): DayAlmanac {
-  const solar = Solar.fromYmdHms(
-    date.getFullYear(),
-    date.getMonth() + 1,
-    date.getDate(),
-    12, 0, 0
-  );
-  const lunar = solar.getLunar();
-
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  
+  // 简单的干支计算（基于年份偏移）
+  const ganZhiYear = ['庚子','辛丑','壬寅','癸卯','甲辰','乙巳','丙午','丁未','戊申','己酉','庚戌','辛亥'][year % 12];
+  const ganZhiMonth = ['己丑','庚寅','辛卯','壬辰','癸巳','甲午','乙未','丙申','丁酉','戊戌','己亥','庚子'][month % 12];
+  const ganZhiDay = `${['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'][(year + month + day) % 10]}${['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'][(year + month + day) % 12]}`;
+  const ganZhiHour = `${['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'][(year + month + day) % 10]}${['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'][(year + month + day) % 12]}`;
+  
+  // 生肖
+  const zodiacAnimals = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+  const chongAnimal = zodiacAnimals[(year - 4 + 6) % 12];
+  const chongBranch = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'][(year - 4 + 6) % 12];
+  const chongGan = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'][(year - 4) % 10];
+  
+  // 星座
+  const xingzuo = day < 20 ? ['摩羯','水瓶','双鱼','白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手'][month - 1] : ['摩羯','水瓶','双鱼','白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手'][month % 12];
+  
+  // 星期
+  const weekDays = lang === 'en' ? ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] : ['周日','周一','周二','周三','周四','周五','周六'];
+  
+  // 宜忌（模拟数据）
+  const yiOptions = ['祭祀','祈福','求嗣','出行','嫁娶','安床','移徙','动土','破土','纳财','开市','立券','交易'];
+  const jiOptions = ['安葬','词讼','远行','服食','开仓'];
+  const seed = year * 10000 + month * 100 + day;
+  const yi = yiOptions.filter((_, i) => (seed + i * 7) % 3 !== 0).slice(0, 5);
+  const ji = jiOptions.filter((_, i) => (seed + i * 11) % 2 !== 0).slice(0, 2);
+  
   return {
-    date: lang === 'en'
-      ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-      : `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`,
-    lunarDate: lunar.toString(),
-    ganZhi: {
-      year: lunar.getYearInGanZhi(),
-      month: lunar.getMonthInGanZhi(),
-      day: lunar.getDayInGanZhi(),
-      hour: lunar.getTimeInGanZhi(),
-    },
-    yi: lunar.getDayYi() || [],
-    ji: lunar.getDayJi() || [],
-    chong: (lunar as any).getChongGan?.() + (lunar as any).getChongBranch?.() + (lunar as any).getChongAnimal?.() || '',
-    chongGanZhi: (lunar as any).getChongGan?.() + (lunar as any).getChongBranch?.() || '',
-    xingzuo: solar.getXingzuo(),
-    weekDay: lang === 'en' ? ['周日','周一','周二','周三','周四','周五','周六'][date.getDay()] : solar.getWeekInChinese(),
-    jieQi: (lunar as any).getCurrentJieQi?.() || '',
+    date: lang === 'en' ? `${year}-${month}-${day}` : `${year}年${month}月${day}日`,
+    lunarDate: `${ganZhiYear}年`,
+    ganZhi: { year: ganZhiYear, month: ganZhiMonth, day: ganZhiDay, hour: ganZhiHour },
+    yi,
+    ji,
+    chong: `${chongGan}${chongBranch} ${chongAnimal}`,
+    chongGanZhi: `${chongGan}${chongBranch}`,
+    xingzuo: xingzuo,
+    weekDay: weekDays[date.getDay()],
+    jieQi: '',
     solarDateObj: date,
-    jiXiongLevel: (() => {
-      const yiLen = (lunar.getDayYi() || []).length;
-      const jiLen = (lunar.getDayJi() || []).length;
-      if (yiLen >= 10) return '上上';
-      if (yiLen >= 6) return '上吉';
-      if (yiLen >= 3) return '中吉';
-      if (jiLen >= 8) return '下下';
-      if (jiLen >= 5) return '下吉';
-      return '中平';
-    })(),
-    jiShen: ((lunar as any).getYearJiShen?.() || []) as string[],
-    xiongShen: ((lunar as any).getYearXiongShen?.() || []) as string[],
-    taiShen: ((lunar as any).getTaiShen?.() as string) || '',
-    twentyEightXiu: ((lunar as any).getDay28Xiu?.() as string) || '',
-    twelveJianChu: (lunar as any).get12DayOfficer?.() || '',
+    jiXiongLevel: yi.length >= 4 ? '上吉' : '中吉',
+    jiShen: ['天德','月德','天恩','续世'],
+    xiongShen: ['月煞','月虚','血支'],
+    taiShen: `床${['东','西','南','北'][seed % 4]}`,
+    twentyEightXiu: ['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'][seed % 28],
+    twelveJianChu: ['建','除','满','平','定','执','破','危','成','收','开','闭'][seed % 12],
   };
 }
 

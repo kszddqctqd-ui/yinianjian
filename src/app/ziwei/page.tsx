@@ -232,7 +232,7 @@ export default function ZiweiPage() {
           <div className="rounded-xl border border-gold/20 bg-xuan-card/80 p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-gold mb-1">{resolve('bazi.form.birthYear')}</label>
+                <label className="block text-sm text-gold mb-1">出生年</label>
                 <div className="flex items-center gap-2">
                   <button type="button" onClick={() => setYear(y => y - 1)} className="px-2 py-1 bg-gold/20 rounded">−</button>
                   <span className="flex-1 text-center">{year}年</span>
@@ -241,7 +241,7 @@ export default function ZiweiPage() {
               </div>
               
               <div>
-                <label className="block text-sm text-gold mb-1">{resolve('bazi.form.birthMonth')}</label>
+                <label className="block text-sm text-gold mb-1">出生月</label>
                 <div className="flex items-center gap-2">
                   <button type="button" onClick={() => setMonth(m => Math.max(1, m - 1))} className="px-2 py-1 bg-gold/20 rounded">−</button>
                   <span className="flex-1 text-center">{month}月</span>
@@ -250,7 +250,7 @@ export default function ZiweiPage() {
               </div>
               
               <div>
-                <label className="block text-sm text-gold mb-1">{resolve('bazi.form.birthDay')}</label>
+                <label className="block text-sm text-gold mb-1">出生日</label>
                 <div className="flex items-center gap-2">
                   <button type="button" onClick={() => setDay(d => Math.max(1, d - 1))} className="px-2 py-1 bg-gold/20 rounded">−</button>
                   <span className="flex-1 text-center">{day}日</span>
@@ -308,22 +308,22 @@ export default function ZiweiPage() {
             <div className="space-y-4 animate-slide-up">
               {/* Basic Info */}
               <div className="rounded-xl border border-gold/20 bg-xuan-card/80 p-6">
-                <h2 className="text-xl text-gold mb-4">{resolve('bazi.basicInfo')}</h2>
+                <h2 className="text-xl text-gold mb-4">基本信息</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <p className="text-sm text-gold/80">{resolve('bazi.zodiac')}</p>
+                    <p className="text-sm text-gold/80">生肖</p>
                     <p className="text-lg text-paper">{result.zodiac}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gold/80">{resolve('bazi.sign')}</p>
+                    <p className="text-sm text-gold/80">星座</p>
                     <p className="text-lg text-paper">{result.sign}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gold/80">{resolve('bazi.fiveElement')}</p>
+                    <p className="text-sm text-gold/80">五行</p>
                     <p className="text-lg text-paper">{result.fiveElement}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gold/80">{resolve('bazi.soul')}</p>
+                    <p className="text-sm text-gold/80">命宫</p>
                     <p className="text-lg text-paper">{result.soul}</p>
                   </div>
                 </div>
@@ -331,11 +331,11 @@ export default function ZiweiPage() {
 
               {/* Four Pillars */}
               <div className="rounded-xl border border-gold/20 bg-xuan-card/80 p-6">
-                <h2 className="text-xl text-gold mb-4">{resolve('bazi.fourPillars')}</h2>
+                <h2 className="text-xl text-gold mb-4">四柱八字</h2>
                 <div className="grid grid-cols-4 gap-4 text-center">
                   {Object.entries(result.fourPillars).map(([pillar, data]: [string, any]) => (
                     <div key={pillar}>
-                      <p className="text-sm text-gold/80">{resolve(`bazi.pillar.${pillar}`)}</p>
+                      <p className="text-sm text-gold/80">{pillar === 'year' ? '年柱' : pillar === 'month' ? '月柱' : pillar === 'day' ? '日柱' : '时柱'}</p>
                       <p className="text-2xl text-gold font-bold">{data.gan}{data.zhi}</p>
                     </div>
                   ))}
@@ -344,16 +344,16 @@ export default function ZiweiPage() {
 
               {/* Twelve Palaces */}
               <div className="rounded-xl border border-gold/20 bg-xuan-card/80 p-6">
-                <h2 className="text-xl text-gold mb-4">{resolve('bazi.twelvePalaces')}</h2>
+                <h2 className="text-xl text-gold mb-4">十二宫位</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {result.palaces.map((palace: any, index: number) => (
                     <div key={index} className="rounded-lg border border-gold/10 bg-xuan/50 p-4">
                       <h3 className="text-gold font-semibold mb-2">{palace.name}</h3>
                       <div className="space-y-1 text-sm">
-                        <p><span className="text-gold/60">{resolve('bazi.heavenlyStem')}:</span> {palace.heavenlyStem}{palace.earthlyBranch}</p>
-                        <p><span className="text-gold/60">{resolve('bazi.majorStars')}:</span> {palace.majorStars.map((s: any) => s.name).join(', ') || '-'}</p>
-                        <p><span className="text-gold/60">{resolve('bazi.minorStars')}:</span> {palace.minorStars.map((s: any) => s.name).join(', ') || '-'}</p>
-                        <p><span className="text-gold/60">{resolve('bazi.changsheng12')}:</span> {palace.changsheng12}</p>
+                        <p><span className="text-gold/60">天干:</span> {palace.heavenlyStem}{palace.earthlyBranch}</p>
+                        <p><span className="text-gold/60">主星:</span> {palace.majorStars.map((s: any) => s.name).join(', ') || '-'}</p>
+                        <p><span className="text-gold/60">辅星:</span> {palace.minorStars.map((s: any) => s.name).join(', ') || '-'}</p>
+                        <p><span className="text-gold/60">长生十二神:</span> {palace.changsheng12}</p>
                       </div>
                     </div>
                   ))}

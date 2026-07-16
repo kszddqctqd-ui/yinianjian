@@ -76,16 +76,16 @@ export default function LotteryPage() {
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
               </svg>
             </div>
-            <h1 className="font-display text-4xl tracking-widest" style={{ color: '#C9A96E' }}>{resolve('lottery.title')}</h1>
+            <h1 className="font-display text-4xl tracking-widest" style={{ color: '#C9A96E' }}>关帝灵签</h1>
             <p className="text-base" style={{ color: '#D4C5A9' }}>
-              {resolve('lottery.subtitle')}
+              诚心祈祷，摇签问卦
             </p>
           </section>
 
           {/* Master selector */}
           <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm">
             <div className="space-y-3">
-              <p className="text-base text-paper-dark/80">{resolve('lottery.chooseMaster')}</p>
+              <p className="text-base text-paper-dark/80">请选择一位大师为你解签</p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {masters.map((m, i) => (
                   <button
@@ -119,7 +119,7 @@ export default function LotteryPage() {
               disabled={loading}
               className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg disabled:opacity-50"
             >
-              <span className="contents">{loading ? resolve('lottery.loading') : resolve('lottery.btn.shake')}</span>
+              <span className="contents">{loading ? '摇签中...' : '求签'}</span>
             </button>
           </div>
 
@@ -135,11 +135,11 @@ export default function LotteryPage() {
                 </h2>
                 <p className="text-paper mb-4">{lottery.poem}</p>
                 <div className="rounded-lg bg-xuan/50 p-4 text-left">
-                  <h3 className="text-gold mb-2">{resolve('lottery.result.meaning')}</h3>
+                  <h3 className="text-gold mb-2">签文解读</h3>
                   <p className="text-paper-dark/80">{lottery.desc}</p>
                 </div>
                 <div className="mt-4 rounded-lg bg-gold/10 p-4">
-                  <h3 className="text-gold mb-2">{resolve('lottery.result.fortune')}</h3>
+                  <h3 className="text-gold mb-2">运势指引</h3>
                   <p className="text-paper-dark/80">{lottery.fortune}</p>
                 </div>
               </div>
@@ -149,7 +149,7 @@ export default function LotteryPage() {
           {/* History */}
           {shakeCount > 0 && (
             <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm">
-              <h3 className="text-lg font-semibold text-gold mb-3">{resolve('lottery.history.title')}</h3>
+              <h3 className="text-lg font-semibold text-gold mb-3">求签记录</h3>
               <p className="text-paper-dark/80">共求签 {shakeCount} 次</p>
             </div>
           )}

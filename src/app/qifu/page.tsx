@@ -112,6 +112,11 @@ function WallLantern({ giver, receiver, index, lanternType }: { giver: string; r
         <div className="text-[14.875px]" style={{ color: 'rgba(212,197,169,0.65)' }}>
           {giver} 为 {receiver} 敬奉
         </div>
+        {lanternType && (
+          <div className="mt-1 text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>
+            {t(lanternType)}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -343,40 +348,40 @@ export default function QifuPage() {
           </div>
 
           {/* 灯型选择 */}
-          <h2 className="font-display text-2xl text-gold">{resolve('payment.lanternTypes')}</h2>
+          <h2 className="font-display text-2xl text-gold">灯型选择</h2>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { key: 'pingan', label: resolve('payment.lantern.pingan'), desc: resolve('qifu.lantern.pinganDesc') },
-              { key: 'caiyun', label: resolve('payment.lantern.caiyun'), desc: resolve('qifu.lantern.caiyunDesc') },
-              { key: 'shiye', label: resolve('payment.lantern.shiye'), desc: resolve('qifu.lantern.shiyeDesc') },
-              { key: 'xueye', label: resolve('payment.lantern.xueye'), desc: resolve('qifu.lantern.xueyeDesc') },
-              { key: 'jiankang', label: resolve('payment.lantern.jiankang'), desc: resolve('qifu.lantern.jiankangDesc') },
-              { key: 'fenyuan', label: resolve('payment.lantern.fenyuan'), desc: resolve('qifu.lantern.fenyuanDesc') },
-            ].map(l => (
+              { key: 'qingxin', label: resolve('qifu.lamp.0.name'), desc: resolve('qifu.lamp.0.desc') },
+              { key: 'caiyun', label: resolve('qifu.lamp.1.desc'), desc: resolve('qifu.lamp.1.desc') },
+              { key: 'changming', label: resolve('qifu.lamp.2.label'), desc: resolve('qifu.lamp.2.desc') },
+              { key: 'shiyi', label: resolve('qifu.lamp.3.label'), desc: resolve('qifu.lamp.3.desc') },
+              { key: 'yinyuan', label: resolve('qifu.lamp.4.name'), desc: resolve('qifu.lamp.4.desc') },
+              { key: 'jiankang', label: resolve('qifu.lamp.5.label'), desc: resolve('qifu.lamp.5.desc') },
+            ].map(lamp => (
               <button
-                key={l.key}
+                key={lamp.key}
                 type="button"
-                onClick={() => setLanternType(l.key)}
-                className={`rounded-lg border-2 p-3 text-center transition-all ${
-                  lanternType === l.key
-                    ? 'border-gold bg-gold/10 shadow-lg shadow-gold/10'
-                    : 'border-gold/20 bg-xuan-card hover:border-gold/40'
+                onClick={() => setLanternType(lamp.key)}
+                className={`rounded-lg border p-3 text-left transition-all ${
+                  lanternType === lamp.key
+                    ? 'border-gold bg-gold/10 shadow-gold'
+                    : 'border-gold/20 bg-xuan-surface/40 hover:border-gold/40'
                 }`}
               >
-                <div className="text-sm font-display text-gold">{l.label}</div>
-                <div className="mt-1 text-xs" style={{ color: 'rgba(212,197,169,0.6)' }}>{l.desc}</div>
+                <p className="font-display text-base text-gold">{lamp.label}</p>
+                <p className="mt-1 text-xs text-paper-dark/80">{lamp.desc}</p>
               </button>
             ))}
           </div>
 
           {/* 供奉套餐 */}
-          <h2 className="font-display text-2xl text-gold">{resolve('payment.packages')}</h2>
+          <h2 className="font-display text-2xl text-gold">供奉套餐</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { key: 'monthly', label: resolve('payment.plan.monthly'), price: '¥3.9', period: '/月' },
-              { key: 'quarterly', label: resolve('payment.plan.quarterly'), price: '¥5.9', period: '/百日' },
-              { key: 'yearly', label: resolve('payment.plan.yearly'), price: '¥9.9', period: '/年' },
-              { key: 'permanent', label: resolve('payment.plan.permanent'), price: '¥19.9', period: '永久' },
+              { key: 'monthly', label: resolve('payment.monthly'), price: '¥3.9', period: '/月' },
+              { key: 'quarterly', label: resolve('payment.quarterly'), price: '¥5.9', period: '/百日' },
+              { key: 'yearly', label: resolve('payment.yearly'), price: '¥9.9', period: '/年' },
+              { key: 'permanent', label: resolve('payment.perpetual'), price: '¥19.9', period: '永久' },
             ].map(p => (
               <button
                 key={p.key}

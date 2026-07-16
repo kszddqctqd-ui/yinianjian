@@ -439,13 +439,18 @@ export const translations: Translations = {
   'qifu.period.permanent.price': { zh: '19.9', en: '19.9' },
   'qifu.lamp.0.name': { zh: '清心灯', en: 'Clarity Lamp' },
   'qifu.lamp.0.desc': { zh: '祈愿身心安宁、烦恼消解', en: 'Pray for peace of mind and body' },
+  'qifu.lamp.1.name': { zh: '三宝加持', en: 'Three Jewels Blessing' },
   'qifu.lamp.1.desc': { zh: '三宝加持', en: 'Blessed by Three Jewels' },
+  'qifu.lamp.2.name': { zh: '七盏', en: 'Seven Lamps' },
   'qifu.lamp.2.label': { zh: '七盏', en: 'Seven Lamps' },
   'qifu.lamp.2.desc': { zh: '七宝庄严', en: 'Seven Treasures adorning' },
+  'qifu.lamp.3.name': { zh: '二十四盏', en: 'Twenty-Four Lamps' },
   'qifu.lamp.3.label': { zh: '二十四盏', en: 'Twenty-Four Lamps' },
   'qifu.lamp.3.desc': { zh: '二十四诸天', en: 'Twenty-Four Heavenly Protectors' },
+  'qifu.lamp.4.name': { zh: '姻缘灯', en: 'Love Lamp' },
   'qifu.lamp.4.label': { zh: '一百零八盏', en: '108 Lamps' },
   'qifu.lamp.4.desc': { zh: '破除一百零八烦恼', en: 'Dispelling 108 afflictions' },
+  'qifu.lamp.5.name': { zh: '九百九十九盏', en: '999 Lamps' },
   'qifu.lamp.5.label': { zh: '九百九十九盏', en: '999 Lamps' },
   'qifu.lamp.5.desc': { zh: '九九归一，功德圆满', en: 'Returning to one, merit complete' },
   'qifu.section.wish': {
@@ -468,8 +473,6 @@ export const translations: Translations = {
     zh: '点亮心愿灯',
     en: 'Light the Wish Lamp',
   },
-  // Lamp types (kept for reference, original moved above)
-  'qifu.lamp.4.name': { zh: '姻缘灯', en: 'Love Lamp' },
   // Relation options
   'qifu.relation.0': { zh: '父亲', en: 'Father' },
   'qifu.relation.1': { zh: '母亲', en: 'Mother' },

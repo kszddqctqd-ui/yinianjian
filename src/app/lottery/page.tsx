@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { t, getLocale } from '@/lib/i18n';
 import type { SupportedLang } from '@/lib/i18n';
 import { Header } from '@/components/Header';
@@ -9,8 +9,6 @@ import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
 import { LOTTERIES } from '@/lib/lotteries';
-import { saveRecord } from '@/lib/records';
-import { calculateBaZi, type BaZiResult } from '@/lib/bazi';
 
 function resolve(key: string): string {
   return t(key);
@@ -37,22 +35,31 @@ export default function LotteryPage() {
     return () => window.removeEventListener('lang-change', handler);
   }, []);
 
-  const shakeLottery = useCallback(() => {
+  const shakeLottery = () => {
+    console.log('[LOTTERY] shakeLottery called, selectedMaster=', selectedMaster);
     if (selectedMaster === null) {
-      alert(resolve('lottery.alert.noMaster'));
+      alert(t('lottery.alert.noMaster'));
       return;
     }
-    setLoading(true);
+    
+    // Force re-render by updating state
     setShakeCount(prev => prev + 1);
+    setLoading(true);
+    setShowLottery(false);
+    setLottery(null);
+    
+    console.log('[LOTTERY] State updated, loading=true');
+    
     setTimeout(() => {
+      console.log('[LOTTERY] setTimeout fired, picking lottery');
       const idx = Math.floor(Math.random() * LOTTERIES.length);
       const lot = LOTTERIES[idx];
+      console.log('[LOTTERY] picked lot #', lot.num, lot.title);
       setLottery(lot);
       setShowLottery(true);
       setLoading(false);
-      saveRecord('lottery', { num: lot.num, title: lot.title, poem: lot.poem, desc: lot.desc, fortune: lot.fortune }, `${resolve('lottery.signNumber').replace('{num}', lot.num.toString())}`);
     }, 1500);
-  }, [selectedMaster]);
+  };
 
   return (
     <div className="min-h-screen bg-xuan relative overflow-hidden">
@@ -92,79 +99,64 @@ export default function LotteryPage() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-[1.875rem]">{m.icon}</span>
+                      <span className="text-2xl">{m.icon}</span>
                       <div>
-                        <p className={`font-display text-lg ${selectedMaster === i ? 'text-gold' : 'text-paper-dark'}`}>{resolve(m.nameKey)}</p>
+                        <p className="font-semibold text-gold">{resolve(m.nameKey)}</p>
                         <p className="text-xs text-on-dark-muted">{resolve(m.roleKey)}</p>
                       </div>
                     </div>
-                    <p className="mt-2 text-sm text-gold/85">{resolve(m.featureKey)}</p>
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Shake lot */}
-          <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm">
-            <div className="text-center">
-              <div className={`mb-4 flex items-center justify-center ${shakeCount > 0 ? 'animate-bounce' : ''}`}>
-                <svg className="size-20 text-gold/40" viewBox="0 0 100 140" fill="none" stroke="currentColor" strokeWidth="2">
-                  <ellipse cx="50" cy="120" rx="35" ry="10" />
-                  <rect x="20" y="20" width="60" height="100" rx="5" />
-                  <line x1="30" y1="35" x2="70" y2="35" />
-                  <line x1="30" y1="50" x2="70" y2="50" />
-                  <line x1="30" y1="65" x2="70" y2="65" />
-                  <line x1="30" y1="80" x2="70" y2="80" />
-                  <line x1="30" y1="95" x2="70" y2="95" />
-                  <line x1="30" y1="110" x2="70" y2="110" />
-                </svg>
-              </div>
-              <p className="text-sm text-paper-dark/80 mb-4">{resolve('lottery.shakeHint')}</p>
-              <button
-                type="button"
-                onClick={shakeLottery}
-                disabled={loading}
-                className="btn-primary w-full disabled:opacity-50"
-              >
-                {loading ? resolve('lottery.loading') : resolve('lottery.btn.shake')}
-              </button>
-              {shakeCount > 0 && (
-                <p className="mt-2 text-xs text-on-dark-muted">{resolve('lottery.count').replace('{count}', shakeCount.toString())}</p>
-              )}
-            </div>
+          {/* Shake button */}
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={shakeLottery}
+              disabled={loading}
+              className="inline-flex items-center justify-center gap-2 font-body font-medium transition-all duration-fast min-w-[180px] rounded-lg bg-vermillion tracking-wider text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light active:bg-vermillion-dark h-12 px-8 text-lg disabled:opacity-50"
+            >
+              <span className="contents">{loading ? resolve('lottery.loading') : resolve('lottery.btn.shake')}</span>
+            </button>
           </div>
 
           {/* Result */}
           {showLottery && lottery && (
-            <div className="rounded-[17px] border border-gold/30 bg-xuan-card/95 p-6 shadow-paper backdrop-blur-sm space-y-4 animate-slide-up">
-              <div className="text-center">
-                <span className="text-xs text-gold/80 tracking-wider">{resolve('lottery.signNumber').replace('{num}', lottery.num.toString())}</span>
-              </div>
-              <div className="text-center space-y-2">
-                <p className="text-[1.875rem] text-gold font-display">{lottery.title}</p>
-                {lottery.poem.map((line, i) => (
-                  <p key={i} className="text-[1.25rem] text-paper-dark/85 italic">{line}</p>
-                ))}
-                <p className="text-sm text-paper-dark/80">{lottery.desc}</p>
-                <div className={`inline-block rounded-full px-4 py-1 text-sm font-medium ${
-                  lottery.fortune === '大吉' ? 'bg-gold/20 text-gold' :
-                  lottery.fortune === '上吉' ? 'bg-gold/10 text-gold/80' :
-                  lottery.fortune === '中吉' ? 'bg-gold/10 text-gold/80' :
-                  lottery.fortune === '中平' ? 'bg-paper-dark/10 text-on-dark-muted' :
-                  lottery.fortune === '下吉' ? 'bg-paper-dark/10 text-on-dark-muted' :
-                  lottery.fortune === '中凶' ? 'bg-vermillion/10 text-vermillion' :
-                  'bg-vermillion/20 text-vermillion-light'
-                }`}>
-                  {lottery.fortune}
+            <div className="space-y-4 animate-slide-up">
+              <div className="rounded-xl border border-gold/20 bg-xuan-card/80 p-6 text-center">
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-gold/10">
+                  <span className="text-3xl">🎋</span>
+                </div>
+                <h2 className="text-2xl text-gold mb-2">
+                  第{lottery.num}签 · {lottery.title}
+                </h2>
+                <p className="text-paper mb-4">{lottery.poem}</p>
+                <div className="rounded-lg bg-xuan/50 p-4 text-left">
+                  <h3 className="text-gold mb-2">{resolve('lottery.result.meaning')}</h3>
+                  <p className="text-paper-dark/80">{lottery.desc}</p>
+                </div>
+                <div className="mt-4 rounded-lg bg-gold/10 p-4">
+                  <h3 className="text-gold mb-2">{resolve('lottery.result.fortune')}</h3>
+                  <p className="text-paper-dark/80">{lottery.fortune}</p>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* History */}
+          {shakeCount > 0 && (
+            <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm">
+              <h3 className="text-lg font-semibold text-gold mb-3">{resolve('lottery.history.title')}</h3>
+              <p className="text-paper-dark/80">共求签 {shakeCount} 次</p>
             </div>
           )}
         </div>
       </main>
 
-      <BottomNav active="lottery" />
+      <BottomNav active="home" />
     </div>
   );
 }

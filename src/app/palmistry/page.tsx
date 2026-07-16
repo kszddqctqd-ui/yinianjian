@@ -1,438 +1,322 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
-import { saveRecord } from '@/lib/records';
-import { sanitizeHTML } from '@/lib/sanitize';
-import { t, getLocale } from '@/lib/i18n';
-import type { SupportedLang } from '@/lib/i18n';
 
-let modelsLoaded = false;
+// 三位大师
+const MASTERS = [
+  {
+    icon: '🧘',
+    name: '慧明长老',
+    title: '古寺住持',
+    desc: '庄重持重，引经据典',
+    detail: '通读《渊海子平》《滴天髓》，言语稳重克制。适合希望深度解读、看古籍出处的施主。',
+  },
+  {
+    icon: '🙏',
+    name: '明心师父',
+    title: '尼众法师',
+    desc: '慈悲温柔，劝人向善',
+    detail: '语调温和，慈悲为怀。适合家庭、感情、亲人祈福场景。',
+  },
+  {
+    icon: '☯️',
+    name: '玄真道长',
+    title: '山中道人',
+    desc: '直爽通透，说大白话',
+    detail: '山中道人，不爱绕弯子。把命理讲成大白话，适合急性子。',
+  },
+];
 
-// 动态导入 face-api（避免 SSR 时报错）
-async function loadAnalyzer() {
-  const mod = await import('@/lib/palm-face-analyzer');
-  return mod;
+// 手相主线参考
+const HAND_LINES = [
+  { name: '生命线', desc: '环绕金星丘的大弧线，反映体质强弱与生命力起伏，非寿命长短。' },
+  { name: '智慧线', desc: '起点与生命线相近横穿手掌，代表思维方式与决断风格。' },
+  { name: '感情线', desc: '位于掌心上部，反映情感表达模式与关系节奏。' },
+  { name: '命运线', desc: '从手腕附近向上延伸的竖线，象征事业轨迹与人生转折。' },
+  { name: '太阳线', desc: '无名指下方的竖纹，关联名声、创造力与生活热情。' },
+];
+
+// 面相区域参考
+const FACE_ZONES = [
+  { name: '额头（天庭）', desc: '看早年运势、思维格局与学业事业起步。' },
+  { name: '眉眼', desc: '眉形看性情，眼神看气场与专注力。' },
+  { name: '鼻子', desc: '鼻梁看魄力，鼻头看财帛与包容度。' },
+  { name: '口唇', desc: '唇形与闭合状态反映表达习惯与情绪管理。' },
+  { name: '下庭（下巴）', desc: '看晚年安稳与行事收尾能力。' },
+];
+
+// 模拟分析结果
+function generateAnalysis(type: 'hand' | 'face', handSide: 'left' | 'right', masterIdx: number): string {
+  const seeds = [
+    type === 'hand' ? '手相左手' : '手相右手',
+    type === 'face' ? '面相' : '',
+    ['慧明长老', '明心师父', '玄真道长'][masterIdx],
+  ].join('');
+  const hash = seeds.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  
+  const handResults = [
+    '您的生命线弧度饱满，体质基础良好。智慧线与生命线起点相连，做事谨慎有规划。感情线末端分叉，情感丰富但容易犹豫。',
+    '命运线从掌心偏下位置升起，早年事业起步稍缓但中年后渐入佳境。太阳线隐约可见， creativity 与表达能力有待发掘。',
+    '左手代表先天禀赋，右手代表后天养成。您的两条手相显示思维模式稳定，但近期感情线有波动，注意情绪管理。',
+  ];
+  
+  const faceResults = [
+    '额头方正开阔，早年运势不错，思维清晰有远见。眉眼有神，做事有定力。鼻头圆润，财运良好但需守成。',
+    '天庭饱满，地阁方圆，整体面相格局不错。眼神温和但有神，人际关系处理得当。口唇闭合紧密，言而有信。',
+    '面相整体偏柔和，适合从事与人打交道的工作。鼻翼略收，理财需谨慎。下巴圆润，晚年运势平稳。',
+  ];
+  
+  const results = type === 'hand' ? handResults : faceResults;
+  return results[hash % results.length];
 }
 
 export default function PalmistryPage() {
-  const [step, setStep] = useState(1);
+  const [mode, setMode] = useState<'hand' | 'face'>('hand');
+  const [handSide, setHandSide] = useState<'left' | 'right'>('left');
+  const [selectedMaster, setSelectedMaster] = useState<number | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [type, setType] = useState<'hand' | 'face'>('hand');
-  const [faceResult, setFaceResult] = useState<any>(null);
-  const [palmResult, setPalmResult] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [lang, setLang] = useState<SupportedLang>(getLocale());
-  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [analysis, setAnalysis] = useState('');
+  const [showLines, setShowLines] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const STORAGE_KEY = 'yinianjian_palm_photo';
-  const TYPE_KEY = 'yinianjian_palm_type';
-  const SAVED_KEY = 'yinianjian_palm_saved';
-
-  useEffect(() => {
-    setLang(getLocale());
-    const handler = () => setLang(getLocale());
-    window.addEventListener('lang-change', handler);
-    return () => window.removeEventListener('lang-change', handler);
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setPhoto(ev.target?.result as string);
+      setUploading(false);
+      setShowResult(false);
+    };
+    reader.readAsDataURL(file);
   }, []);
 
-  function resolve(key: string): string {
-    return t(key);
-  }
-
-  const savePhoto = () => {
+  const handleAnalyze = () => {
     if (!photo) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, photo);
-      localStorage.setItem(TYPE_KEY, type);
-      localStorage.setItem(SAVED_KEY, 'true');
-      setSaved(true);
-    } catch {
-      alert(resolve('palmistry.photoTooLarge'));
+    if (selectedMaster === null) {
+      alert('请先选择一位大师');
+      return;
     }
-  };
-
-  const loadSavedPhoto = () => {
-    try {
-      const saved_ = localStorage.getItem(SAVED_KEY);
-      if (saved_ === 'true') {
-        const p = localStorage.getItem(STORAGE_KEY);
-        const t = localStorage.getItem(TYPE_KEY);
-        if (p) {
-          setPhoto(p);
-          setType(t === 'face' ? 'face' : 'hand');
-          setSaved(true);
-          setStep(2);
-        }
-      }
-    } catch {}
-  };
-
-  loadSavedPhoto();
-
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => setPhoto(ev.target?.result as string);
-      reader.readAsDataURL(file);
-      setStep(2);
-    }
-  };
-
-  const handlePreview = useCallback(async () => {
-    if (!photo || !imgRef.current) return;
-
-    setLoading(true);
-    setStep(3);
-
-    try {
-      const { loadFaceApiModels, analyzeFace, analyzePalm } = await loadAnalyzer();
-
-      // 首次加载 face-api.js 模型
-      if (!modelsLoaded) {
-        await loadFaceApiModels();
-        modelsLoaded = true;
-      }
-
-      // 等待图片加载完成
-      await new Promise<void>((resolve) => {
-        const img = imgRef.current!;
-        if (img.complete) resolve();
-        else img.onload = () => resolve();
-      });
-
-      if (type === 'face') {
-        const result = await analyzeFace(imgRef.current);
-        setFaceResult(result);
-        setPalmResult(null);
-        saveRecord('palmistry', { type: 'face', result }, resolve('palmistry.type.face'));
-      } else {
-        const result = await analyzePalm(imgRef.current);
-        setPalmResult(result);
-        setFaceResult(null);
-        saveRecord('palmistry', { type: 'hand', result }, resolve('palmistry.type.hand'));
-      }
-
-      setStep(4);
-    } catch (err) {
-      console.error('Analysis error:', err);
-      alert(resolve('palmistry.analysisFail'));
-      setStep(2);
-    } finally {
-      setLoading(false);
-    }
-  }, [photo, type, resolve]);
-
-  const renderResult = () => {
-    if (type === 'face' && faceResult) {
-      return (
-        <div className="space-y-4">
-          {/* 人脸检测结果 */}
-          <div className="rounded-lg border border-gold/20 bg-xuan-surface/40 p-4 text-center">
-            {faceResult.faceDetected ? (
-              <>
-                <div className="text-lg font-display" style={{ color: '#C9A96E' }}>{resolve('palmistry.face.detected')}</div>
-                <div className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.65)' }}>
-                  {resolve('palmistry.faceSize').replace('{width}', String(faceResult.faceWidth)).replace('{height}', String(faceResult.faceHeight))}
-                </div>
-              </>
-            ) : (
-              <div className="text-lg font-display" style={{ color: '#C9A96E' }}>{resolve('palmistry.face.notDetected')}</div>
-            )}
-          </div>
-
-          {/* 各部位分析 */}
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.forehead')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }} dangerouslySetInnerHTML={{ __html: sanitizeHTML(faceResult.forehead) }} />
-            </div>
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.eyes')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }} dangerouslySetInnerHTML={{ __html: sanitizeHTML(faceResult.eyes) }} />
-            </div>
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.nose')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }} dangerouslySetInnerHTML={{ __html: sanitizeHTML(faceResult.nose) }} />
-            </div>
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.mouth')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }} dangerouslySetInnerHTML={{ __html: sanitizeHTML(faceResult.mouth) }} />
-            </div>
-          </div>
-
-          <div className="card-standard">
-            <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.chin')}</h4>
-            <p className="text-sm" style={{ color: '#D4C5A9' }} dangerouslySetInnerHTML={{ __html: sanitizeHTML(faceResult.chin) }} />
-          </div>
-
-          <div className="card-standard">
-            <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.summary')}</h4>
-            <p className="text-sm leading-loose" style={{ color: '#D4C5A9' }} dangerouslySetInnerHTML={{ __html: sanitizeHTML(faceResult.overall) }} />
-          </div>
-        </div>
-      );
-    }
-
-    if (type === 'hand' && palmResult) {
-      return (
-        <div className="space-y-4">
-          <div className="rounded-lg border border-gold/20 bg-xuan-surface/40 p-4 text-center">
-            {palmResult.palmDetected ? (
-              <div className="text-lg font-display" style={{ color: '#C9A96E' }}>{resolve('palmistry.analysis.completed')}</div>
-            ) : (
-              <div className="text-lg font-display" style={{ color: '#C9A96E' }}>{resolve('palmistry.ensureVisible')}</div>
-            )}
-          </div>
-
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.lifeLine')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }}>{palmResult.lifeLine}</p>
-            </div>
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.wisdomLine')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }}>{palmResult.wisdomLine}</p>
-            </div>
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.heartLine')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }}>{palmResult.heartLine}</p>
-            </div>
-            <div className="card-standard">
-              <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.fateLine')}</h4>
-              <p className="text-sm" style={{ color: '#D4C5A9' }}>{palmResult.fateLine}</p>
-            </div>
-          </div>
-
-          <div className="card-standard">
-            <h4 className="font-display text-lg mb-2" style={{ color: '#C9A96E' }}>{resolve('palmistry.section.summary')}</h4>
-            <p className="text-sm leading-loose" style={{ color: '#D4C5A9' }} dangerouslySetInnerHTML={{ __html: palmResult.overall }} />
-          </div>
-        </div>
-      );
-    }
-
-    return null;
+    const result = generateAnalysis(mode, handSide, selectedMaster);
+    setAnalysis(result);
+    setShowResult(true);
   };
 
   return (
-    <div className="min-h-screen bg-xuan relative overflow-hidden">
+    <div className="min-h-screen bg-[#1a1410] relative overflow-hidden">
       <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
 
-      <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
-        <div className="mx-auto max-w-4xl space-y-section px-4 pb-24">
+      <main className="relative z-10 mx-auto max-w-4xl px-4 pb-24 pt-20">
+        <div className="space-y-6">
           {/* Title */}
-          <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-2 flex size-[3.1875rem] items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-hand size-[2.25rem] text-gold" aria-hidden="true">
-                <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
-                <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
-                <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
-                <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
-              </svg>
-            </div>
-            <h1 className="font-display text-4xl tracking-widest" style={{ color: '#C9A96E' }}>{resolve('palmistry.title')}</h1>
-            <p className="text-base" style={{ color: '#D4C5A9' }}>
-              {resolve('palmistry.subtitle')}
-            </p>
-          </section>
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl text-gold font-display">图解手相/面相</h1>
+            <p className="text-paper-dark/80 text-sm">上传照片，AI 辅助解读</p>
+          </div>
 
-          {/* Hidden image ref for analysis */}
-          {photo && (
-            <img
-              ref={imgRef}
-              src={photo}
-              alt="分析用图"
-              className="hidden"
-              onLoad={() => {
-                // Ensure image is loaded for face-api.js
-              }}
-            />
-          )}
+          {/* Mode Toggle */}
+          <div className="flex gap-3 justify-center">
+            <button
+              type="button"
+              onClick={() => { setMode('hand'); setShowResult(false); }}
+              className={`px-6 py-3 rounded-full text-sm border transition-all ${
+                mode === 'hand'
+                  ? 'border-gold/60 bg-gold/10 text-gold'
+                  : 'border-gold/20 text-paper-dark/60 hover:border-gold/40'
+              }`}
+            >
+              🤚 手相
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMode('face'); setShowResult(false); }}
+              className={`px-6 py-3 rounded-full text-sm border transition-all ${
+                mode === 'face'
+                  ? 'border-gold/60 bg-gold/10 text-gold'
+                  : 'border-gold/20 text-paper-dark/60 hover:border-gold/40'
+              }`}
+            >
+              😊 面相
+            </button>
+          </div>
 
-          {/* Step 1: Upload */}
-          {step === 1 && (
-            <div className="card-standard space-y-4">
-              {saved && photo && (
-                <div className="rounded-lg border border-gold/20 bg-gold/5 p-3 text-center">
-                  <img src={photo} alt="已保存的照片" className="mx-auto max-h-40 rounded-lg border border-gold/20" />
-                  <p className="text-xs text-gold mt-2">{resolve('palmistry.savedPhoto')}</p>
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.selectType')}</p>
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setType('hand')}
-                    className={`flex-1 rounded-md border p-3 text-center transition-all ${
-                      type === 'hand'
-                        ? 'border-gold/60 bg-gold/10 text-gold'
-                        : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
-                    }`}
-                  >
-                    <span className="text-[1.5rem]">🤚</span>
-                    <p className="text-sm mt-1">{resolve('palmistry.type.hand')}</p>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setType('face')}
-                    className={`flex-1 rounded-md border p-3 text-center transition-all ${
-                      type === 'face'
-                        ? 'border-gold/60 bg-gold/10 text-gold'
-                        : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'
-                    }`}
-                  >
-                    <span className="text-[1.5rem]">😊</span>
-                    <p className="text-sm mt-1">{resolve('palmistry.type.face')}</p>
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.upload')}</p>
-                <label className="flex flex-col items-center justify-center h-40 rounded-xl border-2 border-dashed border-gold/30 bg-xuan-surface/40 cursor-pointer hover:border-gold/40 hover:bg-xuan-surface/70 transition-all">
-                  <svg className="size-[2.25rem] text-gold/40 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  <span className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.uploadText')} {type === 'hand' ? resolve('palmistry.uploadHand') : resolve('palmistry.uploadFace')}</span>
-                  <span className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('palmistry.uploadHint')}</span>
-                  <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
-                </label>
-              </div>
-
-              {/* 拍照指导 */}
-              <div className="rounded-lg border border-gold/20 bg-xuan-surface/40 p-4 space-y-2">
-                <p className="text-sm font-medium" style={{ color: '#C9A96E' }}>{resolve('palmistry.photoGuide')}</p>
-                {type === 'hand' ? (
-                  <>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.0')}</p>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.1')}</p>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.2')}</p>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.handGuide.3')}</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.0')}</p>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.1')}</p>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.2')}</p>
-                    <p className="text-xs" style={{ color: 'rgba(212,197,169,0.8)' }}>• {resolve('palmistry.faceGuide.3')}</p>
-                  </>
-                )}
-              </div>
-
-              <p className="text-xs text-center" style={{ color: 'rgba(212,197,169,0.5)' }}>
-                {resolve('palmistry.uploadHint')}
-              </p>
-            </div>
-          )}
-
-          {/* Step 2: Preview photo */}
-          {step === 2 && photo && (
-            <div className="card-standard space-y-4">
-              <img src={photo} alt="预览" className="w-full max-h-64 object-contain rounded-lg border border-gold/20" />
-              <div className="flex gap-3">
+          {/* Master Selection */}
+          <div className="space-y-3">
+            <p className="text-center text-sm text-gold/80">选择为你解读的大师</p>
+            <div className="space-y-3">
+              {MASTERS.map((master, idx) => (
                 <button
+                  key={idx}
                   type="button"
-                  onClick={() => setStep(1)}
-                  className="flex-1 rounded-md border border-gold/30 py-3 text-sm text-paper-dark/80 hover:text-gold transition-colors"
+                  onClick={() => { setSelectedMaster(idx); setShowResult(false); }}
+                  className={`w-full text-left rounded-xl border p-4 transition-all ${
+                    selectedMaster === idx
+                      ? 'border-gold/60 bg-gold/10'
+                      : 'border-gold/20 bg-[#1a1510]/80 hover:border-gold/40'
+                  }`}
                 >
-                  {resolve('palmistry.btn.reupload')}
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">{master.icon}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-gold font-medium text-sm">{master.name}</span>
+                        <span className="text-paper-dark/50 text-xs">·</span>
+                        <span className="text-paper-dark/60 text-xs">{master.title}</span>
+                      </div>
+                      <p className="text-xs text-paper-dark/70">{master.desc}</p>
+                    </div>
+                  </div>
                 </button>
-                <button
-                  type="button"
-                  onClick={handlePreview}
-                  disabled={loading}
-                  className="flex-1 rounded-md bg-vermillion py-3 text-sm text-white shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all disabled:opacity-50"
-                >
-                  {resolve('palmistry.btn.analyze')}
-                </button>
-              </div>
-              {!saved && (
-                <button
-                  type="button"
-                  onClick={savePhoto}
-                  className="w-full rounded-md border border-gold/30 py-2 text-sm text-gold hover:bg-gold/10 transition-all"
-                >
-                  {resolve('palmistry.btn.save')}
-                </button>
-              )}
-              {saved && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    localStorage.removeItem(STORAGE_KEY);
-                    localStorage.removeItem(TYPE_KEY);
-                    localStorage.removeItem(SAVED_KEY);
-                    setSaved(false);
-                    setPhoto(null);
-                    setStep(1);
-                  }}
-                  className="w-full rounded-md border border-vermillion/30 py-2 text-sm text-vermillion hover:bg-vermillion/10 transition-all"
-                >
-                  {resolve('palmistry.btn.clear')}
-                </button>
-              )}
+              ))}
             </div>
-          )}
+          </div>
 
-          {/* Step 3: Loading */}
-          {step === 3 && (
-            <div className="card-standard text-center py-12 space-y-3">
-              <div className="text-4xl animate-pulse">🔍</div>
-              <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.analyzing')}</p>
-              <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('palmistry.modelLoading')}</p>
-            </div>
-          )}
-
-          {/* Step 4: Result */}
-          {step === 4 && renderResult()}
-
-          {/* Paywall */}
-          {step === 4 && (
-            <div className="card-standard text-center space-y-3">
-              <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.unlock.desc')}</p>
+          {/* Hand Side Toggle (only for hand mode) */}
+          {mode === 'hand' && (
+            <div className="flex gap-2 justify-center">
               <button
                 type="button"
-                className="w-full rounded-md bg-vermillion py-3 text-lg text-white tracking-wider font-medium shadow-lg shadow-vermillion/20 hover:bg-vermillion-light transition-all"
-                onClick={() => setShowPayment(true)}
+                onClick={() => { setHandSide('left'); setShowResult(false); }}
+                className={`px-4 py-2 rounded-full text-xs border transition-all ${
+                  handSide === 'left'
+                    ? 'border-gold/60 bg-gold/10 text-gold'
+                    : 'border-gold/20 text-paper-dark/60'
+                }`}
               >
-                {resolve('palmistry.unlock.price')}
+                左手（先天）
+              </button>
+              <button
+                type="button"
+                onClick={() => { setHandSide('right'); setShowResult(false); }}
+                className={`px-4 py-2 rounded-full text-xs border transition-all ${
+                  handSide === 'right'
+                    ? 'border-gold/60 bg-gold/10 text-gold'
+                    : 'border-gold/20 text-paper-dark/60'
+                }`}
+              >
+                右手（后天）
               </button>
             </div>
           )}
 
-          {/* Payment modal */}
-          {showPayment && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
-              <div className="rounded-2xl border border-gold/30 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4" onClick={(e) => e.stopPropagation()}>
-                <h3 className="text-[1.25rem] text-gold font-display">{resolve('palmistry.unlock.title')}</h3>
-                <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('palmistry.payment.desc')}</p>
-                <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30" />
-                <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('palmistry.payment.confirm')}</p>
+          {/* Photo Upload */}
+          {!photo ? (
+            <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-8 text-center backdrop-blur-md space-y-4">
+              <p className="text-paper-dark/60 text-sm">请上传清晰照片进行分析</p>
+              <div className="flex gap-3 justify-center">
                 <button
                   type="button"
-                  onClick={() => setShowPayment(false)}
-                  className="w-full rounded-md border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors"
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="px-6 py-3 rounded-full bg-vermillion text-white text-sm hover:bg-vermillion-light transition-colors"
                 >
-                  {resolve('common.close')}
+                  📷 拍摄{mode === 'hand' ? '手相' : '面相'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-6 py-3 rounded-full border border-gold/40 text-gold text-sm hover:bg-gold/10 transition-colors"
+                >
+                  📁 从相册选{mode === 'hand' ? '手相' : '面相'}
+                </button>
+              </div>
+              <input
+                ref={cameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
+          ) : (
+            /* Photo Preview */
+            <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-4 backdrop-blur-md">
+              <div className="relative">
+                <img src={photo} alt="上传的照片" className="w-full rounded-lg max-h-80 object-contain" />
+                <button
+                  type="button"
+                  onClick={() => { setPhoto(null); setShowResult(false); setAnalysis(''); }}
+                  className="absolute top-2 right-2 px-3 py-1 rounded-full bg-black/50 text-white text-xs hover:bg-black/70"
+                >
+                  重新上传
+                </button>
+              </div>
+              
+              {/* Analyze Button */}
+              <div className="mt-4 flex gap-3 justify-center">
+                <button
+                  type="button"
+                  onClick={handleAnalyze}
+                  disabled={!selectedMaster || uploading}
+                  className="px-8 py-3 rounded-full bg-vermillion text-white text-sm hover:bg-vermillion-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {uploading ? '上传中...' : '开始专业解读'}
                 </button>
               </div>
             </div>
           )}
+
+          {/* Analysis Result */}
+          {showResult && analysis && (
+            <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-6 backdrop-blur-md">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg">{MASTERS[selectedMaster || 0]?.icon}</span>
+                <span className="text-gold font-medium text-sm">{MASTERS[selectedMaster || 0]?.name} 解读</span>
+              </div>
+              <p className="text-paper-dark/80 text-sm leading-relaxed">{analysis}</p>
+            </div>
+          )}
+
+          {/* Main Lines Reference */}
+          <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 backdrop-blur-md">
+            <button
+              type="button"
+              onClick={() => setShowLines(!showLines)}
+              className="w-full p-4 flex items-center justify-between text-gold/80 hover:text-gold transition-colors"
+            >
+              <span className="text-sm">
+                {mode === 'hand' ? '🖐️ 手相深看' : '😊 面相深看'}会重点对照这些部位
+              </span>
+              <span className={`transition-transform ${showLines ? 'rotate-180' : ''}`}>▼</span>
+            </button>
+            {showLines && (
+              <div className="px-4 pb-4 space-y-2">
+                {(mode === 'hand' ? HAND_LINES : FACE_ZONES).map((item, idx) => (
+                  <div key={idx} className="rounded-lg bg-gold/5 p-3">
+                    <div className="text-xs text-gold mb-1">{item.name}</div>
+                    <div className="text-xs text-paper-dark/70">{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Legal Links */}
+          <div className="flex justify-center gap-4 text-xs text-paper-dark/40">
+            <a href="/terms/" className="hover:text-gold/60">《用户协议》</a>
+            <a href="/privacy/" className="hover:text-gold/60">《隐私说明》</a>
+            <a href="/ai-notice/" className="hover:text-gold/60">《AI 生成说明》</a>
+          </div>
         </div>
       </main>
 

@@ -1,364 +1,277 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { t, getLocale } from '@/lib/i18n';
-import type { SupportedLang } from '@/lib/i18n';
 import { Header } from '@/components/Header';
 import { MusicToggleFloat } from '@/components/MusicToggle';
 import { BottomNav } from '@/components/BottomNav';
 import { FloatingParticles } from '@/components/FloatingParticles';
 import { GoldenLotusBg } from '@/components/GoldenLotusBg';
-import { castHexagram, type HexagramInfo } from '@/lib/hexagrams';
-import { saveRecord } from '@/lib/records';
 
-function resolve(key: string): string {
-  return t(key);
+// 三位大师
+const MASTERS = [
+  {
+    icon: '🧘',
+    name: '慧明长者',
+    title: '古灵古怪，庄严肃穆',
+    desc: '引经据典。通读《周易》《道德经》，言简意赅克制。适合喜欢深度解读、看古籍出处的施主。',
+    bg: 'from-orange-500/20 to-transparent',
+  },
+  {
+    icon: '🙏',
+    name: '明心师父',
+    title: '慈悲温柔，劝人向善',
+    desc: '娓娓道来，如沐春风。适合家庭、感情、亲人祈福场景。',
+    bg: 'from-purple-500/20 to-transparent',
+  },
+  {
+    icon: '☯️',
+    name: '文真道长',
+    title: '直爽通透，说大白话',
+    desc: '山中高人，不卖弄奇术。把命运讲成大白话，适合急性子。',
+    bg: 'from-blue-500/20 to-transparent',
+  },
+];
+
+// 六十四卦名称
+const HEXAGRAM_NAMES = [
+  '乾为天', '坤为地', '水雷屯', '山水蒙', '水天需', '天水讼', '地水师', '水地比',
+  '风天小畜', '天泽履', '地天泰', '天地否', '天火同人', '火天大有', '地山谦', '雷地豫',
+  '泽雷随', '山风蛊', '地泽临', '风地观', '火雷噬嗑', '山火贲', '山地剥', '地雷复',
+  '天雷无妄', '山天大畜', '山雷颐', '泽风大过', '坎为水', '离为火', '泽山咸', '雷风恒',
+  '天山遁', '雷天大壮', '火地晋', '地火明夷', '风火家人', '火泽睽', '水山蹇', '雷水解',
+  '山泽损', '风雷益', '泽天夬', '天风姤', '泽地萃', '地风升', '泽水困', '水风井',
+  '泽火革', '火风鼎', '震为雷', '艮为山', '风山渐', '雷泽归妹', '雷火丰', '火山旅',
+  '巽为风', '兑为泽', '风水涣', '风泽中孚', '水泽节', '水火既济', '火水未济',
+];
+
+// 模拟卦象解读
+function generateReading(question: string, hexagramIdx: number, masterIdx: number): string {
+  const hexagram = HEXAGRAM_NAMES[hexagramIdx];
+  const readings = [
+    `此卦为${hexagram}，${question}？卦象显示当前形势较为复杂，需耐心等待时机。`,
+    `${hexagram}卦，${question}？吉。但需注意循序渐进，不可急躁冒进。`,
+    `${hexagram}卦，${question}？此卦暗示需要调整心态，顺应自然规律。`,
+  ];
+  return readings[(hexagramIdx + masterIdx) % readings.length];
 }
 
-// Map 3-line binary to trigram name
-function linesToTrigram(lines: number[]): string {
-  const binary = lines.map(l => l === 7 || l === 9 ? 1 : 0).reverse().join('');
-  const map: Record<string, string> = {
-    '111': '乾', '110': '兑', '101': '离', '100': '震',
-    '011': '巽', '010': '坎', '001': '艮', '000': '坤',
-  };
-  return map[binary] ?? '乾';
-}
-
-// Visual hexagram line renderer
-function HexagramLines({ lines, movingLines }: { lines: number[]; movingLines: number[] }) {
-  // Draw from bottom (line 1) to top (line 6)
-  const reversed = [...lines].reverse();
-  return (
-    <div className="flex flex-col items-center gap-1 py-3">
-      {reversed.map((line, i) => {
-        const isMoving = movingLines.includes(lines.length - 1 - i);
-        const isYang = line === 7 || line === 9;
-        return (
-          <div
-            key={i}
-            className={`h-2 rounded-sm transition-all ${
-              isYang
-                ? 'w-24 bg-gold/80'
-                : 'w-24 flex justify-between'
-            } ${isMoving ? 'ring-2 ring-vermillion/60 ring-offset-1 ring-offset-xuan-card' : ''}`}
-          >
-            {!isYang && (
-              <>
-                <div className="h-full w-[42%] bg-gold/50 rounded-sm" />
-                <div className="h-full w-[42%] bg-gold/50 rounded-sm" />
-              </>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function HexagramCard({ title, info, lines, movingLines }: {
-  title: string;
-  info: HexagramInfo | null;
-  lines: number[];
-  movingLines: number[];
-}) {
-  return (
-    <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-4 shadow-paper backdrop-blur-sm">
-      <div className="text-center mb-3">
-        <span className="text-xs text-gold/80 tracking-wider">{title}</span>
-      </div>
-      {info ? (
-        <>
-          <div className="text-center mb-3">
-            <p className="text-[1.5rem] text-gold font-display">{info.name}</p>
-            <p className="text-xs text-paper-dark/50 mt-1">{info.upper}上{info.lower}下</p>
-          </div>
-          <HexagramLines lines={lines} movingLines={movingLines} />
-          <div className="mt-3 space-y-2 text-sm">
-            <p className="text-paper-dark/85"><span className="text-gold">卦辞：</span>{info.judgment}</p>
-            <p className="text-paper-dark/85"><span className="text-gold">整体：</span>{info.overall}</p>
-            <p className="text-paper-dark/85"><span className="text-gold">事业：</span>{info.career}</p>
-            <p className="text-paper-dark/85"><span className="text-gold">财运：</span>{info.wealth}</p>
-            <p className="text-paper-dark/85"><span className="text-gold">感情：</span>{info.love}</p>
-            <p className="text-paper-dark/85"><span className="text-gold">健康：</span>{info.health}</p>
-            <p className="text-paper-dark/85"><span className="text-gold">建议：</span>{info.guidance}</p>
-          </div>
-        </>
-      ) : (
-        <div className="text-center py-4">
-          <p className="text-sm text-on-dark-muted">{resolve('divination.noReading')}</p>
-          <p className="text-xs text-paper-dark/40 mt-1">{resolve('divination.tryAgain')}</p>
-        </div>
-      )}
-    </div>
-  );
+// 投掷铜钱生成卦象
+function castCoins(): { lines: number[]; movingLines: number[]; hexagramIdx: number } {
+  const lines: number[] = [];
+  const movingLines: number[] = [];
+  
+  for (let i = 0; i < 6; i++) {
+    // 三枚铜钱：3个正面=9(老阴动), 3个反面=6(老阳动), 1正2反=8(少阴), 2正1反=7(少阳)
+    const coins = [Math.random() > 0.5 ? 3 : 2, Math.random() > 0.5 ? 3 : 2, Math.random() > 0.5 ? 3 : 2];
+    const sum = coins.reduce((a, b) => a + b, 0);
+    if (sum === 6 || sum === 9) {
+      movingLines.push(i);
+    }
+    lines.push(sum);
+  }
+  
+  // 计算卦象索引
+  const binary = lines.map(l => (l === 7 || l === 9) ? 1 : 0).join('');
+  const hexagramIdx = parseInt(binary, 2) % HEXAGRAM_NAMES.length;
+  
+  return { lines, movingLines, hexagramIdx };
 }
 
 export default function DivinationPage() {
-  const [lang, setLang] = useState<SupportedLang>(getLocale());
-  useEffect(() => {
-    setLang(getLocale());
-    const handler = () => setLang(getLocale());
-    window.addEventListener('lang-change', handler);
-    return () => window.removeEventListener('lang-change', handler);
-  }, []);
+  const [selectedMaster, setSelectedMaster] = useState<number | null>(null);
+  const [question, setQuestion] = useState('');
+  const [casting, setCasting] = useState(false);
+  const [result, setResult] = useState<{ lines: number[]; movingLines: number[]; hexagramIdx: number } | null>(null);
+  const [reading, setReading] = useState('');
+  const [freeCount, setFreeCount] = useState(1);
+  const [shaking, setShaking] = useState(false);
 
-  const [method, setMethod] = useState<'coins' | 'time' | 'number'>('coins');
-  const [result, setResult] = useState<{ ben: HexagramInfo | null; hu: string; bian: HexagramInfo | null; movingLines: number[]; lines: number[] } | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [coinResults, setCoinResults] = useState<number[]>([]);
-  const [numberInput, setNumberInput] = useState('');
-  const [showPayment, setShowPayment] = useState(false);
-  const [todayCount, setTodayCount] = useState(() => {
-    try {
-      const s = localStorage.getItem('yinianjian_div_today');
-      const d = localStorage.getItem('yinianjian_div_date');
-      const today = new Date().toDateString();
-      if (d === today && s) return parseInt(s) || 0;
-      return 0;
-    } catch { return 0; }
-  });
-  const FREE_LIMIT = 1;
-
-  // Coin toss: 3 coins, 6 or 7, 8 or 9
-  const tossCoins = () => {
-    if (coinResults.length >= 6) return;
-    const toss = [Math.random() > 0.5 ? 3 : 2, Math.random() > 0.5 ? 3 : 2, Math.random() > 0.5 ? 3 : 2];
-    const sum = toss.reduce((a, b) => a + b, 0);
-    setCoinResults(prev => [...prev, sum]);
-  };
-
-  const castFromCoins = useCallback(() => {
-    if (coinResults.length < 6) return;
-    if (todayCount >= FREE_LIMIT) {
-      setShowPayment(true);
+  const handleCast = useCallback(() => {
+    if (!question.trim()) {
+      alert('请先写下您要问的事');
       return;
     }
-    const lines = coinResults;
-    const hex = castHexagram(lines);
-    setResult({ ben: hex.ben ?? null, hu: hex.hu, bian: hex.bian ?? null, movingLines: hex.movingLines, lines });
-    try {
-      localStorage.setItem('yinianjian_div_today', (todayCount + 1).toString());
-      localStorage.setItem('yinianjian_div_date', new Date().toDateString());
-      setTodayCount(c => c + 1);
-    } catch {}
-    saveRecord('divination', { method: resolve('divination.method.coins'), lines, result: hex.ben?.name ?? '未知' }, `${resolve('divination.title')}${hex.ben?.name ? `：${hex.ben.name}` : ''}`);
-  }, [coinResults, todayCount]);
-
-  // Time divination: use current hour/minute
-  const castFromTime = useCallback(() => {
-    const now = new Date();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    // Generate 6 lines from time
-    const lines: number[] = [];
-    for (let i = 0; i < 6; i++) {
-      const val = ((hour * 60 + minute + i * 17) % 4 === 0) ? 6 : ((hour * 60 + minute + i * 13) % 4 === 1) ? 9 : ((hour * 60 + minute + i * 11) % 4 === 2) ? 7 : 8;
-      lines.push(val);
-    }
-    const hex = castHexagram(lines);
-    setResult({ ben: hex.ben ?? null, hu: hex.hu, bian: hex.bian ?? null, movingLines: hex.movingLines, lines });
-    setCoinResults(lines);
-    saveRecord('divination', { method: resolve('divination.method.time'), lines, result: hex.ben?.name ?? '未知' }, `${resolve('divination.title')}（${resolve('divination.method.time')}）${hex.ben?.name ? `：${hex.ben.name}` : ''}`);
-  }, []);
-
-  // Number divination
-  const castFromNumbers = useCallback(() => {
-    const nums = numberInput.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-    if (nums.length < 3) {
-      alert(resolve('divination.numberError'));
+    if (selectedMaster === null) {
+      alert('请先选择一位师父');
       return;
     }
-    const lines: number[] = [];
-    for (let i = 0; i < 6; i++) {
-      const val = 6 + (nums[i % nums.length] + i * 7) % 4;
-      lines.push(val);
+    if (freeCount <= 0) {
+      alert('今日免费次数已用完');
+      return;
     }
-    const hex = castHexagram(lines);
-    setResult({ ben: hex.ben ?? null, hu: hex.hu, bian: hex.bian ?? null, movingLines: hex.movingLines, lines });
-    setCoinResults(lines);
-    saveRecord('divination', { method: resolve('divination.method.number'), nums, lines, result: hex.ben?.name ?? '未知' }, `${resolve('divination.title')}（${resolve('divination.method.number')}）${hex.ben?.name ? `：${hex.ben.name}` : ''}`);
-  }, [numberInput]);
-
-  const handleSubmit = () => {
-    setLoading(true);
+    
+    setCasting(true);
+    setShaking(true);
+    
     setTimeout(() => {
-      if (method === 'coins') castFromCoins();
-      else if (method === 'time') castFromTime();
-      else castFromNumbers();
-      setLoading(false);
-    }, 600);
-  };
+      const castResult = castCoins();
+      setResult(castResult);
+      
+      const rd = generateReading(question, castResult.hexagramIdx, selectedMaster || 0);
+      setReading(rd);
+      
+      setCasting(false);
+      setShaking(false);
+      setFreeCount(prev => prev - 1);
+    }, 2000);
+  }, [question, selectedMaster, freeCount]);
 
-  const resetAll = () => {
-    setCoinResults([]);
-    setResult(null);
-    setNumberInput('');
+  // 绘制卦象线条
+  const renderHexagramLines = () => {
+    if (!result) {
+      // 显示6个空圈
+      return Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="w-20 h-2 rounded-full border-2 border-dashed border-gold/30" />
+      ));
+    }
+    
+    // 从下到上显示（line 0是底部）
+    return [...result.lines].reverse().map((line, i) => {
+      const isYang = line === 7 || line === 9;
+      const isMoving = result.movingLines.includes(result.lines.length - 1 - i);
+      
+      return (
+        <div
+          key={i}
+          className={`w-20 h-2 rounded-sm transition-all ${
+            isYang
+              ? 'bg-gold/80'
+              : 'flex justify-between w-20 h-2'
+          } ${isMoving ? 'ring-2 ring-vermillion/60' : ''}`}
+        >
+          {!isYang && (
+            <>
+              <div className="h-full w-[42%] bg-gold/50 rounded-sm" />
+              <div className="h-full w-[42%] bg-gold/50 rounded-sm" />
+            </>
+          )}
+        </div>
+      );
+    });
   };
 
   return (
-    <div className="min-h-screen bg-xuan relative overflow-hidden">
+    <div className="min-h-screen bg-[#1a1410] relative overflow-hidden">
       <GoldenLotusBg />
       <FloatingParticles />
       <Header />
       <MusicToggleFloat />
 
-      <main className="relative z-10 mx-auto min-h-[calc(100vh-3.5rem)] w-full pt-14 pb-24 md:pb-8">
-        <div className="mx-auto max-w-5xl space-y-section px-4 pb-24">
-          <section className="space-y-3 pt-8 text-center">
-            <div className="mx-auto mb-3 flex size-20 items-center justify-center rounded-full border border-gold/20 bg-gold/5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-compass size-[2.25rem] text-gold" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-              </svg>
-            </div>
-            <h1 className="text-4xl tracking-widest" style={{ color: '#C9A96E', fontFamily: "'ZhiMangXing', cursive" }}>{resolve('divination.title')}</h1>
-            <p className="text-base" style={{ color: '#D4C5A9' }}>
-              {resolve('divination.subtitle')}
+      <main className="relative z-10 mx-auto max-w-4xl px-4 pb-24 pt-20">
+        <div className="space-y-6">
+          {/* Title */}
+          <div className="text-center space-y-2">
+            <div className="text-5xl mb-2">☯️</div>
+            <h1 className="text-4xl text-gold font-display">六爻占卜</h1>
+            <p className="text-paper-dark/80 text-sm">
+              心诚则灵 · 摇动签筒 · 六爻成卦
             </p>
-          </section>
-
-          {/* Method selection */}
-          <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-card-pad shadow-paper backdrop-blur-sm space-y-4">
-            {/* 免费次数提示 */}
-            <div className="text-center">
-              <span className="text-xs text-gold/80 tracking-wider">{resolve('divination.methodTitle')}</span>
-              <p className="text-sm mt-2" style={{ color: todayCount >= FREE_LIMIT ? '#EF4444' : '#D4C5A9' }}>
-                {todayCount >= FREE_LIMIT
-                  ? resolve('payment.outOfTrials')
-                  : `${resolve('payment.freeTrial')}：${FREE_LIMIT - todayCount}/${FREE_LIMIT}`}
-              </p>
+            <div className="inline-block px-4 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs">
+              今日免费 {freeCount}/1
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { key: 'coins' as const },
-                { key: 'time' as const },
-                { key: 'number' as const },
-              ].map(m => (
-                <button key={m.key} type="button" onClick={() => { setMethod(m.key); resetAll(); }} className={`rounded-lg border p-3 text-center transition-all ${method === m.key ? 'border-gold/60 bg-gold/10 text-gold' : 'border-gold/20 bg-xuan-surface/40 text-paper-dark hover:border-gold/40'}`}>
-                  <span className="text-[1.5rem]">{m.key === 'coins' ? '🪙' : m.key === 'time' ? '⏰' : '🔢'}</span>
-                  <p className="text-xs mt-1">{resolve(`divination.method.${m.key}`)}</p>
+          </div>
+
+          {/* Master Selection */}
+          <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-4 backdrop-blur-md">
+            <p className="text-center text-sm text-gold/80 mb-3">请选一位师父为您开示</p>
+            <div className="space-y-3">
+              {MASTERS.map((master, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => { setSelectedMaster(idx); setResult(null); setReading(''); }}
+                  className={`w-full text-left rounded-xl border p-4 transition-all bg-gradient-to-r ${master.bg} ${
+                    selectedMaster === idx
+                      ? 'border-gold/60 bg-gold/10'
+                      : 'border-gold/20 bg-[#1a1510]/80 hover:border-gold/40'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">{master.icon}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-gold font-medium text-sm">{master.name}</span>
+                        <span className="text-paper-dark/50 text-xs">·</span>
+                        <span className="text-paper-dark/60 text-xs">{master.title}</span>
+                      </div>
+                      <p className="text-xs text-paper-dark/70">{master.desc}</p>
+                    </div>
+                  </div>
                 </button>
               ))}
             </div>
+          </div>
 
-            {/* Coin toss area */}
-            {method === 'coins' && (
-              <div className="space-y-4">
-                <div className="flex flex-wrap justify-center gap-3 min-h-[60px]">
-                  {coinResults.map((r, i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-lg font-bold font-number ${
-                        r === 9 || r === 6 ? 'bg-gold/20 border-gold/60 text-gold' : 'bg-xuan-surface/50 border-gold/20 text-on-dark-muted'
-                      }`}>
-                        {r}
-                      </div>
-                      <span className="text-[10px] text-on-dark-dim mt-1">{resolve('divination.line').replace('{num}', (i + 1).toString())}</span>
-                    </div>
-                  ))}
-                  {Array.from({ length: 6 - coinResults.length }).map((_, i) => (
-                    <div key={`empty-${i}`} className="w-12 h-12 rounded-full border-2 border-dashed border-gold/10" />
-                  ))}
+          {/* Question Input */}
+          <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-6 backdrop-blur-md">
+            <label className="block text-sm text-gold/80 mb-2">默念心中所问，写下您要问的事</label>
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="例如：这次出行是否顺利？"
+              className="w-full rounded-lg border border-gold/20 bg-[#2e2518] px-4 py-3 text-sm text-gold placeholder:text-paper-dark/30 focus:border-gold/60 focus:outline-none"
+            />
+            <p className="text-xs text-paper-dark/50 mt-2">先静心默念，再摇签筒，一卦一事。</p>
+          </div>
+
+          {/* Hexagram Display */}
+          <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-6 backdrop-blur-md text-center">
+            <div className="flex flex-col-reverse gap-2 items-center mb-4">
+              {renderHexagramLines()}
+            </div>
+            
+            {/* 摇动签筒按钮 */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative">
+                <div className={`w-32 h-40 rounded-lg border-2 border-gold/30 bg-gradient-to-b from-amber-800 to-amber-900 flex items-center justify-center ${shaking ? 'animate-bounce' : ''}`}>
+                  <div className="text-4xl">🎋</div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-vermillion flex items-center justify-center text-white text-xs">
+                    签
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={tossCoins}
-                  disabled={coinResults.length >= 6 || loading}
-                  className="w-full rounded-lg border border-gold/30 py-2 text-sm text-gold hover:bg-gold/10 transition-all disabled:opacity-50"
-                >
-                  {coinResults.length >= 6 ? resolve('divination.coin.full') : resolve('divination.coin.toss')}
-                </button>
+                <p className="text-xs text-paper-dark/50 mt-2">关圣帝君 · 灵签筒</p>
               </div>
-            )}
-
-            {/* Time method */}
-            {method === 'time' && (
-              <p className="text-sm text-on-dark-muted text-center py-2">
-                {resolve('divination.timeHint')}
-              </p>
-            )}
-
-            {/* Number method */}
-            {method === 'number' && (
-              <div className="space-y-2">
-                <label className="text-sm text-paper-dark/80">{resolve('divination.numberLabel')}</label>
-                <input
-                  type="text"
-                  value={numberInput}
-                  onChange={(e) => setNumberInput(e.target.value)}
-                  placeholder={resolve('divination.numberPlaceholder')}
-                  className="input-standard w-full"
-                />
-              </div>
-            )}
-
-            {/* Submit */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={loading || (method === 'coins' && coinResults.length < 6)}
-              className="btn-primary w-full disabled:opacity-50"
-            >
-              {loading ? resolve('divination.btn.casting') : resolve('divination.btn.cast')}
-            </button>
+              
+              <button
+                type="button"
+                onClick={handleCast}
+                disabled={casting || shaking}
+                className="w-full max-w-xs px-8 py-3 rounded-full bg-vermillion text-white text-sm hover:bg-vermillion-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {casting ? '起卦中...' : shaking ? '摇动中...' : '摇动签筒'}
+              </button>
+            </div>
           </div>
 
           {/* Result */}
-          {result && (
-            <div className="space-y-4 animate-slide-up">
-              <HexagramCard
-                title={resolve('divination.primary')}
-                info={result.ben}
-                lines={result.lines}
-                movingLines={result.movingLines}
-              />
-              <div className="rounded-lg border border-gold/20 bg-xuan-card/95 p-4 text-center">
-                <span className="text-xs text-gold/80 tracking-wider">{resolve('divination.mutual')}</span>
-                <p className="text-lg text-on-dark-muted mt-2">{result.hu}</p>
-                <p className="text-xs text-paper-dark/40 mt-1">{resolve('divination.mutualNote')}</p>
-              </div>
-              {result.bian && (
-                <HexagramCard
-                  title={`${resolve('divination.transformed')}${result.movingLines.length > 0 ? `（${result.movingLines.length}爻动）` : '（无动爻）'}`}
-                  info={result.bian}
-                  lines={result.lines.map(l => l === 9 ? 8 : l === 6 ? 7 : l)}
-                  movingLines={[]}
-                />
-              )}
-              {result.movingLines.length > 0 && result.ben && (
-                <div className="rounded-lg border border-vermillion/20 bg-vermillion/5 p-4 text-center">
-                  <p className="text-sm text-paper-dark/80">
-                    {resolve('divination.movingLineNote').replace('{lines}', result.movingLines.map(i => i + 1).join('、')).replace('{detail}',
-                      result.movingLines.length === 1
-                        ? resolve('divination.movingDetail.one').replace('{num}', (result.movingLines[0] + 1).toString())
-                        : resolve('divination.movingDetail.multi')
-                    )}
-                  </p>
+          {result && reading && (
+            <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-6 backdrop-blur-md">
+              <h3 className="text-lg text-gold font-medium text-center mb-3">
+                第{HEXAGRAM_NAMES[result.hexagramIdx]}卦
+              </h3>
+              <p className="text-paper-dark/80 text-sm leading-relaxed text-center">{reading}</p>
+              
+              {/* Moving lines info */}
+              {result.movingLines.length > 0 && (
+                <div className="mt-4 text-center">
+                  <p className="text-xs text-vermillion">动爻：第{result.movingLines.map(l => l + 1).join('、')}爻</p>
                 </div>
               )}
             </div>
           )}
 
-          <p className="text-center text-xs text-on-dark-muted">{resolve('common.disclaimer')}</p>
-        </div>
-      </main>
-
-      {/* 支付弹窗 */}
-      {showPayment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowPayment(false)}>
-          <div className="rounded-2xl border-2 border-gold/40 bg-xuan-card p-6 max-w-sm w-full text-center space-y-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-xl text-gold font-display">{resolve('payment.title')}</h3>
-            <p className="text-sm" style={{ color: '#D4C5A9' }}>{resolve('payment.desc')}</p>
-            <div className="rounded-lg border border-gold/20 bg-xuan-surface p-4">
-              <p className="text-vermillion text-2xl font-display">¥6.6</p>
-              <p className="text-xs mt-1" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.unlockPrice')}</p>
+          {/* Disclaimer */}
+          <div className="rounded-2xl border border-gold/20 bg-[#1a1510]/80 p-4 backdrop-blur-md">
+            <div className="flex items-start gap-2">
+              <span className="text-paper-dark/50 mt-0.5">ℹ️</span>
+              <p className="text-xs text-paper-dark/50">
+                仅作传统文化参考，请结合现实情况判断。未满18周岁请勿使用本服务。
+              </p>
             </div>
-            <img src="/zfb-payment.png" alt="支付宝收款码" className="mx-auto rounded-lg border-2 border-gold/30 w-48 h-48 object-cover" />
-            <p className="text-xs" style={{ color: 'rgba(212,197,169,0.5)' }}>{resolve('payment.confirm')}</p>
-            <button type="button" onClick={() => setShowPayment(false)} className="w-full rounded-md border border-gold/30 py-2 text-sm text-paper-dark/80 hover:text-gold transition-colors">{resolve('payment.close')}</button>
           </div>
         </div>
-      )}
+      </main>
 
       <BottomNav active="divination" />
     </div>

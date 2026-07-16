@@ -10,7 +10,10 @@ export function Header({ lang, setLang }: { lang?: string; setLang?: (v: string)
 
   return (
     <>
-      <header className="fixed top-0 z-50 h-14 w-full transition-all duration-base safe-top bg-transparent">
+      <header className="fixed top-0 z-50 h-14 w-full transition-all duration-base safe-top" style={{
+        background: 'linear-gradient(180deg, rgba(26,20,16,0.98) 0%, rgba(26,20,16,0.95) 100%)',
+        borderBottom: '1px solid rgba(201,160,92,0.2)',
+      }}>
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
           {/* Logo 区 - 纯SVG（对齐菩提苑） */}
           <a className="flex items-center gap-2.5" href="/">

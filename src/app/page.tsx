@@ -325,18 +325,7 @@ export default function Home() {
                 <button
                   type="button"
                   className="btn-pray-gold rounded-full px-8 py-3 text-sm tracking-wider shadow-lg transition-transform hover:scale-105"
-                  onClick={() => {
-                    const today = new Date().toISOString().slice(0, 10);
-                    const todayKey = `yinianjian_incense_${today}`;
-                    const count = parseInt(localStorage.getItem(todayKey) || '0', 10);
-                    if (count < 3) {
-                      localStorage.setItem(todayKey, String(count + 1));
-                      const meritKey = 'yinianjian_total_merit';
-                      const total = parseInt(localStorage.getItem(meritKey) || '0', 10);
-                      localStorage.setItem(meritKey, String(total + 1));
-                    }
-                    window.location.href = '/qifu/';
-                  }}
+                  onClick={() => { window.location.href = '/incense/'; }}
                 >
                   {resolve('incense.btn.offer')}
                 </button>
